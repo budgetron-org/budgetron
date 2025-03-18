@@ -1,0 +1,4 @@
+# Ignore dirs/files we do not want to prettify
+node_modules
+build
+dist
