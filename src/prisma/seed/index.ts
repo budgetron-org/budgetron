@@ -18,7 +18,7 @@ async function main() {
   // Seed account table
   await seedAccountTable()
   // Seed transaction table
-  // await seedTransactionTable()
+  await seedTransactionTable()
 }
 
 try {
