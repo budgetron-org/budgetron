@@ -1,7 +1,6 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { LoaderCircleIcon } from 'lucide-react'
 import {
   useCallback,
@@ -11,12 +10,10 @@ import {
   type ReactNode,
 } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
-import { toast } from 'sonner'
 import type { z } from 'zod'
 
-import { createTransaction } from '@/actions/transaction'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '~/components/ui/button'
+import { Checkbox } from '~/components/ui/checkbox'
 import {
   Dialog,
   DialogContent,
@@ -25,8 +22,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { CreateTransactionSchemaWithoutUser } from '@/schemas/transaction'
+} from '~/components/ui/dialog'
+import { useCreateTransaction } from '~/features/transactions/hooks'
+import { CreateTransactionSchemaWithoutUser } from '~/features/transactions/schema'
 import { CreateEditTransactionForm } from './create-edit-transaction-form'
 
 type CreateTransactionDialogProps = ComponentProps<typeof Dialog> & {
@@ -52,28 +50,10 @@ export function CreateTransactionDialog({
     },
   })
 
-  const queryClient = useQueryClient()
-
-  const submitTransaction = useMutation({
-    mutationFn: createTransaction,
-    onMutate() {
-      toast.loading('Creating transaction...', {
-        id: 'create-transaction',
-      })
-    },
-    async onSuccess() {
-      toast.success('New transaction created!', {
-        id: 'create-transaction',
-      })
-      await queryClient.invalidateQueries({ queryKey: 'transactions' })
+  const submitTransaction = useCreateTransaction({
+    onSuccess() {
       form.reset()
       if (!willCreateAnother) setOpen(false)
-    },
-    onError() {
-      toast.error(
-        'Something went wrong when creating the transaction. Please try again.',
-        { id: 'create-transaction' },
-      )
     },
   })
 

@@ -3,8 +3,8 @@
 import { Label, Pie, PieChart, Sector } from 'recharts'
 import type { PieSectorDataItem } from 'recharts/types/polar/Pie'
 
-import { ChartContainer, type ChartConfig } from '@/components/ui/chart'
-import { safeParseLucideIcon, safeParseNumber } from '@/lib/utils'
+import { ChartContainer, type ChartConfig } from '~/components/ui/chart'
+import { safeParseLucideIcon, safeParseNumber } from '~/lib/utils'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { useCallback, useMemo, useState, type ComponentProps } from 'react'
 

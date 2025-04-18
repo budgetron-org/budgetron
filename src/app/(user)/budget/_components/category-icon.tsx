@@ -1,6 +1,6 @@
 import { DynamicIcon } from 'lucide-react/dynamic'
 
-import { cn, safeParseLucideIcon } from '@/lib/utils'
+import { cn, safeParseLucideIcon } from '~/lib/utils'
 
 type CategoryIconProps = {
   className?: string

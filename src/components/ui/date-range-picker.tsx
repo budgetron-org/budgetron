@@ -21,23 +21,23 @@ import { CalendarIcon, CheckIcon } from 'lucide-react'
 import { type ComponentProps, useCallback, useState } from 'react'
 import type { DateRange } from 'react-day-picker'
 
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import { DateInput } from '@/components/ui/date-input'
+import { Button } from '~/components/ui/button'
+import { Calendar } from '~/components/ui/calendar'
+import { DateInput } from '~/components/ui/date-input'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
+} from '~/components/ui/popover'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { useIsMobile } from '@/hooks/use-mobile'
-import { cn } from '@/lib/utils'
+} from '~/components/ui/select'
+import { useIsMobile } from '~/hooks/use-mobile'
+import { cn } from '~/lib/utils'
 
 export type DateRangeRequired = Required<Partial<DateRange>>
 

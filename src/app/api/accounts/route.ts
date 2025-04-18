@@ -1,21 +1,20 @@
-import { account } from '@/db/account'
-import { auth } from '@clerk/nextjs/server'
+import { unauthorized } from 'next/navigation'
+
+import { getCurrentUser } from '~/features/auth/service'
+import { db } from '~/db'
 
 export async function GET() {
-  const { userId, sessionClaims, redirectToSignIn } = await auth()
-  const { appUserId } = sessionClaims?.metadata ?? {}
+  const { user } = await getCurrentUser()
+  if (!user) unauthorized()
 
-  if (!userId || !appUserId) {
-    return redirectToSignIn()
-  }
-
-  const accounts = await getAccountsForUser(appUserId)
+  const accounts = await getAccountsForUser(user.id)
   return Response.json(accounts)
 }
 
 export type GetAccountsResponse = Awaited<ReturnType<typeof getAccountsForUser>>
 
-async function getAccountsForUser(id: string) {
-  const accounts = await account.getAllForUser(id)
-  return accounts
+async function getAccountsForUser(userId: string) {
+  return db.query.BankAccountTable.findMany({
+    where: (t, { eq }) => eq(t.userId, userId),
+  })
 }

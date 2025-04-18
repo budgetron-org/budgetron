@@ -6,9 +6,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type { TimeFrame, TimePeriod } from '@/types'
+} from '~/components/ui/select'
+import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs'
+import type { TimeFrame, TimePeriod } from '~/types'
 import { useMemo } from 'react'
 import { range } from 'lodash'
 

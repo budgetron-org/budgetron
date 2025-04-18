@@ -8,7 +8,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '~/components/ui/select'
 
 type SelectProps = Omit<ComponentPropsWithoutRef<typeof Select>, 'value'>
 type TransactionTypePickerProps = SelectProps & {

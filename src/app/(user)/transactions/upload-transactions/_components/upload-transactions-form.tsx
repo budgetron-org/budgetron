@@ -1,15 +1,12 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
 import { useCallback, type ComponentProps } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { parseOFXFile } from '@/actions/transaction'
-import { AccountPicker } from '@/components/account-picker'
-import { Button } from '@/components/ui/button'
+import { AccountPicker } from '~/components/account-picker'
+import { Button } from '~/components/ui/button'
 import {
   Form,
   FormControl,
@@ -17,14 +14,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { useHousehold } from '@/hooks/use-household'
-import { cn } from '@/lib/utils'
-import { ParseOFXSchema, type TransactionRecord } from '@/schemas/transaction'
+} from '~/components/ui/form'
+import { Input } from '~/components/ui/input'
+import { useParseOFXFile } from '~/features/transactions/hooks'
+import { ParseOFXSchema } from '~/features/transactions/schema'
+import type { TransactionWithRelations } from '~/features/transactions/types'
+import { useHousehold } from '~/hooks/use-household'
+import { cn } from '~/lib/utils'
 
 type UploadTransactionsFormProps = {
-  onSubmit?: (data: TransactionRecord[]) => void
+  onSubmit?: (data: TransactionWithRelations[]) => void
   onCancel?: () => void
 } & Omit<ComponentProps<'form'>, 'onSubmit'>
 
@@ -39,35 +38,16 @@ export function UploadTransactionsForm({
   })
   const { currentHouseholdId: householdId } = useHousehold()
 
-  const { mutateAsync, isPending } = useMutation({ mutationFn: parseOFXFile })
+  const { mutate, isPending } = useParseOFXFile({
+    onSuccess: onSubmit,
+  })
 
   const onFormSubmit = useCallback<
     SubmitHandler<z.infer<typeof ParseOFXSchema>>
   >(
-    async ({ accountId, file }) => {
-      const toastID = 'parse-transactions'
-      try {
-        toast.loading('Parsing the transactions', { id: toastID })
-        mutateAsync(
-          { accountId, file, householdId },
-          {
-            onError(error) {
-              toast.error('Error parsing the file', {
-                id: toastID,
-                description: String(error),
-              })
-            },
-            onSuccess(data) {
-              toast.success('Parsed the transactions', { id: toastID })
-              onSubmit?.(data)
-            },
-          },
-        )
-      } catch (err) {
-        toast.error(String(err))
-      }
-    },
-    [householdId, mutateAsync, onSubmit],
+    async ({ bankAccountId, file }) =>
+      mutate({ bankAccountId, file, householdId }),
+    [householdId, mutate],
   )
 
   return (
@@ -98,7 +78,7 @@ export function UploadTransactionsForm({
 
         <FormField
           control={form.control}
-          name="accountId"
+          name="bankAccountId"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Account</FormLabel>

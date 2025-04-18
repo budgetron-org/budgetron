@@ -1,18 +1,14 @@
-import { auth } from '@clerk/nextjs/server'
+import { unauthorized } from 'next/navigation'
 import type { NextRequest } from 'next/server'
+import { z } from 'zod'
 
-import { transaction } from '@/db/transaction'
-import { getCurrencyFormatter } from '@/lib/format'
-import { GetTransactionsSchema } from '@/schemas/transaction'
-import type { Prisma } from '@prisma/client'
+import { getCurrentUser } from '~/features/auth/service'
+import { db } from '~/db'
+import { getCurrencyFormatter } from '~/lib/format'
 
 export async function GET(request: NextRequest) {
-  const { userId, sessionClaims, redirectToSignIn } = await auth()
-  const { appUserId } = sessionClaims?.metadata ?? {}
-
-  if (!userId || !appUserId) {
-    return redirectToSignIn()
-  }
+  const { user } = await getCurrentUser()
+  if (!user) unauthorized()
 
   const { searchParams } = request.nextUrl
   const from = searchParams.get('from')
@@ -24,46 +20,30 @@ export async function GET(request: NextRequest) {
     return Response.json(error.message, { status: 400 })
   }
 
-  const transactions = await getTransactionsForUser(
-    appUserId,
-    data.from,
-    data.to,
-  )
+  const transactions = await getTransactionsForUser(user.id, data.from, data.to)
   return Response.json(transactions)
 }
+
+export const GetTransactionsSchema = z.object({
+  from: z.coerce.date(),
+  to: z.coerce.date(),
+})
 
 export type GetTransactionsResponse = Awaited<
   ReturnType<typeof getTransactionsForUser>
 >
 
-async function getTransactionsForUser(id: string, from: Date, to: Date) {
-  type TransactionGetPayload = Prisma.TransactionGetPayload<{
-    include: { account: true; category: true; household: true }
-  }>
+async function getTransactionsForUser(userId: string, from: Date, to: Date) {
   const formatter = getCurrencyFormatter('USD')
-  const transactions = (await transaction.findAll({
-    where: {
-      userId: id,
-      date: {
-        gte: from,
-        lte: to,
-      },
-    },
-    include: {
-      account: true,
-      category: true,
-      household: true,
-    },
-    orderBy: {
-      date: 'desc',
-    },
-  })) as unknown as TransactionGetPayload[]
-
-  return transactions.map((t) => ({
-    ...t,
-    amount: t.amount.toString(),
-    formattedAmount: formatter.format(
-      t.amount.toString() as Intl.StringNumericLiteral,
-    ),
-  }))
+  return db.query.TransactionTable.findMany({
+    where: (t, { and, between, eq }) =>
+      and(eq(t.userId, userId), between(t.date, from, to)),
+    with: { bankAccount: true, category: true, household: true },
+    orderBy: (t, { desc }) => [desc(t.date)],
+    extras: (t, { sql }) => ({
+      formattedAmount: sql<string>`${t.amount}`
+        .mapWith({ mapFromDriverValue: (value) => formatter.format(value) })
+        .as('formatted_amount'),
+    }),
+  })
 }

@@ -3,9 +3,9 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { buttonVariants } from '@/components/ui/button'
-import { APP_MAIN_NAV_LINKS } from '@/data/nav-links'
-import { cn } from '@/lib/utils'
+import { buttonVariants } from '~/components/ui/button'
+import { APP_MAIN_NAV_LINKS } from '~/data/nav-links'
+import { cn } from '~/lib/utils'
 
 function NavItem({ children, href }: { children: string; href: string }) {
   const pathname = usePathname()

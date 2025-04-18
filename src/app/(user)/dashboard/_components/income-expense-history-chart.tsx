@@ -3,24 +3,24 @@
 import { useQuery } from '@tanstack/react-query'
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 
-import type { GetYTDSummaryResponse } from '@/app/api/stats/ytd-summary/route'
-import { SkeletonWrapper } from '@/components/skeleton-wrapper'
+import type { GetYTDSummaryResponse } from '~/app/api/stats/ytd-summary/route'
+import { SkeletonWrapper } from '~/components/skeleton-wrapper'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '~/components/ui/card'
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart'
-import { MONTH_NAMES } from '@/lib/constants'
-import { safeParseNumber } from '@/lib/utils'
-import type { MonthName } from '@/types'
+} from '~/components/ui/chart'
+import { MONTH_NAMES } from '~/lib/constants'
+import { safeParseNumber } from '~/lib/utils'
+import type { MonthName } from '~/types'
 
 type ChartData = {
   month: MonthName

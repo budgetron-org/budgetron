@@ -2,10 +2,10 @@
 
 import { useMemo } from 'react'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import { chartColors } from '@/lib/colors'
-import { cn } from '@/lib/utils'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { Progress } from '~/components/ui/progress'
+import { chartColors } from '~/lib/colors'
+import { cn } from '~/lib/utils'
 import { CategoryIcon } from './category-icon'
 
 type CategoriesStatsCardProps = {

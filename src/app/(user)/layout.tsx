@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
-import { SidebarProvider } from '@/components/ui/sidebar'
+import { SidebarProvider } from '~/components/ui/sidebar'
 import { Header as DashboardHeader } from './_components/header'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { ScrollArea } from '~/components/ui/scroll-area'
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (

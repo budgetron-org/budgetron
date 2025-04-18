@@ -1,23 +1,25 @@
-import { auth } from '@clerk/nextjs/server'
+import {
+  eachDayOfInterval,
+  eachMonthOfInterval,
+  endOfMonth,
+  endOfYear,
+  format,
+  startOfMonth,
+  startOfYear,
+} from 'date-fns'
+import { sql } from 'drizzle-orm'
+import { groupBy, range } from 'lodash'
+import { unauthorized } from 'next/navigation'
 import { NextResponse, type NextRequest } from 'next/server'
-import type { z } from 'zod'
+import { z } from 'zod'
 
-import { GetCashFlowStatsSchema } from '@/schemas/cash-flow'
-import { monthAggregation } from '@/db/month-aggregation'
-import { getDaysInMonth } from 'date-fns'
-import { range } from 'lodash'
-import { yearAggregation } from '@/db/year-aggregation'
-import { MONTH_NAMES } from '@/lib/constants'
-
-type GetCashFlowStatsSchema = z.infer<typeof GetCashFlowStatsSchema>
+import { getCurrentUser } from '~/features/auth/service'
+import { db } from '~/db'
+import { TransactionTable } from '~/db/schema'
 
 export async function GET(request: NextRequest) {
-  const { userId, sessionClaims, redirectToSignIn } = await auth()
-  const { appUserId } = sessionClaims?.metadata ?? {}
-
-  if (!userId || !appUserId) {
-    return redirectToSignIn()
-  }
+  const { user } = await getCurrentUser()
+  if (!user) unauthorized()
 
   const timeFrame = request.nextUrl.searchParams.get('timeFrame')
   const month = request.nextUrl.searchParams.get('month')
@@ -34,7 +36,7 @@ export async function GET(request: NextRequest) {
   }
 
   const result = await getCashFlowStats(
-    appUserId,
+    user.id,
     data.timeFrame,
     data.month,
     data.year,
@@ -47,70 +49,78 @@ export type GetCashFlowStatsResponse = Awaited<
   ReturnType<typeof getCashFlowStats>
 >
 
+const validMonths = range(0, 12)
+const GetCashFlowStatsSchema = z.object({
+  timeFrame: z.enum(['month', 'year']),
+  month: z.coerce
+    .number()
+    .refine(
+      (val) => validMonths.includes(val),
+      'Enter a valid month (0 to 11)',
+    ),
+  year: z.coerce.number(),
+})
+type GetCashFlowStatsSchema = z.infer<typeof GetCashFlowStatsSchema>
+
 async function getCashFlowStats(
   userId: string,
   timeFrame: GetCashFlowStatsSchema['timeFrame'],
   month: GetCashFlowStatsSchema['month'],
   year: GetCashFlowStatsSchema['year'],
 ) {
-  if (timeFrame === 'month') {
-    const queryResult = await monthAggregation.getSummaryForMonth(
-      userId,
-      month,
-      year,
+  const isMonthly = timeFrame === 'month'
+  const startDate = isMonthly
+    ? startOfMonth(new Date(year, month - 1))
+    : startOfYear(new Date(year, 0))
+  const endDate = isMonthly ? endOfMonth(startDate) : endOfYear(startDate)
+  const labelFormat = isMonthly ? 'yyyy-MM-dd' : 'yyyy-MM'
+
+  const result = await db
+    .select({
+      label:
+        sql<string>`to_char(${TransactionTable.date}, '${labelFormat}')`.as(
+          'label',
+        ),
+      type: TransactionTable.type,
+      total: sql<number>`sum(${TransactionTable.amount})`.as('total'),
+    })
+    .from(TransactionTable)
+    .where(
+      sql`
+        ${TransactionTable.userId} = ${userId}
+        AND ${TransactionTable.date} >= ${format(startDate, 'yyyy-MM-dd')}
+        AND ${TransactionTable.date} <= (${format(endDate, 'yyyy-MM-dd')})
+      `,
     )
-
-    // if no data, then return an empty array
-    if (queryResult.length === 0) return []
-
-    const resultMap = queryResult.reduce(
-      (acc, row) => {
-        acc[row.day] = row
-        return acc
-      },
-      {} as Record<number, (typeof queryResult)[number]>,
-    )
-    const daysInMonth = getDaysInMonth(new Date(year, month))
-
-    return range(1, daysInMonth + 1).map((day) =>
-      day in resultMap
-        ? {
-            label: resultMap[day].day.toString(),
-            income: resultMap[day].income.toString(),
-            expense: resultMap[day].spending.toString(),
-          }
-        : {
-            label: day.toString(),
-            income: '0',
-            expense: '0',
-          },
-    )
-  }
-
-  const queryResult = await yearAggregation.getSummaryForYear(userId, year)
+    .groupBy(sql`label, ${TransactionTable.type}`)
+    .orderBy(sql`label`)
 
   // if no data, then return an empty array
-  if (queryResult.length === 0) return []
+  if (result.length === 0) return []
 
-  const resultMap = queryResult.reduce(
-    (acc, row) => {
-      acc[row.month] = row
-      return acc
-    },
-    {} as Record<number, (typeof queryResult)[number]>,
-  )
+  const grouped = groupBy(result, (r) => r.label)
 
-  return range(0, 12).map((month) =>
-    month in resultMap
-      ? {
-          label: MONTH_NAMES[month],
-          income: resultMap[month].income.toString(),
-          expense: resultMap[month].spending.toString(),
-        }
-      : {
-          label: MONTH_NAMES[month],
-          income: '0',
-          expense: '0',
-        },
-  )
+  const allLabels = isMonthly
+    ? eachDayOfInterval({ start: startDate, end: endDate }).map((d) =>
+        format(d, labelFormat),
+      )
+    : eachMonthOfInterval({ start: startDate, end: endDate }).map((d) =>
+        format(d, labelFormat),
+      )
+  return allLabels.map((label) => {
+    const rows = grouped[label] ?? []
+    let income = 0
+    let expense = 0
+
+    for (const row of rows) {
+      if (row.type === 'income') income += Number(row.total)
+      if (row.type === 'expense') expense += Number(row.total)
+    }
+
+    return {
+      label,
+      income: income.toFixed(2),
+      expense: expense.toFixed(2),
+    }
+  })
 }

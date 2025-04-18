@@ -1,6 +1,6 @@
 import { PlusIcon, UploadIcon } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '~/components/ui/button'
 import Link from 'next/link'
 import { CreateTransactionDialog } from './_components/create-transaction-dialog'
 import { TransactionsSection } from './_components/transactions-section'

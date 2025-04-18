@@ -1,4 +1,4 @@
-import { CURRENCIES, type Currency } from '@/data/currencies'
+import { CURRENCIES, type Currency } from '~/data/currencies'
 
 export function getLocaleFromCurrency(currency: Currency['code']) {
   return CURRENCIES.find((item) => item.code === currency)?.locale

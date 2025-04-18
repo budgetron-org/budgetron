@@ -1,9 +1,6 @@
-'use client'
-
-import { BrandLogo } from '@/components/brand-logo'
-import { ModeToggle } from '@/components/mode-toggle'
-import { SidebarTrigger } from '@/components/ui/sidebar'
-import { HouseholdSwitcher } from './household-switcher'
+import { BrandLogo } from '~/components/brand-logo'
+import { ModeToggle } from '~/components/mode-toggle'
+import { SidebarTrigger } from '~/components/ui/sidebar'
 import { MainNav } from './main-nav'
 import { MainSideBar } from './main-sidebar'
 import { UserNav } from './user-nav'
@@ -12,7 +9,6 @@ function DesktopHeader() {
   return (
     <div className="hidden h-full items-center gap-4 px-8 md:flex lg:gap-6">
       <BrandLogo href="/dashboard" />
-      <HouseholdSwitcher />
       <MainNav />
       <div className="ml-auto flex items-center gap-4">
         <ModeToggle />

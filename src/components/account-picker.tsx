@@ -3,14 +3,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { type ComponentPropsWithoutRef } from 'react'
 
-import type { GetAccountsResponse } from '@/app/api/accounts/route'
+import type { GetAccountsResponse } from '~/app/api/accounts/route'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '~/components/ui/select'
 
 type SelectProps = Omit<ComponentPropsWithoutRef<typeof Select>, 'value'>
 type AccountPickerProps = SelectProps & {

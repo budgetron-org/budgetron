@@ -1,18 +1,14 @@
-import { userSettings } from '@/db/user-settings'
-import { auth } from '@clerk/nextjs/server'
+import { unauthorized } from 'next/navigation'
+
+import { db } from '~/db'
+import { UserSettingsTable } from '~/db/schema'
+import { getCurrentUser } from '~/features/auth/service'
 
 export async function GET() {
-  const { userId, sessionClaims, redirectToSignIn } = await auth()
+  const { user } = await getCurrentUser()
+  if (!user) unauthorized()
 
-  if (!userId) {
-    return redirectToSignIn()
-  }
-
-  const result = await getSettingsForUser(
-    sessionClaims.metadata.appUserId,
-    userId,
-  )
-
+  const result = await getSettingsForUser(user.id)
   return Response.json(result)
 }
 
@@ -20,19 +16,18 @@ export type GetUserSettingsResponse = Awaited<
   ReturnType<typeof getSettingsForUser>
 >
 
-async function getSettingsForUser(id: string | undefined, clerkId: string) {
-  // If this is the first time the user is created, the app id will not
-  // yet be available in the sessionClaims. So, use the clerkId instead.
-  const userConnect = id !== undefined ? { id } : { clerkId }
-
-  const result = await userSettings.findOrCreate({
-    where: { userId: id },
-    data: {
-      user: { connect: userConnect },
-      currency: 'USD',
-    },
-    select: { currency: true },
+async function getSettingsForUser(userId: string) {
+  const found = db.query.UserSettingsTable.findFirst({
+    where: (t, { eq }) => eq(t.userId, userId),
   })
+  if (found) return found
 
-  return result
+  // not found, so insert a new one and return
+  const [inserted] = await db
+    .insert(UserSettingsTable)
+    .values({ userId, currency: 'USD' })
+    .onConflictDoNothing()
+    .returning()
+  if (!inserted) throw Error('Unable to create new user settings')
+  return inserted
 }

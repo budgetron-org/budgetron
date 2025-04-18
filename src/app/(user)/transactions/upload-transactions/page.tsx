@@ -3,21 +3,21 @@
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 
-import type { TransactionRecord } from '@/schemas/transaction'
+import type { TransactionWithRelations } from '~/features/transactions/types'
 import { UploadTransactionsForm } from './_components/upload-transactions-form'
 import { UploadTransactionsTable } from './_components/upload-transactions-table'
 
 export default function UploadTransactionsPage() {
   const router = useRouter()
   const [parsedTransactions, setParsedTransactions] =
-    useState<TransactionRecord[]>()
+    useState<TransactionWithRelations[]>()
 
   const cancelAndGoBack = useCallback(() => {
     router.back()
   }, [router])
 
   const onParseTransactionsSuccess = useCallback(
-    (data: TransactionRecord[]) => {
+    (data: TransactionWithRelations[]) => {
       setParsedTransactions(data)
     },
     [],

@@ -5,12 +5,12 @@ import { endOfMonth, startOfMonth } from 'date-fns'
 import { LandmarkIcon, TrendingDown, TrendingUp } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
-import type { GetOverviewStatsResponse } from '@/app/api/stats/overview/route'
-import { MonthInlinePicker } from '@/components/month-inline-picker'
-import { buttonVariants } from '@/components/ui/button'
-import { MONTH_PICKER_START } from '@/lib/constants'
-import { getCurrencyFormatter } from '@/lib/format'
-import { cn, toUTCString } from '@/lib/utils'
+import type { GetOverviewStatsResponse } from '~/app/api/stats/overview/route'
+import { MonthInlinePicker } from '~/components/month-inline-picker'
+import { buttonVariants } from '~/components/ui/button'
+import { MONTH_PICKER_START } from '~/lib/constants'
+import { getCurrencyFormatter } from '~/lib/format'
+import { cn, safeParseNumber, toUTCString } from '~/lib/utils'
 import { IncomeExpenseHistoryChart } from './income-expense-history-chart'
 import { StatCard } from './stat-card'
 
@@ -34,8 +34,8 @@ export function OverviewSection() {
   })
   const formatter = useMemo(() => getCurrencyFormatter('USD'), [])
 
-  const income = statsData?.income ?? 0
-  const spending = statsData?.expense ?? 0
+  const income = safeParseNumber(statsData?.income, 0)
+  const spending = safeParseNumber(statsData?.expense, 0)
   const savings = income - spending
 
   // Data for Year-to-Date bar chart

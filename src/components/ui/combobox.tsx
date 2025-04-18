@@ -3,7 +3,7 @@
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { type ComponentProps, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '~/components/ui/button'
 import {
   Command,
   CommandEmpty,
@@ -11,13 +11,13 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command'
+} from '~/components/ui/command'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
+} from '~/components/ui/popover'
+import { cn } from '~/lib/utils'
 
 type ComboboxProps = ComponentProps<typeof Button> & {
   data: { value: string; label: string }[]

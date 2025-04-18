@@ -1,9 +1,12 @@
-import type { Currency, TransactionType } from '@prisma/client'
 import { clsx, type ClassValue } from 'clsx'
 import { iconNames, type IconName } from 'lucide-react/dynamic'
 import { twMerge } from 'tailwind-merge'
 
-import { CurrencySchema } from '@/prisma/schemas'
+import {
+  Currencies,
+  type Currency,
+  type TransactionType,
+} from '~/server/db/enums'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -35,8 +38,9 @@ export function safeParseCurrency(
   mayBeCurrency: unknown,
   fallback: Currency = 'USD',
 ) {
-  const { data, success } = CurrencySchema.safeParse(mayBeCurrency)
-  return success ? data : fallback
+  if (Currencies.includes(mayBeCurrency as Currency))
+    return mayBeCurrency as Currency
+  return fallback
 }
 
 export function toUTCString(date: Date) {
@@ -57,4 +61,10 @@ export function toTransactionType(
   type: 'income' | 'spending',
 ): TransactionType {
   return type === 'income' ? 'income' : 'expense'
+}
+
+export function extractFromFormData(formData: FormData) {
+  return Object.fromEntries(
+    formData.entries().map(([key, value]) => [key, value.toString()]),
+  )
 }

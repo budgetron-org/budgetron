@@ -1,0 +1,41 @@
+services:
+  web:
+    restart: unless-stopped
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - db
+    networks:
+      - internal
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.http.routers.budgetify.rule=(Host(`omen.local`) && PathPrefix(`/budgetify`))
+      - traefik.http.routers.budgetify.entrypoints=web
+
+  db:
+    restart: unless-stopped
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+
+volumes:
+  postgres_data:
+
+networks:
+  internal:
+    internal: true
+  traefik:
+    external: true

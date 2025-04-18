@@ -4,15 +4,15 @@ import { useQuery } from '@tanstack/react-query'
 import { DynamicIcon } from 'lucide-react/dynamic'
 import { useCallback, type ComponentPropsWithoutRef } from 'react'
 
-import type { GetCategoriesResponse } from '@/app/api/categories/route'
+import type { GetCategoriesResponse } from '~/app/api/categories/route'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { safeParseLucideIcon } from '@/lib/utils'
+} from '~/components/ui/select'
+import { safeParseLucideIcon } from '~/lib/utils'
 
 type CategoryItem = GetCategoriesResponse[number]
 

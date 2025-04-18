@@ -5,17 +5,17 @@ import { getMonth, getYear } from 'date-fns'
 import { useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 
-import type { GetAvailableDataRangeResponse } from '@/app/api/cash-flow/data-range-available/route'
-import type { GetCashFlowStatsResponse } from '@/app/api/cash-flow/stats/route'
-import { SkeletonWrapper } from '@/components/skeleton-wrapper'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { GetAvailableDataRangeResponse } from '~/app/api/cash-flow/data-range-available/route'
+import type { GetCashFlowStatsResponse } from '~/app/api/cash-flow/stats/route'
+import { SkeletonWrapper } from '~/components/skeleton-wrapper'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart'
-import type { TimeFrame, TimePeriod } from '@/types'
+} from '~/components/ui/chart'
+import type { TimeFrame, TimePeriod } from '~/types'
 import { HistoryPeriodSelector } from './history-period-selector'
 
 const chartConfig = {

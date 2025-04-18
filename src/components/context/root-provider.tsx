@@ -1,16 +1,15 @@
 'use client'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from 'next-themes'
-import { useMemo, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
+import { TRPCReactProvider } from '~/trpc/client'
 import { HouseholdProvider } from './household-provider'
 
 export function RootProvider({ children }: { children: ReactNode }) {
-  const queryClient = useMemo(() => new QueryClient(), [])
   return (
-    <QueryClientProvider client={queryClient}>
+    <TRPCReactProvider>
       <ThemeProvider
         attribute="class"
         defaultTheme="system"
@@ -19,6 +18,6 @@ export function RootProvider({ children }: { children: ReactNode }) {
         <HouseholdProvider>{children}</HouseholdProvider>
       </ThemeProvider>
       <ReactQueryDevtools />
-    </QueryClientProvider>
+    </TRPCReactProvider>
   )
 }

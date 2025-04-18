@@ -4,12 +4,12 @@ import { useQuery } from '@tanstack/react-query'
 import { endOfToday, startOfMonth } from 'date-fns'
 import { useMemo, useState } from 'react'
 
-import type { GetTransactionsResponse } from '@/app/api/transactions/route'
+import type { GetTransactionsResponse } from '~/app/api/transactions/route'
 import {
   DateRangePicker,
   type DateRangeRequired,
-} from '@/components/ui/date-range-picker'
-import { toUTCString } from '@/lib/utils'
+} from '~/components/ui/date-range-picker'
+import { toUTCString } from '~/lib/utils'
 import { useTransactionsTable } from '../_hooks/use-transactions-table'
 import { TransactionsTable } from './transactions-table'
 

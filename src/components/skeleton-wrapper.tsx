@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '~/components/ui/skeleton'
 
 export function SkeletonWrapper({
   children,

@@ -2,8 +2,8 @@
 
 import { flexRender, type Table as ReactTable } from '@tanstack/react-table'
 
-import { DataTablePagination } from '@/components/data-table/pagination'
-import { SkeletonWrapper } from '@/components/skeleton-wrapper'
+import { DataTablePagination } from '~/components/data-table/pagination'
+import { SkeletonWrapper } from '~/components/skeleton-wrapper'
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '~/components/ui/table'
 
 type TransactionsTableProps<Data> = {
   table: ReactTable<Data>

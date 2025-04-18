@@ -1,17 +1,16 @@
-import { category } from '@/db/category'
-import { auth } from '@clerk/nextjs/server'
+import { unauthorized } from 'next/navigation'
 import type { NextRequest } from 'next/server'
 
-export async function GET(request: NextRequest) {
-  const { userId, sessionClaims, redirectToSignIn } = await auth()
-  const { appUserId } = sessionClaims?.metadata ?? {}
+import { getCurrentUser } from '~/features/auth/service'
+import { db } from '~/db'
 
-  if (!userId || !appUserId) {
-    return redirectToSignIn()
-  }
+export async function GET(request: NextRequest) {
+  const { user } = await getCurrentUser()
+
+  if (!user) unauthorized()
 
   const household = request.nextUrl.searchParams.get('household') ?? undefined
-  const categories = await getCategoriesForHouseholdOrUser(appUserId, household)
+  const categories = await getCategoriesForHouseholdOrUser(user.id, household)
 
   return Response.json(categories)
 }
@@ -24,8 +23,13 @@ async function getCategoriesForHouseholdOrUser(
   userId: string,
   householdId?: string,
 ) {
-  const categories = householdId
-    ? await category.getAllForHousehold(householdId)
-    : await category.getAllForUser(userId)
-  return categories
+  return db.query.CategoryTable.findMany({
+    where: (t, { and, eq, isNull, or }) =>
+      householdId
+        ? or(
+            eq(t.householdId, householdId),
+            and(isNull(t.householdId), isNull(t.userId)),
+          )
+        : or(eq(t.userId, userId), and(isNull(t.userId))),
+  })
 }

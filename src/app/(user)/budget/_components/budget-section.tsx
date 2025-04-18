@@ -5,19 +5,19 @@ import { endOfMonth, startOfMonth } from 'date-fns'
 import { capitalize } from 'lodash'
 import { useMemo, useState } from 'react'
 
-import type { GetBudgetStatsResponse } from '@/app/api/stats/budget/route'
-import { MonthInlinePicker } from '@/components/month-inline-picker'
-import { SkeletonWrapper } from '@/components/skeleton-wrapper'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { type ChartConfig } from '@/components/ui/chart'
-import { chartColors } from '@/lib/colors'
-import { MONTH_PICKER_START } from '@/lib/constants'
+import type { GetBudgetStatsResponse } from '~/app/api/stats/budget/route'
+import { MonthInlinePicker } from '~/components/month-inline-picker'
+import { SkeletonWrapper } from '~/components/skeleton-wrapper'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { type ChartConfig } from '~/components/ui/chart'
+import { chartColors } from '~/lib/colors'
+import { MONTH_PICKER_START } from '~/lib/constants'
 import {
   getCurrencyFormatter,
   getLocaleFromCurrency,
   getPercentFormatter,
-} from '@/lib/format'
-import { safeParseNumber, toTransactionType, toUTCString } from '@/lib/utils'
+} from '~/lib/format'
+import { safeParseNumber, toTransactionType, toUTCString } from '~/lib/utils'
 import { CategoriesStatsCard } from './categories-stats-card'
 import { CategoriesStatsChart } from './categories-stats-chart'
 

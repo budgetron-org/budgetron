@@ -1,8 +1,8 @@
 import Fuse from 'fuse.js'
 import type { NextRequest } from 'next/server'
 
-import { iconData } from '@/data/icons'
-import { safeParseNumber } from '@/lib/utils'
+import { iconData } from '~/data/icons'
+import { safeParseNumber } from '~/lib/utils'
 
 const DEFAULT_MAX_ICONS = 50
 

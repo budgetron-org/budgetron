@@ -4,25 +4,25 @@ import type { ColumnDef, RowData, Table } from '@tanstack/react-table'
 import { MoreHorizontal, PencilIcon, Trash2Icon } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
 
-import { DataTableColumnHeader } from '@/components/data-table/column-header'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { CategoryPicker } from '~/components/category-picker'
+import { DataTableColumnHeader } from '~/components/data-table/column-header'
+import { Badge } from '~/components/ui/badge'
+import { Button } from '~/components/ui/button'
+import { Checkbox } from '~/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { PERSONAL_ICON, PERSONAL_LABEL } from '@/lib/constants'
-import { safeParseLucideIcon } from '@/lib/utils'
-import type { TransactionRecord } from '@/schemas/transaction'
-import { Input } from '@/components/ui/input'
-import { CategoryPicker } from '@/components/category-picker'
+} from '~/components/ui/dropdown-menu'
+import { Input } from '~/components/ui/input'
+import type { TransactionWithRelations } from '~/features/transactions/types'
+import { PERSONAL_ICON, PERSONAL_LABEL } from '~/lib/constants'
+import { safeParseLucideIcon } from '~/lib/utils'
 
 export function getColumns<
-  Data extends TransactionRecord,
+  Data extends TransactionWithRelations,
 >(): ColumnDef<Data>[] {
   return [
     {

@@ -9,14 +9,14 @@ import {
 } from '@tanstack/react-table'
 import { useMemo, useState } from 'react'
 
-import type { TransactionRecord } from '@/schemas/transaction'
+import type { TransactionWithRelations } from '~/features/transactions/types'
 import { getColumns } from '../_components/transaction-table-columns'
 
 type UseTransactionsTableProps<Data> = Pick<
   TableOptions<Data>,
   'data' | 'getRowId' | 'meta'
 >
-export function useTransactionsTable<Data extends TransactionRecord>({
+export function useTransactionsTable<Data extends TransactionWithRelations>({
   data,
   getRowId,
   meta,

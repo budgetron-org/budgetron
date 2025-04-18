@@ -3,8 +3,8 @@
 import { useCallback, type ReactNode } from 'react'
 import CountUp from 'react-countup'
 
-import { SkeletonWrapper } from '@/components/skeleton-wrapper'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { SkeletonWrapper } from '~/components/skeleton-wrapper'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 
 type StatCardProps = {
   title: string

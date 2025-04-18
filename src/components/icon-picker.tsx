@@ -5,22 +5,22 @@ import { AlertCircle } from 'lucide-react'
 import { DynamicIcon, type IconName } from 'lucide-react/dynamic'
 import { type RefCallback, useState } from 'react'
 
-import type { GetIconsResponse } from '@/app/api/icons/route'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
+import type { GetIconsResponse } from '~/app/api/icons/route'
+import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
+import { Button } from '~/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { Skeleton } from '@/components/ui/skeleton'
+} from '~/components/ui/dropdown-menu'
+import { Input } from '~/components/ui/input'
+import { Skeleton } from '~/components/ui/skeleton'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { useDebouncedState } from '@/hooks/use-debounced-state'
+} from '~/components/ui/tooltip'
+import { useDebouncedState } from '~/hooks/use-debounced-state'
 
 const PLACEHOLDER_ICON: IconName = 'ban'
 

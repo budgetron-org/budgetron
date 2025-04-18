@@ -1,5 +1,5 @@
-import { HouseholdContext } from '@/components/context/household-provider'
-import { assertContextExists } from '@/lib/utils'
+import { HouseholdContext } from '~/components/context/household-provider'
+import { assertContextExists } from '~/lib/utils'
 import { useContext } from 'react'
 
 export function useHousehold() {

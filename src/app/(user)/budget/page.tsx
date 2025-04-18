@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '~/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
 import { BudgetSection } from './_components/budget-section'
 import { SheetIcon } from 'lucide-react'
 

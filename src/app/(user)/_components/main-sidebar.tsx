@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ComponentProps } from 'react'
 
-import { BrandLogo } from '@/components/brand-logo'
-import { ModeToggle } from '@/components/mode-toggle'
+import { BrandLogo } from '~/components/brand-logo'
+import { ModeToggle } from '~/components/mode-toggle'
 import {
   Sidebar,
   SidebarContent,
@@ -16,10 +16,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from '@/components/ui/sidebar'
-import { APP_MAIN_NAV_LINKS } from '@/data/nav-links'
-import { cn } from '@/lib/utils'
-import { HouseholdSwitcher } from './household-switcher'
+} from '~/components/ui/sidebar'
+import { APP_MAIN_NAV_LINKS } from '~/data/nav-links'
+import { cn } from '~/lib/utils'
 
 export function MainSideBar({
   className,
@@ -32,7 +31,6 @@ export function MainSideBar({
       <SidebarHeader>
         <div className="flex justify-items-stretch gap-2">
           <BrandLogo isIconOnly />
-          <HouseholdSwitcher className="flex-1" />
         </div>
       </SidebarHeader>
       <SidebarContent>

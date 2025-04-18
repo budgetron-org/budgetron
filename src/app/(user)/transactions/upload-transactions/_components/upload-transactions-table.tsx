@@ -1,12 +1,9 @@
 'use client'
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Trash2Icon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
-import { toast } from 'sonner'
 
-import { createMultipleTransactions } from '@/actions/transaction'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,14 +14,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import type { TransactionRecord } from '@/schemas/transaction'
+} from '~/components/ui/alert-dialog'
+import { Button } from '~/components/ui/button'
+import { useCreateMultipleTransactions } from '~/features/transactions/hooks'
+import type { TransactionWithRelations } from '~/features/transactions/types'
 import { TransactionsTable } from '../../_components/transactions-table'
 import { useTransactionsTable } from '../../_hooks/use-transactions-table'
 
 type UploadTransactionsTableProps = {
-  defaultData: TransactionRecord[]
+  defaultData: TransactionWithRelations[]
   onCancel?: () => void
 }
 export function UploadTransactionsTable({
@@ -51,30 +49,10 @@ export function UploadTransactionsTable({
     },
   })
 
-  const queryClient = useQueryClient()
   const router = useRouter()
 
-  const toastId = 'upload-transactions'
-  const { mutate, isPending } = useMutation({
-    mutationFn: createMultipleTransactions,
-    onMutate() {
-      toast.loading('Uploading transactions', {
-        id: toastId,
-        description: undefined,
-      })
-    },
-    onError(error) {
-      toast.error('Failed to upload transactions', {
-        id: toastId,
-        description: String(error),
-      })
-    },
-    async onSuccess() {
-      toast.success('Uploaded transactions successfully', {
-        id: toastId,
-        description: undefined,
-      })
-      await queryClient.invalidateQueries({ queryKey: ['transactions'] })
+  const { mutate, isPending } = useCreateMultipleTransactions({
+    onSuccess() {
       router.push('/transactions')
     },
   })
@@ -94,7 +72,7 @@ export function UploadTransactionsTable({
     mutate(
       data.map((i) => ({
         ...i,
-        accountId: i.account?.id,
+        bankAccountId: i.bankAccount?.id,
         categoryId: i.category?.id,
         householdId: i.household?.id,
       })),

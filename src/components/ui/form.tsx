@@ -13,9 +13,9 @@ import {
   useFormState,
 } from 'react-hook-form'
 
-import { Label } from '@/components/ui/label'
-import { Skeleton } from '@/components/ui/skeleton'
-import { cn } from '@/lib/utils'
+import { Label } from '~/components/ui/label'
+import { Skeleton } from '~/components/ui/skeleton'
+import { cn } from '~/lib/utils'
 
 const Form = FormProvider
 

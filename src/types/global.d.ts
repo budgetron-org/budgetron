@@ -1,4 +1,4 @@
-import type { UserMetadata } from '@/lib/user-metadata'
+import type { UserMetadata } from '~/lib/user-metadata'
 import type { RowData } from '@tanstack/react-table'
 
 declare global {

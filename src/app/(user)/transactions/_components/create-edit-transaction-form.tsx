@@ -4,10 +4,10 @@ import { type ComponentProps } from 'react'
 import { type SubmitHandler, type UseFormReturn } from 'react-hook-form'
 import type { z } from 'zod'
 
-import { AccountPicker } from '@/components/account-picker'
-import { CategoryPicker } from '@/components/category-picker'
-import { TransactionTypePicker } from '@/components/type-picker'
-import { DatePicker } from '@/components/ui/date-picker'
+import { AccountPicker } from '~/components/account-picker'
+import { CategoryPicker } from '~/components/category-picker'
+import { TransactionTypePicker } from '~/components/type-picker'
+import { DatePicker } from '~/components/ui/date-picker'
 import {
   Form,
   FormControl,
@@ -15,10 +15,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
-import { CreateTransactionSchemaWithoutUser } from '@/schemas/transaction'
+} from '~/components/ui/form'
+import { Input } from '~/components/ui/input'
+import type { CreateTransactionSchemaWithoutUser } from '~/features/transactions/schema'
+import { cn } from '~/lib/utils'
 
 type CreateEditTransactionFormFields = z.infer<
   typeof CreateTransactionSchemaWithoutUser
@@ -111,7 +111,7 @@ export function CreateEditTransactionForm({
 
         <FormField
           control={form.control}
-          name="accountId"
+          name="bankAccountId"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Account</FormLabel>

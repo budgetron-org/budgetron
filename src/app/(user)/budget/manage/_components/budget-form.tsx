@@ -9,10 +9,9 @@ import { useForm, type SubmitHandler } from 'react-hook-form'
 import { toast } from 'sonner'
 import type { z } from 'zod'
 
-import { updateBudget } from '@/actions/budget'
-import type { GetBudgetResponse } from '@/app/api/budgets/route'
-import { SkeletonWrapper } from '@/components/skeleton-wrapper'
-import { Button } from '@/components/ui/button'
+import type { GetBudgetResponse } from '~/app/api/budgets/route'
+import { SkeletonWrapper } from '~/components/skeleton-wrapper'
+import { Button } from '~/components/ui/button'
 import {
   Form,
   FormControl,
@@ -20,10 +19,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { safeParseLucideIcon } from '@/lib/utils'
-import { BudgetFormSchema } from '@/schemas/budget'
+} from '~/components/ui/form'
+import { Input } from '~/components/ui/input'
+import { updateBudget } from '~/features/budget/actions'
+import { safeParseLucideIcon } from '~/lib/utils'
+import { BudgetFormSchema } from '~/schemas/budget'
 import { LoaderCircleIcon } from 'lucide-react'
 
 const BUDGET_MUTATION_TOAST_ID = 'saving-budget'
