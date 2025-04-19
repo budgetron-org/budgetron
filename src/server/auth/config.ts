@@ -1,4 +1,5 @@
 import { type BetterAuthOptions } from 'better-auth'
+import { nextCookies } from 'better-auth/next-js'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 
 import { env } from '~/env/server'
@@ -55,4 +56,7 @@ export const authConfig = {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
+
+  // Plugins
+  plugins: [nextCookies()],
 } satisfies BetterAuthOptions

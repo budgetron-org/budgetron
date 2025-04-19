@@ -3,6 +3,7 @@ import { APIError } from 'better-auth/api'
 
 import { publicProcedure } from '~/server/api/trpc'
 import { auth } from '~/server/auth'
+import { getTRPCError } from '~/trpc/utils'
 import { SignInSchema, SignUpSchema } from '../validators'
 
 const signIn = publicProcedure
@@ -13,20 +14,16 @@ const signIn = publicProcedure
         body: input,
         headers: ctx.headers,
       })
+      return { success: true, redirect: '/dashboard' }
     } catch (error) {
       if (error instanceof APIError) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: error.message,
-        })
+        throw getTRPCError(error.statusCode, error.message, error.cause)
       }
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Unknown Error: Please try again',
       })
     }
-
-    return { success: true, redirect: '/dashboard' }
   })
 
 const signUp = publicProcedure
@@ -46,10 +43,7 @@ const signUp = publicProcedure
       })
     } catch (error) {
       if (error instanceof APIError) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: error.message,
-        })
+        throw getTRPCError(error.statusCode, error.message, error.cause)
       }
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
@@ -59,8 +53,25 @@ const signUp = publicProcedure
     return { success: true, redirect: '/dashboard' }
   })
 
+const signOut = publicProcedure.mutation(async ({ ctx }) => {
+  try {
+    await auth.api.signOut({
+      headers: ctx.headers,
+    })
+    return { success: true, redirect: '/' }
+  } catch (error) {
+    if (error instanceof APIError) {
+      throw getTRPCError(error.statusCode, error.message, error.cause)
+    }
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message: 'Unknown Error: Please try again',
+    })
+  }
+})
+
 const getSession = publicProcedure.query(async ({ ctx }) => {
   return auth.api.getSession({ headers: ctx.headers })
 })
 
-export { getSession, signIn, signUp }
+export { getSession, signIn, signOut, signUp }

@@ -1,7 +1,8 @@
 import { HandCoinsIcon } from 'lucide-react'
 
-import { SignInButton, SignUpButton } from '~/features/auth/components'
 import { BrandLogo } from '~/components/brand-logo'
+import { SignInButton } from '~/features/auth/components/sign-in-button'
+import { SignUpButton } from '~/features/auth/components/sign-up-button'
 
 export default function LandingPage() {
   return (

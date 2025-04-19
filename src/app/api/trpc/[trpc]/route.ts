@@ -6,6 +6,17 @@ import { appRouter } from '~/server/api/root'
 import { createTRPCContext } from '~/server/api/trpc'
 
 /**
+ * Configure basic CORS headers
+ * You should extend this to match your needs
+ */
+const setCorsHeaders = (res: Response) => {
+  res.headers.set('Access-Control-Allow-Origin', '*')
+  res.headers.set('Access-Control-Request-Method', '*')
+  res.headers.set('Access-Control-Allow-Methods', 'OPTIONS, GET, POST')
+  res.headers.set('Access-Control-Allow-Headers', '*')
+}
+
+/**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
  * handling a HTTP request (e.g. when you make requests from Client Components).
  */
@@ -15,8 +26,16 @@ const createContext = async (req: NextRequest) => {
   })
 }
 
-const handler = (req: NextRequest) =>
-  fetchRequestHandler({
+export function OPTIONS() {
+  const response = new Response(null, {
+    status: 204,
+  })
+  setCorsHeaders(response)
+  return response
+}
+
+async function handler(req: NextRequest) {
+  const response = await fetchRequestHandler({
     endpoint: '/api/trpc',
     req,
     router: appRouter,
@@ -30,5 +49,9 @@ const handler = (req: NextRequest) =>
           }
         : undefined,
   })
+
+  setCorsHeaders(response)
+  return response
+}
 
 export { handler as GET, handler as POST }

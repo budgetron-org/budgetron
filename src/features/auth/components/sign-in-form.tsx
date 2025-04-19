@@ -2,8 +2,8 @@
 
 import { AlertCircleIcon } from 'lucide-react'
 import Link from 'next/link'
-import type { z } from 'zod'
 import { useRouter } from 'next/navigation'
+import type { z } from 'zod'
 
 import { GoogleIcon } from '~/components/icons'
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
@@ -11,14 +11,21 @@ import { Button } from '~/components/ui/button'
 import { SeparatorText } from '~/components/ui/separator-text'
 import { SignInSchema } from '~/features/auth/validators'
 import { api } from '~/trpc/client'
-import { AuthScreenLayout } from '../_components/auth-screen-layout'
-import { useAuthForm } from '../_hooks/use-auth-form'
+import { useAuthForm } from '../hooks/use-auth-form'
+import { AuthScreenLayout } from './auth-screen-layout'
 
 export function SignInForm() {
   const router = useRouter()
   const signIn = api.auth.signIn.useMutation({
     onSuccess({ redirect }) {
       router.push(redirect)
+    },
+    trpc: {
+      context: {
+        // We do not want batching for the auth calls as we need the server to set
+        // auth tokens in the response header.
+        skipBatch: true,
+      },
     },
   })
   const form = useAuthForm({

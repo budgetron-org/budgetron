@@ -7,9 +7,9 @@ import {
   Sparkles,
   SquareUserRound,
 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { type ComponentProps, useCallback } from 'react'
 
-import { useAuth } from '~/features/auth/hooks/use-auth'
 import { Avatar, AvatarFallback } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
 import {
@@ -22,7 +22,9 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { Skeleton } from '~/components/ui/skeleton'
+import { useAuth } from '~/features/auth/hooks/use-auth'
 import { cn } from '~/lib/utils'
+import { api } from '~/trpc/client'
 
 function initials(fname: string, lname?: string) {
   return lname ? (fname[0] ?? '' + lname[0]) : (fname[0] ?? '').repeat(2)
@@ -43,12 +45,25 @@ export function UserNav({
   className,
   ...props
 }: Props) {
-  const { authClient, session } = useAuth()
+  const { session } = useAuth()
+  const router = useRouter()
+  const signOut = api.auth.signOut.useMutation({
+    onSuccess({ redirect }) {
+      router.push(redirect)
+    },
+    trpc: {
+      context: {
+        // We do not want batching for the auth calls as we need the server to set
+        // auth tokens in the response header.
+        skipBatch: true,
+      },
+    },
+  })
 
   // menu item handlers
   const doLogout = useCallback(() => {
-    authClient.signOut()
-  }, [authClient])
+    signOut.mutate()
+  }, [signOut])
 
   if (!session.data?.user) {
     return (

@@ -1,4 +1,5 @@
 import { authRouter } from '~/features/auth/trpc/router'
+import { overviewRouter } from '~/features/overview/trpc/router'
 import { createCallerFactory, createTRPCRouter } from './trpc'
 
 /**
@@ -8,6 +9,7 @@ import { createCallerFactory, createTRPCRouter } from './trpc'
  */
 export const appRouter = createTRPCRouter({
   auth: authRouter,
+  overview: overviewRouter,
 })
 
 // export type definition of API

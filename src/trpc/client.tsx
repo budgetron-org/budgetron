@@ -1,7 +1,12 @@
 'use client'
 
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
-import { httpBatchStreamLink, loggerLink } from '@trpc/client'
+import {
+  httpBatchStreamLink,
+  httpLink,
+  loggerLink,
+  splitLink,
+} from '@trpc/client'
 import { createTRPCReact } from '@trpc/react-query'
 import { type inferRouterInputs, type inferRouterOutputs } from '@trpc/server'
 import { useState } from 'react'
@@ -49,14 +54,31 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
             process.env.NODE_ENV === 'development' ||
             (op.direction === 'down' && op.result instanceof Error),
         }),
-        httpBatchStreamLink({
-          transformer: SuperJSON,
-          url: getBaseUrl() + '/api/trpc',
-          headers: () => {
-            const headers = new Headers()
-            headers.set('x-trpc-source', 'nextjs-react')
-            return headers
+        // Whenever we want to set auth headers, we cannot use batch request
+        // streaming. So, when the client specifies not to use batching, we
+        // do normal http request instead of batch requests.
+        splitLink({
+          condition: (op) => {
+            return Boolean(op.context['skipBatch'])
           },
+          true: httpLink({
+            transformer: SuperJSON,
+            url: getBaseUrl() + '/api/trpc',
+            headers: () => {
+              const headers = new Headers()
+              headers.set('x-trpc-source', 'nextjs-react')
+              return headers
+            },
+          }),
+          false: httpBatchStreamLink({
+            transformer: SuperJSON,
+            url: getBaseUrl() + '/api/trpc',
+            headers: () => {
+              const headers = new Headers()
+              headers.set('x-trpc-source', 'nextjs-react')
+              return headers
+            },
+          }),
         }),
       ],
     }),

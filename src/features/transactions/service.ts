@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm'
 
-import { db } from '~/db'
-import { TransactionTable } from '~/db/schema'
+import { db } from '~/server/db'
+import { TransactionTable } from '~/server/db/schema'
 import { revalidateTransactionCache } from './cache'
 
 export async function insertTransaction(

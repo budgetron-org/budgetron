@@ -1,7 +1,7 @@
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
-import { TransactionTable } from '~/db/schema'
+import { TransactionTable } from '~/server/db/schema'
 
 // #region Create Transaction
 /**

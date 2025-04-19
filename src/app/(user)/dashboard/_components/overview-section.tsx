@@ -1,17 +1,15 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import { endOfMonth, startOfMonth } from 'date-fns'
 import { LandmarkIcon, TrendingDown, TrendingUp } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
-import type { GetOverviewStatsResponse } from '~/app/api/stats/overview/route'
 import { MonthInlinePicker } from '~/components/month-inline-picker'
 import { buttonVariants } from '~/components/ui/button'
 import { MONTH_PICKER_START } from '~/lib/constants'
 import { getCurrencyFormatter } from '~/lib/format'
-import { cn, safeParseNumber, toUTCString } from '~/lib/utils'
-import { IncomeExpenseHistoryChart } from './income-expense-history-chart'
+import { cn, safeParseNumber } from '~/lib/utils'
+import { api } from '~/trpc/client'
 import { StatCard } from './stat-card'
 
 export function OverviewSection() {
@@ -22,20 +20,14 @@ export function OverviewSection() {
   )
 
   // Data for the stats card based on the date picker value
-  const { data: statsData, isFetching } = useQuery<GetOverviewStatsResponse>({
-    queryKey: ['overview', 'stats', dateRange.from, dateRange.to] as const,
-    queryFn: ({ signal }) =>
-      fetch(
-        `/api/stats/overview?from=${toUTCString(dateRange.from)}&to=${toUTCString(dateRange.to)}`,
-        {
-          signal,
-        },
-      ).then((res) => res.json()),
+  const stats = api.overview.stats.useQuery({
+    from: dateRange.from,
+    to: dateRange.to,
   })
   const formatter = useMemo(() => getCurrencyFormatter('USD'), [])
 
-  const income = safeParseNumber(statsData?.income, 0)
-  const spending = safeParseNumber(statsData?.expense, 0)
+  const income = safeParseNumber(stats.data?.income, 0)
+  const spending = safeParseNumber(stats.data?.expense, 0)
   const savings = income - spending
 
   // Data for Year-to-Date bar chart
@@ -52,7 +44,7 @@ export function OverviewSection() {
       </h3>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <StatCard
-          isLoading={isFetching}
+          isLoading={stats.isPending}
           title="Total income"
           icon={
             <TrendingUp
@@ -67,7 +59,7 @@ export function OverviewSection() {
         />
 
         <StatCard
-          isLoading={isFetching}
+          isLoading={stats.isPending}
           title="Total spending"
           icon={
             <TrendingDown
@@ -82,7 +74,7 @@ export function OverviewSection() {
         />
 
         <StatCard
-          isLoading={isFetching}
+          isLoading={stats.isPending}
           title="Savings"
           icon={
             <LandmarkIcon
@@ -96,8 +88,6 @@ export function OverviewSection() {
           value={savings}
         />
       </div>
-      <h3 className="flex gap-2 text-2xl font-semibold">This Year</h3>
-      <IncomeExpenseHistoryChart />
     </div>
   )
 }

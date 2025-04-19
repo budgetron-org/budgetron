@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
+import { SignUpForm } from '~/features/auth/components/sign-up-form'
 import { api, HydrateClient } from '~/trpc/server'
-import { SignUpForm } from '../_components/sign-up-form'
 
-export default async function SignInPage() {
+async function SignUpPageImpl() {
   // Redirect to home if already signed in
   const session = await api.auth.getSession()
   if (session?.user) redirect('/dashboard')
@@ -12,5 +13,13 @@ export default async function SignInPage() {
     <HydrateClient>
       <SignUpForm />
     </HydrateClient>
+  )
+}
+
+export default async function SignUpPage() {
+  return (
+    <Suspense>
+      <SignUpPageImpl />
+    </Suspense>
   )
 }

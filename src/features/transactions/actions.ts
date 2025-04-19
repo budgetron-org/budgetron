@@ -4,27 +4,27 @@ import { eq } from 'drizzle-orm'
 import { unauthorized } from 'next/navigation'
 import { z } from 'zod'
 
-import { db } from '~/db'
-import { BankAccountTable, HouseholdTable } from '~/db/schema'
 import { parseTransactions } from '~/lib/ofx-parser/ofx-parser'
+import { db } from '~/server/db'
+import { BankAccountTable, HouseholdTable } from '~/server/db/schema'
 import type { AsyncResult, AwaitedReturnType } from '~/types/generic'
-import { getCurrentUser } from '../auth/service'
 import {
   CreateTransactionSchema,
   CreateTransactionSchemaWithoutUser,
   ParseOFXSchema,
 } from './schema'
 import { insertManyTransactions, insertTransaction } from './service'
+import { api } from '~/trpc/server'
 
 export async function createTransaction(
   UNSAFE_data: z.infer<typeof CreateTransactionSchemaWithoutUser>,
 ): AsyncResult<AwaitedReturnType<typeof insertTransaction>> {
-  const { userId } = await getCurrentUser()
-  if (!userId) unauthorized()
+  const session = await api.auth.getSession()
+  if (!session?.user) unauthorized()
 
   const { error, data } = await CreateTransactionSchema.safeParseAsync({
     ...UNSAFE_data,
-    userId,
+    userId: session.user.id,
   })
   if (error) return { success: false, error, message: 'Invalid input' }
 
@@ -53,13 +53,13 @@ export async function createTransaction(
 export async function createMultipleTransactions(
   UNSAFE_data: z.infer<typeof CreateTransactionSchemaWithoutUser>[],
 ): AsyncResult<AwaitedReturnType<typeof insertManyTransactions>> {
-  const { userId } = await getCurrentUser()
-  if (!userId) unauthorized()
+  const session = await api.auth.getSession()
+  if (!session?.user) unauthorized()
 
-  const { error, data } = await z
+  const { error, data } = z
     .array(
       CreateTransactionSchema.extend({
-        userId: CreateTransactionSchema.shape.userId.default(userId),
+        userId: CreateTransactionSchema.shape.userId.default(session.user.id),
       }),
     )
     .min(1)
@@ -80,12 +80,12 @@ export async function createMultipleTransactions(
 export async function parseOFXFile(
   UNSAFE_data: z.infer<typeof ParseOFXSchema>,
 ): AsyncResult<AwaitedReturnType<typeof parseTransactions>> {
-  const { userId } = await getCurrentUser()
-  if (!userId) unauthorized()
+  const session = await api.auth.getSession()
+  if (!session?.user) unauthorized()
 
   const { error, data } = await ParseOFXSchema.safeParseAsync({
     ...UNSAFE_data,
-    ownerId: userId,
+    ownerId: session.user.id,
   })
   if (error) return { success: false, message: 'Invalid inputs', error }
 
