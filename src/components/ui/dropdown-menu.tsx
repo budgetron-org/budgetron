@@ -1,7 +1,7 @@
 'use client'
 
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
-import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
+import { IconCheck, IconChevronRight, IconCircle } from '@tabler/icons-react'
 import type { ComponentProps } from 'react'
 
 import { cn } from '~/lib/utils'
@@ -62,10 +62,13 @@ function DropdownMenuGroup({
 function DropdownMenuItem({
   className,
   inset,
+  preventClosing,
   variant = 'default',
+  onSelect,
   ...props
 }: ComponentProps<typeof DropdownMenuPrimitive.Item> & {
   inset?: boolean
+  preventClosing?: boolean
   variant?: 'default' | 'destructive'
 }) {
   return (
@@ -77,6 +80,10 @@ function DropdownMenuItem({
         "focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
+      onSelect={(event) => {
+        if (preventClosing) event.preventDefault()
+        onSelect?.(event)
+      }}
       {...props}
     />
   )
@@ -99,7 +106,7 @@ function DropdownMenuCheckboxItem({
       {...props}>
       <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
         <DropdownMenuPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
+          <IconCheck className="size-4" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -133,7 +140,7 @@ function DropdownMenuRadioItem({
       {...props}>
       <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
         <DropdownMenuPrimitive.ItemIndicator>
-          <CircleIcon className="size-2 fill-current" />
+          <IconCircle className="size-2 fill-current" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -211,7 +218,7 @@ function DropdownMenuSubTrigger({
       )}
       {...props}>
       {children}
-      <ChevronRightIcon className="ml-auto size-4" />
+      <IconChevronRight className="ml-auto size-4" />
     </DropdownMenuPrimitive.SubTrigger>
   )
 }

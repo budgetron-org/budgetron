@@ -1,9 +1,15 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, text, unique, uuid } from 'drizzle-orm/pg-core'
+import {
+  pgTable,
+  text,
+  unique,
+  uuid,
+  type AnyPgColumn,
+} from 'drizzle-orm/pg-core'
 
 import { TransactionTypeEnum } from '../enums'
 import { createdAt, id, updatedAt } from '../utils'
-import { HouseholdTable } from './household'
+import { GroupTable } from './group'
 import { TransactionTable } from './transaction'
 import { UserTable } from './user'
 
@@ -14,20 +20,27 @@ export const CategoryTable = pgTable(
     name: text().notNull(),
     icon: text().notNull(),
     type: TransactionTypeEnum().notNull(),
-    householdId: uuid().references(() => HouseholdTable.id, {
+    parentId: uuid().references((): AnyPgColumn => CategoryTable.id, {
+      onDelete: 'cascade',
+    }),
+    groupId: uuid().references(() => GroupTable.id, {
       onDelete: 'cascade',
     }),
     userId: uuid().references(() => UserTable.id, { onDelete: 'cascade' }),
     createdAt,
     updatedAt,
   },
-  (t) => [unique().on(t.householdId, t.name, t.type, t.userId)],
+  (t) => [unique().on(t.groupId, t.name, t.type, t.userId)],
 )
 
 export const CategoryRelations = relations(CategoryTable, ({ one, many }) => ({
-  household: one(HouseholdTable, {
-    fields: [CategoryTable.householdId],
-    references: [HouseholdTable.id],
+  parent: one(CategoryTable, {
+    fields: [CategoryTable.parentId],
+    references: [CategoryTable.id],
+  }),
+  group: one(GroupTable, {
+    fields: [CategoryTable.groupId],
+    references: [GroupTable.id],
   }),
   transactions: many(TransactionTable),
   user: one(UserTable, {

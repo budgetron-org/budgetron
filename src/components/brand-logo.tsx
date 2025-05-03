@@ -1,5 +1,5 @@
+import { IconPigMoney } from '@tabler/icons-react'
 import { cn } from '~/lib/utils'
-import { PiggyBankIcon } from 'lucide-react'
 
 const SIZE_CLASS = {
   ICON: {
@@ -18,7 +18,7 @@ type Props = {
   size?: keyof (typeof SIZE_CLASS)[keyof typeof SIZE_CLASS]
 }
 
-export function BrandLogo({ href, isIconOnly = false, size = 'md' }: Props) {
+function BrandLogo({ href, isIconOnly = false, size = 'md' }: Props) {
   const Comp = href ? 'a' : 'div'
   return (
     <Comp href={href} className="flex items-center gap-2">
@@ -27,7 +27,7 @@ export function BrandLogo({ href, isIconOnly = false, size = 'md' }: Props) {
           'bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square items-center justify-center rounded-lg',
           SIZE_CLASS.ICON[size],
         )}>
-        <PiggyBankIcon />
+        <IconPigMoney />
       </div>
       {!isIconOnly && (
         <div className={cn('flex-1', SIZE_CLASS.TEXT[size])}>
@@ -37,3 +37,5 @@ export function BrandLogo({ href, isIconOnly = false, size = 'md' }: Props) {
     </Comp>
   )
 }
+
+export { BrandLogo }

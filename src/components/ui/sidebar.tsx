@@ -1,8 +1,9 @@
 'use client'
 
 import { Slot } from '@radix-ui/react-slot'
+import { IconLayoutSidebar } from '@tabler/icons-react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { PanelLeftIcon } from 'lucide-react'
+
 import {
   type ComponentProps,
   createContext,
@@ -32,7 +33,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '~/components/ui/tooltip'
-import { useIsMobile } from '~/hooks/use-mobile'
+import { useIsMobile } from '~/hooks/use-is-mobile'
 import { cn } from '~/lib/utils'
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
@@ -293,7 +294,7 @@ function SidebarTrigger({
         toggleSidebar()
       }}
       {...props}>
-      <PanelLeftIcon />
+      <IconLayoutSidebar />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )

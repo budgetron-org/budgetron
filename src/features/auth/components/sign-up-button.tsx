@@ -5,10 +5,12 @@ import { Button } from '~/components/ui/button'
 
 type Props = ComponentProps<typeof Button> & {}
 
-export function SignUpButton(props: Props) {
+function SignUpButton(props: Props) {
   return (
     <Link href="sign-up">
       <Button {...props} />
     </Link>
   )
 }
+
+export { SignUpButton }

@@ -1,11 +1,11 @@
 import { z } from 'zod'
 
-export const SignInSchema = z.object({
+const SignInSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 })
 
-export const SignUpSchema = z
+const SignUpSchema = z
   .object({
     firstName: z.string().min(1, 'First Name is required.'),
     lastName: z.string().min(1, 'Last Name is required.'),
@@ -36,3 +36,5 @@ export const SignUpSchema = z
     message: 'Passwords do not match.',
     path: ['confirmPassword'],
   })
+
+export { SignInSchema, SignUpSchema }

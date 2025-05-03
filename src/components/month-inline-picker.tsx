@@ -59,7 +59,7 @@ type MonthInlinePickerProps = {
   onChange?: (value: Date) => void
 }
 
-export function MonthInlinePicker({
+function MonthInlinePicker({
   max = CURRENT_MONTH,
   min,
   onChange,
@@ -104,3 +104,5 @@ export function MonthInlinePicker({
     </Select>
   )
 }
+
+export { MonthInlinePicker }

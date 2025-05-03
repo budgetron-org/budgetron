@@ -6,10 +6,7 @@ import * as schema from './schema'
 
 const db = drizzle({
   client: new Pool({
-    host: env.DB_HOST,
-    database: env.DB_NAME,
-    user: env.DB_USER,
-    password: env.DB_PASSWORD,
+    connectionString: env.DB_URL,
   }),
   casing: 'snake_case',
   schema,

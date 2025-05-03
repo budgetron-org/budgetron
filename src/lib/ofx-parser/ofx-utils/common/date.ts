@@ -22,7 +22,7 @@ function separatePartsOfDate(date: string) {
   }
 }
 
-export function formatDate(date: string, format: string) {
+function formatDate(date: string, format: string) {
   const parts = separatePartsOfDate(date)
   let result = format
   for (const [key, value] of Object.entries(parts)) {
@@ -30,3 +30,5 @@ export function formatDate(date: string, format: string) {
   }
   return result
 }
+
+export { formatDate }

@@ -2,7 +2,7 @@ import type { ExtractorConfig } from '../types/common'
 import { ELEMENT_CLOSURE_REGEX, ELEMENT_OPENING_REGEX } from './constants'
 import { objectEndReplacer, objectStartReplacer, sanitize, trim } from './parse'
 
-export class Config {
+class Config {
   private internConfig = {} as ExtractorConfig
 
   constructor(private readonly config: ExtractorConfig) {
@@ -35,3 +35,5 @@ export class Config {
       .join('')
   }
 }
+
+export { Config }

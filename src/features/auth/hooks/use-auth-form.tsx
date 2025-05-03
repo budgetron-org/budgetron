@@ -1,38 +1,15 @@
 import { createFormHook, createFormHookContexts } from '@tanstack/react-form'
-import { useId, type ComponentProps } from 'react'
+import { type ComponentProps } from 'react'
 
+import { TextField } from '~/components/form-components/text-field'
 import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
 
 const { fieldContext, formContext, useFieldContext } = createFormHookContexts()
 const { useAppForm: useAuthForm } = createFormHook({
   fieldComponents: {
-    TextField: (props: {
-      label: string
-      type?: ComponentProps<'input'>['type']
-    }) => {
+    TextField: (props: Omit<ComponentProps<typeof TextField>, 'field'>) => {
       const field = useFieldContext<string>()
-      const id = useId()
-      const hasError = field.state.meta.errors.length > 0
-      return (
-        <div className="grid gap-2">
-          <Label htmlFor={id}>{props.label}</Label>
-          <Input
-            id={id}
-            name={field.name}
-            type={props.type}
-            aria-invalid={hasError}
-            className={hasError ? 'border-destructive' : ''}
-            value={field.state.value}
-            onBlur={() => field.handleBlur()}
-            onChange={(event) => field.handleChange(event.target.value)}
-          />
-          <div className="text-sm whitespace-pre-wrap text-red-400">
-            {field.state.meta.errors.map((e) => e.message).join('\n')}
-          </div>
-        </div>
-      )
+      return <TextField {...props} field={field} />
     },
   },
   formComponents: {

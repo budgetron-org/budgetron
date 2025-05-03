@@ -5,7 +5,7 @@ import { CurrencyEnum, TransactionTypeEnum } from '../enums'
 import { createdAt, id, updatedAt } from '../utils'
 import { BankAccountTable } from './bank-account'
 import { CategoryTable } from './category'
-import { HouseholdTable } from './household'
+import { GroupTable } from './group'
 import { UserTable } from './user'
 
 export const TransactionTable = pgTable(
@@ -26,14 +26,14 @@ export const TransactionTable = pgTable(
     categoryId: uuid().references(() => CategoryTable.id, {
       onDelete: 'set null',
     }),
-    householdId: uuid().references(() => HouseholdTable.id, {
+    groupId: uuid().references(() => GroupTable.id, {
       onDelete: 'cascade',
     }),
     userId: uuid()
       .references(() => UserTable.id, { onDelete: 'cascade' })
       .notNull(),
   },
-  (t) => [index().on(t.categoryId, t.date, t.householdId, t.userId)],
+  (t) => [index().on(t.categoryId, t.date, t.groupId, t.userId)],
 )
 
 export const TransactionRelations = relations(TransactionTable, ({ one }) => ({
@@ -45,9 +45,9 @@ export const TransactionRelations = relations(TransactionTable, ({ one }) => ({
     fields: [TransactionTable.categoryId],
     references: [CategoryTable.id],
   }),
-  household: one(HouseholdTable, {
-    fields: [TransactionTable.householdId],
-    references: [HouseholdTable.id],
+  group: one(GroupTable, {
+    fields: [TransactionTable.groupId],
+    references: [GroupTable.id],
   }),
   user: one(UserTable, {
     fields: [TransactionTable.userId],

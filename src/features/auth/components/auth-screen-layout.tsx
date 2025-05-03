@@ -10,7 +10,7 @@ type Props = {
   subtitle?: string
 }
 
-export function AuthScreenLayout({ children, title, subtitle }: Props) {
+function AuthScreenLayout({ children, title, subtitle }: Props) {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -43,3 +43,5 @@ export function AuthScreenLayout({ children, title, subtitle }: Props) {
     </div>
   )
 }
+
+export { AuthScreenLayout }

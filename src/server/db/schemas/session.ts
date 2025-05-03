@@ -12,7 +12,6 @@ export const SessionTable = pgTable('sessions', {
   userAgent: text(),
   userId: uuid()
     .notNull()
-    .unique()
     .references(() => UserTable.id, { onDelete: 'cascade' }),
   createdAt,
   updatedAt,

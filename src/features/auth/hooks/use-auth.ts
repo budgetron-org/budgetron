@@ -1,9 +1,8 @@
 import { authClient } from '../client'
 
-export function useAuth() {
+function useAuth() {
   const session = authClient.useSession()
-  return {
-    authClient,
-    session,
-  }
+  return { session }
 }
+
+export { useAuth }

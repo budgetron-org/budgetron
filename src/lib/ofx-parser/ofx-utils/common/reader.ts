@@ -1,8 +1,8 @@
-export function bufferToString(data: Buffer) {
+function bufferToString(data: Buffer) {
   return data.toString()
 }
 
-export async function blobToString(blob: Blob): Promise<string> {
+async function blobToString(blob: Blob): Promise<string> {
   const data: string = await new Promise((resolve, reject) => {
     if (typeof window !== 'undefined' && window.FileReader) {
       const reader = new window.FileReader()
@@ -15,3 +15,5 @@ export async function blobToString(blob: Blob): Promise<string> {
   })
   return data
 }
+
+export { blobToString, bufferToString }

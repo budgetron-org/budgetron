@@ -1,0 +1,58 @@
+'use client'
+
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
+import type { ComponentProps, ReactNode } from 'react'
+import { toast } from 'sonner'
+
+import { AlertActionButton } from '~/components/ui/alert-action-button'
+import { api } from '~/rpc/client'
+import type { BankAccount } from '../types'
+
+type DeleteBankAccountDialogProps = ComponentProps<typeof AlertActionButton> & {
+  bankAccount: BankAccount
+  refreshOnSuccess?: boolean
+  trigger: ReactNode
+}
+
+function DeleteBankAccountDialog({
+  bankAccount,
+  refreshOnSuccess,
+  trigger,
+  ...props
+}: DeleteBankAccountDialogProps) {
+  const queryClient = useQueryClient()
+  const router = useRouter()
+  const deleteBankAccount = useMutation(
+    api.bankAccounts.delete.mutationOptions({
+      onSuccess() {
+        toast.success(`Deleted Bank Account - ${bankAccount.name}`, {
+          id: bankAccount.id,
+        })
+        // invalidate account queries
+        queryClient.invalidateQueries({
+          queryKey: api.bankAccounts.getAll.key(),
+        })
+        // refresh page if needed
+        if (refreshOnSuccess) router.refresh()
+      },
+      onError(error) {
+        toast.error(`Error deleting Bank Account - ${bankAccount.name}`, {
+          id: bankAccount.id,
+          description: error.message,
+        })
+      },
+    }),
+  )
+  return (
+    <AlertActionButton
+      alertDescription={`This will delete ${bankAccount.name} and all the transactions associated with it. This cannot be undone!`}
+      onConfirm={() => deleteBankAccount.mutate({ id: bankAccount.id })}
+      {...props}
+      asChild>
+      {trigger}
+    </AlertActionButton>
+  )
+}
+
+export { DeleteBankAccountDialog }

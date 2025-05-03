@@ -1,7 +1,13 @@
 import { pgEnum } from 'drizzle-orm/pg-core'
-import { CURRENCY_CODES } from '~/data/currencies'
 
-export const Currencies = CURRENCY_CODES
+export const BankAccountTypes = ['CHECKING', 'SAVINGS', 'CREDIT'] as const
+export type BankAccountType = (typeof BankAccountTypes)[number]
+export const BankAccountTypeEnum = pgEnum(
+  'bank_account_type_enum',
+  BankAccountTypes,
+)
+
+export const Currencies = ['USD', 'INR'] as const
 export type Currency = (typeof Currencies)[number]
 export const CurrencyEnum = pgEnum('currency_enum', Currencies)
 

@@ -210,7 +210,7 @@ export function convertMetaDataToObject(
     stringList = extractMetaDataFromXml(stringList)
   }
   for (const line of stringList) {
-    const [key, value] = line.split(':')
+    const [key = '', value = ''] = line.split(':')
     const sanitizedKey = key.replace('\n', '').toUpperCase()
     result[sanitizedKey] =
       nativeTypes && isValidNumberToConvert(key, value)

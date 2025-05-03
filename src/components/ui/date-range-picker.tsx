@@ -1,10 +1,10 @@
 'use client'
 
+import { IconCalendar, IconCheck } from '@tabler/icons-react'
 import {
   endOfMonth,
   endOfToday,
-  endOfWeek,
-  endOfYesterday,
+  endOfYear,
   format,
   isEqual,
   isSameDay,
@@ -12,86 +12,39 @@ import {
   min,
   startOfMonth,
   startOfToday,
-  startOfWeek,
-  startOfYesterday,
-  subDays,
+  startOfYear,
   subMonths,
 } from 'date-fns'
-import { CalendarIcon, CheckIcon } from 'lucide-react'
-import { type ComponentProps, useCallback, useState } from 'react'
+import { type ComponentProps, useCallback, useId, useState } from 'react'
 import type { DateRange } from 'react-day-picker'
 
 import { Button } from '~/components/ui/button'
 import { Calendar } from '~/components/ui/calendar'
 import { DateInput } from '~/components/ui/date-input'
+import { Label } from '~/components/ui/label'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '~/components/ui/popover'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '~/components/ui/select'
-import { useIsMobile } from '~/hooks/use-mobile'
+import { useIsMobile } from '~/hooks/use-is-mobile'
 import { cn } from '~/lib/utils'
 
-export type DateRangeRequired = Required<Partial<DateRange>>
+type DateRangeRequired = Required<Partial<DateRange>>
 
 // Define presets
 const PRESETS = [
-  { name: 'today', label: 'Today' },
-  { name: 'yesterday', label: 'Yesterday' },
-  { name: 'last7', label: 'Last 7 days' },
-  { name: 'last14', label: 'Last 14 days' },
-  { name: 'last30', label: 'Last 30 days' },
-  { name: 'thisWeek', label: 'This Week' },
-  { name: 'lastWeek', label: 'Last Week' },
   { name: 'thisMonth', label: 'This Month' },
   { name: 'lastMonth', label: 'Last Month' },
+  { name: 'last3Months', label: 'Last 3 Months' },
+  { name: 'last6Months', label: 'Last 6 Months' },
+  { name: 'thisYear', label: 'This Year' },
+  { name: 'lastYear', label: 'Last Year' },
 ] as const
 type Preset = (typeof PRESETS)[number]['name']
 
 function getRangeFromPreset(preset: Preset) {
   switch (preset) {
-    case 'today':
-      return {
-        from: startOfToday(),
-        to: endOfToday(),
-      }
-    case 'yesterday':
-      return {
-        from: startOfYesterday(),
-        to: endOfYesterday(),
-      }
-    case 'last7':
-      return {
-        from: subDays(startOfToday(), 6), // as today is inclusive
-        to: endOfToday(),
-      }
-    case 'last14':
-      return {
-        from: subDays(startOfToday(), 13), // as today is inclusive
-        to: endOfToday(),
-      }
-    case 'last30':
-      return {
-        from: subDays(startOfToday(), 29), // as today is inclusive
-        to: endOfToday(),
-      }
-    case 'thisWeek':
-      return {
-        from: startOfWeek(startOfToday()),
-        to: endOfToday(),
-      }
-    case 'lastWeek':
-      return {
-        from: startOfWeek(subDays(startOfToday(), 7)),
-        to: endOfWeek(subDays(startOfToday(), 7)),
-      }
     case 'thisMonth':
       return {
         from: startOfMonth(startOfToday()),
@@ -101,6 +54,26 @@ function getRangeFromPreset(preset: Preset) {
       return {
         from: startOfMonth(subMonths(startOfToday(), 1)),
         to: endOfMonth(subMonths(startOfToday(), 1)),
+      }
+    case 'last3Months':
+      return {
+        from: startOfMonth(subMonths(startOfToday(), 3)),
+        to: endOfMonth(subMonths(startOfToday(), 1)),
+      }
+    case 'last6Months':
+      return {
+        from: startOfMonth(subMonths(startOfToday(), 6)),
+        to: endOfMonth(subMonths(startOfToday(), 1)),
+      }
+    case 'thisYear':
+      return {
+        from: startOfYear(startOfToday()),
+        to: endOfToday(),
+      }
+    case 'lastYear':
+      return {
+        from: startOfYear(subMonths(startOfToday(), 1)),
+        to: endOfYear(subMonths(startOfToday(), 1)),
       }
     default:
       throw Error(`DateRangePicker - Unknown preset - ${preset}`)
@@ -134,9 +107,9 @@ function isEqualRange(leftRange?: DateRange, rightRange?: DateRange) {
 
 type DateRangePickerProps = Omit<
   ComponentProps<typeof Button>,
-  'defaultValue' | 'value'
+  'defaultValue' | 'value' | 'onChange'
 > & {
-  onUpdate?: (range: DateRangeRequired) => void
+  onChange?: (range: DateRangeRequired) => void
   defaultValue?: DateRangeRequired
   align?: 'start' | 'center' | 'end'
 }
@@ -145,22 +118,27 @@ function DateRangePicker({
   align = 'end',
   className,
   defaultValue,
-  onUpdate,
+  onChange,
   ...props
 }: DateRangePickerProps) {
+  const id = useId()
   const [isOpen, setIsOpen] = useState(false)
   const [range, setRange] = useState(defaultValue)
   const [transientRange, setTransientRange] = useState<DateRange | undefined>(
-    defaultValue ?? { from: startOfToday(), to: startOfToday() },
+    defaultValue ?? getRangeFromPreset('thisMonth'),
   )
   const [selectedPreset, setSelectedPreset] = useState<Preset | undefined>(
     transientRange ? getPresetFromRange(transientRange)?.name : undefined,
+  )
+  const [viewMonth, setViewMonth] = useState(
+    transientRange?.from ?? startOfToday(),
   )
 
   const updateTransientRangeForPreset = useCallback((preset: Preset) => {
     const range = getRangeFromPreset(preset)
     setSelectedPreset(preset)
     setTransientRange(range)
+    setViewMonth(range.from)
   }, [])
 
   const setTransientRangeAndPreset = useCallback((range?: DateRange) => {
@@ -194,7 +172,7 @@ function DateRangePicker({
           variant="outline"
           className={cn('w-[250px]', className)}
           {...props}>
-          <CalendarIcon className="mr-2 h-4 w-4" />
+          <IconCalendar className="mr-2 h-4 w-4" />
           {range ? (
             <>
               {format(range.from, 'LLL dd, y')} -{' '}
@@ -205,86 +183,62 @@ function DateRangePicker({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align={align} className="w-auto">
-        <div className="grid gap-2">
-          <div className="flex gap-2">
-            <div className="grid gap-2">
-              <div className="flex gap-2">
-                <DateInput
-                  value={transientRange?.from}
-                  onChange={(date) =>
-                    setTransientRangeAndPreset({
-                      from: date,
-                      to: max([date, transientRange?.to ?? date]),
-                    })
-                  }
-                />
-                <div className="self-center py-1">-</div>
-                <DateInput
-                  value={transientRange?.to}
-                  onChange={(date) =>
-                    setTransientRangeAndPreset({
-                      from: min([date, transientRange?.from ?? date]),
-                      to: date,
-                    })
-                  }
-                />
-              </div>
-
-              {/* Preset selection in Mobile */}
-              <div className="flex md:hidden">
-                <Select
-                  defaultValue={selectedPreset}
-                  onValueChange={(value) => {
-                    updateTransientRangeForPreset(value as Preset)
-                  }}>
-                  <SelectTrigger className="mx-auto mb-2 w-[180px]">
-                    <SelectValue placeholder="Select..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PRESETS.map((preset) => (
-                      <SelectItem key={preset.name} value={preset.name}>
-                        {preset.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Calendar
-                  mode="range"
-                  showOutsideDays={false}
-                  onSelect={setTransientRangeAndPreset}
-                  selected={transientRange}
-                  numberOfMonths={isMobile ? 1 : 2}
-                  defaultMonth={startOfMonth(
-                    transientRange?.from ?? Date.now(),
-                  )}
-                />
-              </div>
-            </div>
-
-            {/* Preset select in Desktop */}
-            <div className="hidden flex-col items-end gap-2 md:flex">
-              {PRESETS.map((preset) => (
-                <Button
-                  key={preset.name}
-                  variant="link"
-                  onClick={() => {
-                    updateTransientRangeForPreset(preset.name)
-                  }}>
-                  {preset.label}
-                  <CheckIcon
-                    className={cn(
-                      selectedPreset !== preset.name && 'opacity-0',
-                    )}
-                  />
-                </Button>
-              ))}
-            </div>
+      <PopoverContent align={align} className="flex w-auto gap-2">
+        <div className="flex flex-col items-start gap-2">
+          {PRESETS.map((preset) => (
+            <Button
+              key={preset.name}
+              variant="link"
+              onClick={() => {
+                updateTransientRangeForPreset(preset.name)
+              }}>
+              {preset.label}
+              <IconCheck
+                className={cn(selectedPreset !== preset.name && 'opacity-0')}
+              />
+            </Button>
+          ))}
+        </div>
+        <div className="grid auto-rows-min grid-cols-2 gap-2">
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-startDate`}>Start date</Label>
+            <DateInput
+              id={`${id}-startDate`}
+              value={transientRange?.from}
+              onChange={(date) => {
+                setTransientRangeAndPreset({
+                  from: date,
+                  to: max([date, transientRange?.to ?? date]),
+                })
+                setViewMonth(date)
+              }}
+            />
           </div>
-          <div className="flex justify-end gap-2">
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-endDate`}>End Date</Label>
+            <DateInput
+              id={`${id}-endDate`}
+              value={transientRange?.to}
+              onChange={(date) => {
+                setTransientRangeAndPreset({
+                  from: min([date, transientRange?.from ?? date]),
+                  to: date,
+                })
+                setViewMonth(date)
+              }}
+            />
+          </div>
+          <Calendar
+            className="col-span-2"
+            mode="range"
+            showOutsideDays={false}
+            onSelect={setTransientRangeAndPreset}
+            selected={transientRange}
+            numberOfMonths={isMobile ? 1 : 2}
+            month={viewMonth}
+            onMonthChange={setViewMonth}
+          />
+          <div className="col-span-2 flex justify-end gap-2">
             <Button
               onClick={() => {
                 setIsOpen(false)
@@ -305,7 +259,7 @@ function DateRangePicker({
                   !isEqualRange(transientRange, range)
                 ) {
                   setRange(transientRange)
-                  onUpdate?.(transientRange)
+                  onChange?.(transientRange)
                 }
               }}>
               Update
@@ -318,3 +272,4 @@ function DateRangePicker({
 }
 
 export { DateRangePicker }
+export type { DateRangeRequired }

@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { IconCaretUpDownFilled, IconCheck } from '@tabler/icons-react'
 import { type ComponentProps, useState } from 'react'
 
 import { Button } from '~/components/ui/button'
@@ -47,7 +47,7 @@ function Combobox({
           {value
             ? data.find((item) => item.value === value)?.label
             : placeholder}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <IconCaretUpDownFilled className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
@@ -66,7 +66,7 @@ function Combobox({
                     }
                     setOpen(false)
                   }}>
-                  <Check
+                  <IconCheck
                     className={cn(
                       'mr-2 h-4 w-4',
                       value === item.value ? 'opacity-100' : 'opacity-0',

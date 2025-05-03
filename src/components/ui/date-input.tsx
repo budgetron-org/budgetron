@@ -1,11 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-
-type DateInputProps = {
-  value?: Date
-  onChange: (date: Date) => void
-}
+import { useEffect, useRef, useState, type ComponentProps } from 'react'
 
 type DateParts = {
   day: number
@@ -13,7 +8,12 @@ type DateParts = {
   year: number
 }
 
-function DateInput({ value, onChange }: DateInputProps) {
+type DateInputProps = Omit<ComponentProps<'div'>, 'value' | 'onChange'> & {
+  value?: Date
+  onChange: (date: Date) => void
+}
+
+function DateInput({ value, onChange, ...props }: DateInputProps) {
   const [date, setDate] = useState<DateParts>(() => {
     const d = value ? new Date(value) : new Date()
     return {
@@ -201,8 +201,12 @@ function DateInput({ value, onChange }: DateInputProps) {
     }
 
   return (
-    <div className="flex items-center rounded-lg border px-1 text-sm">
+    <div
+      className="flex h-9 items-center rounded-lg border px-1 text-sm"
+      role="group"
+      {...props}>
       <input
+        role="spinbutton"
         type="text"
         ref={monthRef}
         max={12}
@@ -221,6 +225,7 @@ function DateInput({ value, onChange }: DateInputProps) {
       />
       <span className="-mx-px opacity-20">/</span>
       <input
+        role="spinbutton"
         type="text"
         ref={dayRef}
         max={31}
@@ -239,6 +244,7 @@ function DateInput({ value, onChange }: DateInputProps) {
       />
       <span className="-mx-px opacity-20">/</span>
       <input
+        role="spinbutton"
         type="text"
         ref={yearRef}
         max={9999}

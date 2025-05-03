@@ -1,8 +1,8 @@
 {
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "eslint.useFlatConfig": true,
   "javascript.preferences.importModuleSpecifier": "shortest",
-  "typescript.preferences.importModuleSpecifier": "shortest",
-  "eslint.useFlatConfig": true
+  "typescript.preferences.importModuleSpecifier": "shortest"
 }

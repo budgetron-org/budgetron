@@ -1,4 +1,4 @@
-export const chartColors = [
+const chartColors = [
   { bgColor: 'bg-(--chart-1)', var: 'var(--chart-1)' },
   { bgColor: 'bg-(--chart-2)', var: 'var(--chart-2)' },
   { bgColor: 'bg-(--chart-3)', var: 'var(--chart-3)' },
@@ -50,3 +50,5 @@ export const chartColors = [
   { bgColor: 'bg-(--chart-49)', var: 'var(--chart-49)' },
   { bgColor: 'bg-(--chart-50)', var: 'var(--chart-50)' },
 ]
+
+export { chartColors }

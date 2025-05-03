@@ -1,6 +1,7 @@
 'use client'
 
-import { AlertCircleIcon } from 'lucide-react'
+import { IconExclamationCircle } from '@tabler/icons-react'
+import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { z } from 'zod'
@@ -10,24 +11,24 @@ import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
 import { SeparatorText } from '~/components/ui/separator-text'
 import { SignUpSchema } from '~/features/auth/validators'
-import { api } from '~/trpc/client'
+import { api } from '~/rpc/client'
 import { useAuthForm } from '../hooks/use-auth-form'
 import { AuthScreenLayout } from './auth-screen-layout'
 
-export function SignUpForm() {
+function SignUpForm() {
   const router = useRouter()
-  const signUp = api.auth.signUp.useMutation({
-    onSuccess({ redirect }) {
-      router.push(redirect)
-    },
-    trpc: {
+  const signUp = useMutation(
+    api.auth.signUp.mutationOptions({
+      onSuccess({ redirect }) {
+        router.push(redirect)
+      },
       context: {
         // We do not want batching for the auth calls as we need the server to set
         // auth tokens in the response header.
         skipBatch: true,
       },
-    },
-  })
+    }),
+  )
   const form = useAuthForm({
     defaultValues: {
       firstName: '',
@@ -50,7 +51,7 @@ export function SignUpForm() {
       subtitle="It's quick and easy">
       {signUp.error && (
         <Alert>
-          <AlertCircleIcon className="h-4 w-4" />
+          <IconExclamationCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{signUp.error.message}</AlertDescription>
         </Alert>
@@ -111,3 +112,5 @@ export function SignUpForm() {
     </AuthScreenLayout>
   )
 }
+
+export { SignUpForm }

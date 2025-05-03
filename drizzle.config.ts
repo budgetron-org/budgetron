@@ -1,13 +1,10 @@
-import { env } from '~/env/server'
 import { defineConfig } from 'drizzle-kit'
+import { env } from '~/env/server'
 
 export default defineConfig({
   dialect: 'postgresql',
   dbCredentials: {
-    host: env.DB_HOST,
-    database: env.DB_NAME,
-    user: env.DB_USER,
-    password: env.DB_PASSWORD,
+    url: env.DB_URL,
     ssl: false,
   },
   out: './src/server/db/migrations',

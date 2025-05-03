@@ -1,14 +1,14 @@
 import { unescape } from 'lodash'
 
-import type { BankAccountTable, HouseholdTable } from '~/db/schema'
+import type { BankAccountTable, GroupTable } from '~/server/db/schema'
 import { getCurrencyFormatter } from '../format'
 import { safeParseCurrency } from '../utils'
 import { Ofx, Types, type StatementTransaction } from './ofx-utils'
 
-export async function parseTransactions(
+async function parseTransactions(
   file: File,
-  account: typeof BankAccountTable.$inferSelect,
-  household: typeof HouseholdTable.$inferSelect | null = null,
+  bankAccount: typeof BankAccountTable.$inferSelect,
+  group: typeof GroupTable.$inferSelect | null = null,
 ) {
   const ofx = Ofx.fromBuffer(Buffer.from(await file.arrayBuffer()))
 
@@ -28,15 +28,15 @@ export async function parseTransactions(
   return transactions.map((t) => {
     const isExpense = t.TRNAMT < 0
     return {
-      account,
-      household,
+      bankAccount,
+      group,
       amount: t.TRNAMT.toString(),
       formattedAmount: currencyFormatter.format(t.TRNAMT),
       currency,
       date: new Date(t.DTPOSTED),
       description: getDescription(t, isExpense),
       type: isExpense ? ('expense' as const) : ('income' as const),
-      externalId: `${account.id}-${t.FITID}`,
+      externalId: `${bankAccount.id}-${t.FITID}`,
       category: null,
     }
   })
@@ -48,3 +48,5 @@ function getDescription(txn: StatementTransaction, isExpense: boolean) {
     txn['NAME'] ?? txn.MEMO ?? `Unknown ${isExpense ? 'expense' : 'income'}`,
   )
 }
+
+export { parseTransactions }

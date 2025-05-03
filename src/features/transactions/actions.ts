@@ -5,21 +5,21 @@ import { unauthorized } from 'next/navigation'
 import { z } from 'zod'
 
 import { parseTransactions } from '~/lib/ofx-parser/ofx-parser'
+import { api } from '~/rpc/server'
 import { db } from '~/server/db'
-import { BankAccountTable, HouseholdTable } from '~/server/db/schema'
+import { BankAccountTable, GroupTable } from '~/server/db/schema'
 import type { AsyncResult, AwaitedReturnType } from '~/types/generic'
-import {
-  CreateTransactionSchema,
-  CreateTransactionSchemaWithoutUser,
-  ParseOFXSchema,
-} from './schema'
 import { insertManyTransactions, insertTransaction } from './service'
-import { api } from '~/trpc/server'
+import {
+  AddTransactionInputSchema,
+  CreateTransactionSchema,
+  ParseOFXInputSchema,
+} from './validators'
 
-export async function createTransaction(
-  UNSAFE_data: z.infer<typeof CreateTransactionSchemaWithoutUser>,
+async function createTransaction(
+  UNSAFE_data: z.infer<typeof AddTransactionInputSchema>,
 ): AsyncResult<AwaitedReturnType<typeof insertTransaction>> {
-  const session = await api.auth.getSession()
+  const session = await api.auth.session()
   if (!session?.user) unauthorized()
 
   const { error, data } = await CreateTransactionSchema.safeParseAsync({
@@ -37,7 +37,7 @@ export async function createTransaction(
       date: data.date,
       description: data.description,
       externalId: data.externalId,
-      householdId: data.householdId,
+      groupId: data.groupId,
       type: data.type,
       userId: data.userId,
     })
@@ -50,10 +50,10 @@ export async function createTransaction(
   }
 }
 
-export async function createMultipleTransactions(
-  UNSAFE_data: z.infer<typeof CreateTransactionSchemaWithoutUser>[],
+async function createMultipleTransactions(
+  UNSAFE_data: z.infer<typeof AddTransactionInputSchema>[],
 ): AsyncResult<AwaitedReturnType<typeof insertManyTransactions>> {
-  const session = await api.auth.getSession()
+  const session = await api.auth.session()
   if (!session?.user) unauthorized()
 
   const { error, data } = z
@@ -77,13 +77,13 @@ export async function createMultipleTransactions(
   }
 }
 
-export async function parseOFXFile(
-  UNSAFE_data: z.infer<typeof ParseOFXSchema>,
+async function parseOFXFile(
+  UNSAFE_data: z.infer<typeof ParseOFXInputSchema>,
 ): AsyncResult<AwaitedReturnType<typeof parseTransactions>> {
-  const session = await api.auth.getSession()
+  const session = await api.auth.session()
   if (!session?.user) unauthorized()
 
-  const { error, data } = await ParseOFXSchema.safeParseAsync({
+  const { error, data } = await ParseOFXInputSchema.safeParseAsync({
     ...UNSAFE_data,
     ownerId: session.user.id,
   })
@@ -101,22 +101,22 @@ export async function parseOFXFile(
       message: `Unable to find the account with ID={${data.bankAccountId}}`,
     }
 
-  // fetch household
-  const [household] = data.householdId
+  // fetch group
+  const [group] = data.groupId
     ? await db
         .select()
-        .from(HouseholdTable)
-        .where(eq(HouseholdTable.id, data.householdId))
+        .from(GroupTable)
+        .where(eq(GroupTable.id, data.groupId))
         .limit(1)
     : []
-  if (data.householdId && !household)
+  if (data.groupId && !group)
     return {
       success: false,
-      message: `Unable to find the household with ID={${data.householdId}}`,
+      message: `Unable to find the group with ID={${data.groupId}}`,
     }
 
   try {
-    const transactions = await parseTransactions(data.file, account, household)
+    const transactions = await parseTransactions(data.file, account, group)
     return { success: true, data: transactions }
   } catch (error) {
     return {
@@ -125,3 +125,5 @@ export async function parseOFXFile(
     }
   }
 }
+
+export { createMultipleTransactions, createTransaction, parseOFXFile }

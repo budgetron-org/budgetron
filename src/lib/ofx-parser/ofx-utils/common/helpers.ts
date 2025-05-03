@@ -15,15 +15,17 @@ const debitTypes = [
   'repeatpmt',
 ]
 
-export const extractType = (content: string) => {
+const extractType = (content: string) => {
   if (content.includes(BANK_SERVICE_START)) {
     return Types.BANK
   }
   return Types.CREDIT_CARD
 }
 
-export function isDebt(transaction: StatementTransaction) {
+function isDebt(transaction: StatementTransaction) {
   if (String(transaction.TRNAMT).startsWith('-')) return true
   const type = String(transaction.TRNTYPE).toLocaleLowerCase()
   return type === '1' || debitTypes.includes(type)
 }
+
+export { extractType, isDebt }

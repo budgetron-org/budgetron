@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { ReactNode } from 'react'
 
-import { RootProvider } from '~/components/context/root-provider'
+import { RootProvider } from '~/providers/root-provider'
 import { Toaster } from '~/components/ui/sonner'
 import { cn } from '~/lib/utils'
 import './globals.css'
@@ -33,7 +33,7 @@ export default function RootLayout({
         className={cn(geistSans.variable, geistMono.variable, 'antialiased')}>
         <RootProvider>
           {children}
-          <Toaster duration={2000} closeButton richColors />
+          <Toaster duration={5000} closeButton richColors />
         </RootProvider>
       </body>
     </html>
