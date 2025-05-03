@@ -19,8 +19,12 @@ export class OfxExtractor extends CustomExtractor {
       this.configInstance.getPartialJsonData(data),
     )
     if (!newBankStatementTransactions) return []
-    return JSON.parse(`{${fixJsonProblems(newBankStatementTransactions)}}`)
-      ?.BANKMSGSRSV1?.STMTTRNRS?.STMTRS?.BANKTRANLIST?.STRTTRN
+    return (
+      JSON.parse(
+        `{${fixJsonProblems(newBankStatementTransactions)}}`,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ) as Record<string, any>
+    )?.BANKMSGSRSV1?.STMTTRNRS?.STMTRS?.BANKTRANLIST?.STRTTRN
   }
 
   getCreditCardTransferList(data: string) {
@@ -29,8 +33,11 @@ export class OfxExtractor extends CustomExtractor {
         this.configInstance.getPartialJsonData(data),
       )
     if (!newCreditCardStatementTransactions) return []
-    return JSON.parse(
-      `{${fixJsonProblems(newCreditCardStatementTransactions)}}`,
+    return (
+      JSON.parse(
+        `{${fixJsonProblems(newCreditCardStatementTransactions)}}`,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ) as Record<string, any>
     )?.CREDITCARDMSGSRSV1?.CCSTMTTRNRS?.CCSTMTRS?.BANKTRANLIST?.STRTTRN
   }
 
@@ -67,6 +74,6 @@ export class OfxExtractor extends CustomExtractor {
         newCreditCardStatementTransactions,
       )
     }
-    return JSON.parse(`{${fixJsonProblems(result)}}`)
+    return JSON.parse(`{${fixJsonProblems(result)}}`) as OfxStructure
   }
 }
