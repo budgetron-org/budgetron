@@ -7,7 +7,6 @@ import {
 } from '@tabler/icons-react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import { useCallback } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import {
@@ -56,11 +55,6 @@ function NavUser() {
       },
     }),
   )
-
-  // menu item handlers
-  const doLogout = useCallback(() => {
-    signOut.mutate(undefined)
-  }, [signOut])
 
   if (!session.data?.user) {
     return (
@@ -127,7 +121,7 @@ function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={doLogout}>
+            <DropdownMenuItem onClick={signOut.mutate}>
               <IconLogout />
               Log out
             </DropdownMenuItem>
