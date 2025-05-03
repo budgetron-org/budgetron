@@ -17,9 +17,6 @@ services:
       - traefik.http.routers.budgetify.rule=(Host(`${HOST}.local`) && PathPrefix(`/budgetify`))
       - traefik.http.routers.budgetify.entrypoints=web
 
-volumes:
-  postgres_data:
-
 networks:
   internal:
     internal: true
