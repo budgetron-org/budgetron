@@ -6,15 +6,13 @@ services:
       - '3000:3000'
     environment:
       - NODE_ENV=production
-    depends_on:
-      - db
     networks:
       - internal
       - traefik
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik
-      - traefik.http.routers.budgetify.rule=(Host(`${HOST}.local`) && PathPrefix(`/budgetify`))
+      - traefik.http.routers.budgetify.rule=(Host(`omen.local`) && PathPrefix(`/budgetify`))
       - traefik.http.routers.budgetify.entrypoints=web
 
 networks:
