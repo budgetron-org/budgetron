@@ -1,9 +1,9 @@
-import { IconPigMoney } from '@tabler/icons-react'
 import type { ComponentProps } from 'react'
 
-import { NavMain } from '~/components/nav-main'
-import { NavSecondary } from '~/components/nav-secondary'
-import { NavUser } from '~/components/nav-user'
+import { NavMain } from '~/components/layout/nav-main'
+import { NavSecondary } from '~/components/layout/nav-secondary'
+import { NavUser } from '~/components/layout/nav-user'
+import { BrandLogo } from '~/components/ui/brand-logo'
 import {
   Sidebar,
   SidebarContent,
@@ -21,12 +21,7 @@ async function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square items-center justify-center rounded-lg p-1.25">
-                  <IconPigMoney />
-                </div>
-                <span className="text-base font-semibold">Budgetify</span>
-              </a>
+              <BrandLogo href="/dashboard" />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

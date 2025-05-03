@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '~/components/ui/select'
 import { Skeleton } from '~/components/ui/skeleton'
+import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
 import { cn } from '~/lib/utils'
 import type { FieldApi } from './types'
 
@@ -103,12 +104,16 @@ type SelectFieldProps<V extends string, D extends Data<V>> = Pick<
   'data' | 'field' | 'placeholder'
 > & {
   className?: string
+  // TODO: React.use and Suspense is not working with useQuery.promise
+  // So use isLoading for now.
+  isLoading?: boolean
   label: string
 }
 
 function SelectField<V extends string, D extends Data<V>>({
   className,
   field,
+  isLoading,
   label,
   ...props
 }: SelectFieldProps<V, D>) {
@@ -117,7 +122,9 @@ function SelectField<V extends string, D extends Data<V>>({
     <div className={cn('grid gap-2', className)}>
       <Label htmlFor={id}>{label}</Label>
       <Suspense fallback={<Skeleton className="h-10 w-full" />}>
-        <SelectImpl {...props} field={field} id={id} />
+        <SkeletonWrapper isLoading={isLoading}>
+          <SelectImpl {...props} field={field} id={id} />
+        </SkeletonWrapper>
       </Suspense>
       <div className="text-sm whitespace-pre-wrap text-red-400">
         {field.state.meta.errors.map((e) => e.message).join('\n')}

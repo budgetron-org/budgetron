@@ -7,7 +7,7 @@ import {
   IconReportSearch,
   IconTransactionDollar,
 } from '@tabler/icons-react'
-import { NavMenu } from './nav-menu'
+import { NavMenu } from '~/components/layout/nav-menu'
 
 const items = [
   {
@@ -31,8 +31,8 @@ const items = [
     icon: IconCalendarDollar,
   },
   {
-    title: 'Report',
-    url: '/report',
+    title: 'Reports',
+    url: '/reports',
     icon: IconReportAnalytics,
   },
 ]

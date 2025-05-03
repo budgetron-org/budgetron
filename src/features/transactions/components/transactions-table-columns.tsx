@@ -6,7 +6,7 @@ import {
   DataTableColumnHeader,
   type ColumnDef,
   type Table,
-} from '~/components/data-table'
+} from '~/components/table'
 import { AlertActionButton } from '~/components/ui/alert-action-button'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'

@@ -1,22 +1,5 @@
 import type { InferResultType } from '~/server/db/types'
 
-type CategorySpend = {
-  categoryId: string
-  categoryName: string
-  categoryIcon: string
-  parentCategoryId: string
-  parentCategoryName: string
-  parentCategoryIcon: string
-  total: number
-}
-
-type MonthlySummary = {
-  month: number
-  year: number
-  income: number
-  expense: number
-}
-
 type TransactionWithRelations = InferResultType<
   'TransactionTable',
   {
@@ -31,4 +14,4 @@ type TransactionWithRelations = InferResultType<
   { bankAccount: true; category: true; group: true }
 >
 
-export type { CategorySpend, MonthlySummary, TransactionWithRelations }
+export type { TransactionWithRelations }

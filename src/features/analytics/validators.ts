@@ -43,11 +43,19 @@ const GetByDateRangeInputSchema = z.object({
   to: z.coerce.date(),
 })
 
+const GetMonthlySummaryInputSchema = GetByDateRangeInputSchema
+
+const GetCategorySpendInputSchema = GetByDateRangeInputSchema.extend({
+  limit: z.number().min(1),
+})
+
 export {
   AddTransactionInputSchema,
   CreateManyTransactionsInputSchema,
   CreateTransactionSchema,
   GetByDateRangeInputSchema,
+  GetCategorySpendInputSchema,
+  GetMonthlySummaryInputSchema,
   ParseOFXInputSchema,
   TransactionFormSchema,
   UploadOFXFormSchema,

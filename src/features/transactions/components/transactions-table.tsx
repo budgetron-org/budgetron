@@ -1,6 +1,6 @@
 'use client'
 
-import { DataTable } from '~/components/data-table'
+import { DataTable } from '~/components/table'
 import type { TransactionWithRelations } from '../types'
 import { columns } from './transactions-table-columns'
 

@@ -42,7 +42,8 @@ function UploadOFXForm({ className, onSubmit, ...props }: UploadOFXFormProps) {
         {(field) => (
           <field.SelectField
             label="Account"
-            data={accounts.promise}
+            isLoading={accounts.isPending}
+            data={accounts.data ?? []}
             placeholder="Select an account"
           />
         )}

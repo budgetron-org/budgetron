@@ -1,7 +1,7 @@
 import { createFormHook, createFormHookContexts } from '@tanstack/react-form'
 import { type ComponentProps } from 'react'
 
-import { TextField } from '~/components/form-components/text-field'
+import { TextField } from '~/components/form/text-field'
 import { Button } from '~/components/ui/button'
 
 const { fieldContext, formContext, useFieldContext } = createFormHookContexts()

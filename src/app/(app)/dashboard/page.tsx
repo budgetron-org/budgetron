@@ -3,10 +3,10 @@ import { connection } from 'next/server'
 import { Suspense } from 'react'
 
 import { Skeleton } from '~/components/ui/skeleton'
+import { CategorySpendCard } from '~/components/widgets/category-spend-card'
+import { SummaryCard } from '~/components/widgets/summary-card'
 import { redirectUnauthenticated } from '~/features/auth/server'
 import { BankAccountsCard } from '~/features/bank-accounts/components/bank-accounts-card'
-import { CategorySpendCard } from '~/features/dashboard/components/category-spend-card'
-import { SummaryCard } from '~/features/dashboard/components/summary-card'
 import { api } from '~/rpc/server'
 
 async function DashboardPageImpl() {
@@ -15,11 +15,11 @@ async function DashboardPageImpl() {
 
   const today = endOfToday()
   const [monthlySummary, categorySpend] = await Promise.all([
-    api.transactions.getMonthlySummary({
+    api.analytics.getMonthlySummary({
       from: subMonths(today, 6),
       to: today,
     }),
-    api.transactions.getCategorySpend({
+    api.analytics.getCategorySpend({
       from: startOfMonth(today),
       to: endOfMonth(today),
       limit: 5,

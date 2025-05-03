@@ -16,7 +16,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '~/components/ui/chart'
-import type { MonthlySummary } from '~/features/transactions/types'
+import type { MonthlySummary } from '~/features/analytics/types'
 import { getCurrencyFormatter } from '~/lib/format'
 
 const chartConfig = {

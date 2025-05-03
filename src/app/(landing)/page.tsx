@@ -1,7 +1,7 @@
 import { IconPigMoney } from '@tabler/icons-react'
 import Link from 'next/link'
 
-import { BrandLogo } from '~/components/brand-logo'
+import { BrandLogo } from '~/components/ui/brand-logo'
 import { Button } from '~/components/ui/button'
 import { Skeleton } from '~/components/ui/skeleton'
 import { SignInButton } from '~/features/auth/components/sign-in-button'

@@ -1,7 +1,7 @@
 'use client'
 
 import { IconSettings } from '@tabler/icons-react'
-import { NavMenu } from './nav-menu'
+import { NavMenu } from '~/components/layout/nav-menu'
 
 const items = [
   {

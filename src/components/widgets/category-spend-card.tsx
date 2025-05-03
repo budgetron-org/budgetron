@@ -18,7 +18,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '~/components/ui/chart'
-import type { CategorySpend } from '~/features/transactions/types'
+import type { CategorySpend } from '~/features/analytics/types'
 
 type ChartItem = { category: string; total: number; fill: string }
 

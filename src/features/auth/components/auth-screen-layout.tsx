@@ -2,7 +2,7 @@ import Image from 'next/image'
 import type { ReactNode } from 'react'
 
 import bannerImage from '~/../public/images/banner.jpg'
-import { BrandLogo } from '~/components/brand-logo'
+import { BrandLogo } from '~/components/ui/brand-logo'
 
 type Props = {
   children: ReactNode

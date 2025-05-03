@@ -1,18 +1,9 @@
-import {
-  create,
-  createMany,
-  getByDateRange,
-  getCategorySpend,
-  getMonthlySummary,
-  parseOFX,
-} from './procedures'
+import { create, createMany, getByDateRange, parseOFX } from './procedures'
 
 const transactionsRouter = {
   create,
   createMany,
   getByDateRange,
-  getCategorySpend,
-  getMonthlySummary,
   parseOFX,
 }
 

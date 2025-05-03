@@ -1,10 +1,11 @@
 'use client'
 
 import { IconSlash } from '@tabler/icons-react'
-import { capitalize } from 'lodash'
+import { startCase } from 'lodash'
 import { usePathname } from 'next/navigation'
 import { Fragment, useMemo } from 'react'
 
+import { NavModeToggle } from '~/components/layout/nav-mode-toggle'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,7 +16,6 @@ import {
 import { Separator } from '~/components/ui/separator'
 import { SidebarTrigger } from '~/components/ui/sidebar'
 import { PATH_TITLES } from '~/data/path-titles'
-import { NavModeToggle } from './nav-mode-toggle'
 
 function useBreadcrumbs() {
   // get path name without the leading /
@@ -28,7 +28,7 @@ function useBreadcrumbs() {
 
     // If no title is specified, then return path bits as
     // crumbs
-    return pathname.split('/').map(capitalize)
+    return pathname.split('/').map(startCase)
   }, [pathname])
 }
 
