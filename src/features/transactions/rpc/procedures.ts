@@ -3,17 +3,22 @@ import { ORPCError } from '@orpc/server'
 import { createRPCErrorFromUnknownError } from '~/rpc/utils'
 import { protectedProcedure } from '~/server/api/rpc'
 import {
+  deleteTransaction,
   insertManyTransactions,
   insertTransaction,
   parseOFXFile,
   selectTransactions,
+  updateTransaction,
 } from '../service'
 import {
   AddTransactionInputSchema,
   CreateManyTransactionsInputSchema,
   CreateTransactionSchema,
+  DeleteTransactionInputSchema,
+  GetByCategoryInputSchema,
   GetByDateRangeInputSchema,
   ParseOFXInputSchema,
+  UpdateTransactionInputSchema,
 } from '../validators'
 
 const create = protectedProcedure
@@ -60,6 +65,22 @@ const createMany = protectedProcedure
     }
   })
 
+const _delete = protectedProcedure
+  .input(DeleteTransactionInputSchema)
+  .handler(async ({ context, input }) => {
+    const session = context.session
+
+    try {
+      const bankAccount = await deleteTransaction({
+        id: input.id,
+        userId: session.user.id,
+      })
+      return bankAccount
+    } catch (error) {
+      throw createRPCErrorFromUnknownError(error)
+    }
+  })
+
 const getByDateRange = protectedProcedure
   .input(GetByDateRangeInputSchema)
   .handler(async ({ context, input }) => {
@@ -70,6 +91,24 @@ const getByDateRange = protectedProcedure
         userId: user.id,
         fromDate: input.from,
         toDate: input.to,
+      })
+      return transactions
+    } catch (error) {
+      throw createRPCErrorFromUnknownError(error)
+    }
+  })
+
+const getByCategory = protectedProcedure
+  .input(GetByCategoryInputSchema)
+  .handler(async ({ context, input }) => {
+    const { user } = context.session
+
+    try {
+      const transactions = await selectTransactions({
+        userId: user.id,
+        fromDate: input.from,
+        toDate: input.to,
+        categoryId: input.categoryId,
       })
       return transactions
     } catch (error) {
@@ -92,4 +131,28 @@ const parseOFX = protectedProcedure
     }
   })
 
-export { create, createMany, getByDateRange, parseOFX }
+const update = protectedProcedure
+  .input(UpdateTransactionInputSchema)
+  .handler(async ({ context, input }) => {
+    const session = context.session
+
+    try {
+      const bankAccount = await updateTransaction({
+        ...input,
+        userId: session.user.id,
+      })
+      return bankAccount
+    } catch (error) {
+      throw createRPCErrorFromUnknownError(error)
+    }
+  })
+
+export {
+  _delete,
+  create,
+  createMany,
+  getByCategory,
+  getByDateRange,
+  parseOFX,
+  update,
+}

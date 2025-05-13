@@ -1,6 +1,11 @@
-import { getCategorySpend, getMonthlySummary } from './procedures'
+import {
+  getCategoryIncome,
+  getCategorySpend,
+  getMonthlySummary,
+} from './procedures'
 
 const analyticsRouter = {
+  getCategoryIncome,
   getCategorySpend,
   getMonthlySummary,
 }

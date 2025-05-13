@@ -1,4 +1,4 @@
-import { createInsertSchema } from 'drizzle-zod'
+import { createInsertSchema, createUpdateSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
 import { TransactionTable } from '~/server/db/schema'
@@ -16,6 +16,10 @@ const TransactionFormSchema = CreateTransactionSchema.pick({
   description: true,
   type: true,
 })
+  .extend({
+    amount: CreateTransactionSchema.shape.amount.min(0),
+  })
+  .required()
 
 const ParseOFXInputSchema = z.object({
   bankAccountId: z.string(),
@@ -33,6 +37,9 @@ const UploadOFXFormSchema = ParseOFXInputSchema.pick({
 })
 
 const CreateManyTransactionsInputSchema = CreateTransactionSchema.omit({
+  createdAt: true,
+  id: true,
+  updatedAt: true,
   userId: true,
 })
   .array()
@@ -43,12 +50,33 @@ const GetByDateRangeInputSchema = z.object({
   to: z.coerce.date(),
 })
 
+const GetByCategoryInputSchema = z.object({
+  categoryId: z.string(),
+  from: z.coerce.date(),
+  to: z.coerce.date(),
+})
+
+const UpdateTransactionSchema = createUpdateSchema(TransactionTable)
+const UpdateTransactionInputSchema = UpdateTransactionSchema.omit({
+  id: true,
+  userId: true,
+}).extend({
+  id: UpdateTransactionSchema.required().shape.id,
+})
+
+const DeleteTransactionInputSchema = UpdateTransactionSchema.pick({
+  id: true,
+}).required()
+
 export {
   AddTransactionInputSchema,
   CreateManyTransactionsInputSchema,
   CreateTransactionSchema,
+  DeleteTransactionInputSchema,
+  GetByCategoryInputSchema,
   GetByDateRangeInputSchema,
   ParseOFXInputSchema,
   TransactionFormSchema,
+  UpdateTransactionInputSchema,
   UploadOFXFormSchema,
 }

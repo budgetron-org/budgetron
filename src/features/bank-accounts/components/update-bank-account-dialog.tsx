@@ -53,9 +53,6 @@ export function UpdateBankAccountDialog({
       onSuccess({ name }) {
         toast.success(
           `Updated Bank Account - ${bankAccount.name}${bankAccount.name !== name ? ` to ${name}` : ''}`,
-          {
-            id: bankAccount.id,
-          },
         )
         formRef.current?.reset()
         setOpen(false)
@@ -68,7 +65,6 @@ export function UpdateBankAccountDialog({
       },
       onError(error) {
         toast.error(`Error updating Bank Account - ${bankAccount.name}`, {
-          id: bankAccount.id,
           description: error.message,
         })
       },
@@ -94,11 +90,7 @@ export function UpdateBankAccountDialog({
         <BankAccountForm
           id={formId}
           ref={formRef}
-          defaultValues={{
-            name: bankAccount.name,
-            type: bankAccount.type,
-            balance: bankAccount.balance,
-          }}
+          defaultValues={bankAccount}
           onSubmit={(data) =>
             updateBankAccount.mutate({ ...data, id: bankAccount.id })
           }

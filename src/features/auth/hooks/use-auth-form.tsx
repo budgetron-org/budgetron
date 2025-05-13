@@ -2,7 +2,8 @@ import { createFormHook, createFormHookContexts } from '@tanstack/react-form'
 import { type ComponentProps } from 'react'
 
 import { TextField } from '~/components/form/text-field'
-import { Button } from '~/components/ui/button'
+import { ProgressButton } from '~/components/ui/progress-button'
+import { cn } from '~/lib/utils'
 
 const { fieldContext, formContext, useFieldContext } = createFormHookContexts()
 const { useAppForm: useAuthForm } = createFormHook({
@@ -13,11 +14,17 @@ const { useAppForm: useAuthForm } = createFormHook({
     },
   },
   formComponents: {
-    SubmitButton: (props: { disabled?: boolean; children: string }) => {
+    SubmitButton: ({
+      className,
+      ...props
+    }: Omit<ComponentProps<typeof ProgressButton>, 'type'>) => {
       return (
-        <Button type="submit" className="w-full" disabled={props.disabled}>
+        <ProgressButton
+          type="submit"
+          className={cn('w-full', className)}
+          {...props}>
           {props.children}
-        </Button>
+        </ProgressButton>
       )
     },
   },

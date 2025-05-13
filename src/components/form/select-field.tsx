@@ -33,7 +33,10 @@ function findLabel<V extends string, D extends Data<unknown>>(
       item.value === value ||
       item.children?.some((child) => child.value === value),
   )
-  if (!parent) return fallback
+  if (!parent) {
+    debugger
+    return fallback
+  }
   if (parent.value === value || parent.children == null) return parent.label
 
   return `${parent.label} - ${parent.children.find((child) => child.value === value)?.label ?? fallback}`
@@ -41,7 +44,7 @@ function findLabel<V extends string, D extends Data<unknown>>(
 
 type SelectImplProps<V extends string, D> = {
   data: Readonly<D[]> | Promise<Readonly<D[]>>
-  field: FieldApi<V>
+  field: FieldApi<V | undefined>
   id?: ComponentProps<typeof SelectTrigger>['id']
   placeholder?: ComponentProps<typeof SelectValue>['placeholder']
 }
@@ -58,24 +61,22 @@ function SelectImpl<V extends string, D extends Data<V>>({
       : dataMayBePromise
   const hasError = field.state.meta.errors.length > 0
   const hasGroups = useMemo(() => isHierarchicalData(data), [data])
-  const displayGroupValue = useMemo(() => {
-    if (!hasGroups) return undefined
+  const displayValue = useMemo(() => {
+    if (!hasGroups || !field.state.value) return undefined
     return findLabel(data, field.state.value)
   }, [data, field.state.value, hasGroups])
 
   return (
     <Select
-      value={field.state.value}
+      value={field.state.value ?? ''} // value can be `null`, fix later in Types
       onValueChange={(value) => field.handleChange(value as V)}>
       <SelectTrigger
         id={id}
         name={field.name}
         aria-invalid={hasError}
-        className={hasError ? 'border-destructive' : ''}
+        className={cn(hasError && 'border-destructive')}
         onBlur={() => field.handleBlur()}>
-        <SelectValue placeholder={placeholder}>
-          {hasGroups ? displayGroupValue : undefined}
-        </SelectValue>
+        <SelectValue placeholder={placeholder}>{displayValue}</SelectValue>
       </SelectTrigger>
       <SelectContent>
         {data.map((item) =>

@@ -1,9 +1,8 @@
-import { endOfMonth, endOfToday, startOfMonth, subMonths } from 'date-fns'
+import { endOfToday, subMonths } from 'date-fns'
 import { connection } from 'next/server'
 import { Suspense } from 'react'
 
 import { Skeleton } from '~/components/ui/skeleton'
-import { CategorySpendCard } from '~/components/widgets/category-spend-card'
 import { SummaryCard } from '~/components/widgets/summary-card'
 import { redirectUnauthenticated } from '~/features/auth/server'
 import { BankAccountsCard } from '~/features/bank-accounts/components/bank-accounts-card'
@@ -14,30 +13,20 @@ async function DashboardPageImpl() {
   await connection()
 
   const today = endOfToday()
-  const [monthlySummary, categorySpend] = await Promise.all([
+  const [monthlySummary] = await Promise.all([
     api.analytics.getMonthlySummary({
       from: subMonths(today, 6),
       to: today,
     }),
-    api.analytics.getCategorySpend({
-      from: startOfMonth(today),
-      to: endOfMonth(today),
-      limit: 5,
-    }),
   ])
 
   return (
-    <div className="grid h-full grid-cols-2 gap-2 lg:grid-cols-3">
+    <div className="grid h-full grid-cols-2 gap-2">
       <div className="row-span-full h-full">
         <BankAccountsCard className="h-full" />
       </div>
 
-      <div className="col-span-1 grid h-full auto-rows-min grid-cols-1 gap-2 overflow-y-auto lg:col-span-2 lg:grid-cols-2">
-        <CategorySpendCard
-          title="Top Spending Categories"
-          description="This Month"
-          data={categorySpend}
-        />
+      <div className="col-span-1 grid h-full auto-rows-min grid-cols-1 gap-2 overflow-y-auto">
         <SummaryCard
           title="Income"
           description="Last 6 months"

@@ -2,7 +2,7 @@
 
 import { IconCloudUpload, IconPlus } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
-import { endOfToday, startOfMonth } from 'date-fns'
+import { endOfToday, startOfYear } from 'date-fns'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -14,7 +14,7 @@ import { TransactionsTable } from './transactions-table'
 
 function TransactionsExplorer() {
   const [transactionRange, setTransactionRange] = useState({
-    from: startOfMonth(Date.now()),
+    from: startOfYear(Date.now()),
     to: endOfToday(),
   })
   const transactions = useQuery(
@@ -38,9 +38,7 @@ function TransactionsExplorer() {
         </Button>
         <CreateTransactionDialog
           trigger={
-            <Button
-              variant="custom"
-              className="bg-success text-success-foreground hover:bg-success/90">
+            <Button variant="success">
               <IconPlus />
               Add
             </Button>

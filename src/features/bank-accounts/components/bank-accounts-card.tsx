@@ -100,6 +100,11 @@ function BankAccountDetailItem({ bankAccount }: { bankAccount: BankAccount }) {
 async function BankAccountsCard(props: ComponentPropsWithoutRef<typeof Card>) {
   const bankAccounts = await api.bankAccounts.getAll()
   const grouped = Object.groupBy(bankAccounts, (acc) => acc.type)
+  const netWorth = bankAccounts.reduce(
+    (acc, curr) => acc + safeParseNumber(curr.balance),
+    0,
+  )
+  const formatter = getCurrencyFormatter('USD')
   return (
     <Card {...props}>
       <CardHeader className="pb-6">
@@ -107,7 +112,7 @@ async function BankAccountsCard(props: ComponentPropsWithoutRef<typeof Card>) {
           Accounts
           <CreateBankAccountDialog
             trigger={
-              <Button className="ml-auto">
+              <Button className="ml-auto" variant="success">
                 <IconPlus />
                 New
               </Button>
@@ -119,7 +124,7 @@ async function BankAccountsCard(props: ComponentPropsWithoutRef<typeof Card>) {
       <CardContent className="flex flex-col gap-4">
         <h2 className="flex text-xl font-semibold">
           <span>Net Worth</span>
-          <span className="ml-auto">$40,000</span>
+          <span className="ml-auto">{formatter.format(netWorth)}</span>
         </h2>
 
         <BankAccountDetailSection title="Cash & Checking">

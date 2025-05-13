@@ -50,7 +50,7 @@ function SummaryCard({
     () =>
       data.map((i) => ({
         label: `${format(new Date(i.year, i.month), 'MMM yyyy')}`,
-        spending: i.expense,
+        spending: Math.abs(i.expense),
         income: i.income,
       })),
     [data],

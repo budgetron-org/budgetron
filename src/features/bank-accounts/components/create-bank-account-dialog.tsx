@@ -30,8 +30,6 @@ import {
   type BankAccountFormHandle,
 } from './bank-account-form'
 
-const ADD_BANK_ACCOUNT_STATUS_TOAST_ID = 'bank-accounts-add'
-
 type CreateBankAccountDialogProps = ComponentProps<typeof Dialog> & {
   refreshOnSuccess?: boolean
   trigger: ReactNode
@@ -53,9 +51,7 @@ export function CreateBankAccountDialog({
   const createBankAccount = useMutation(
     api.bankAccounts.create.mutationOptions({
       onSuccess(_, { name }) {
-        toast.success(`Created Bank Account - ${name}`, {
-          id: ADD_BANK_ACCOUNT_STATUS_TOAST_ID,
-        })
+        toast.success(`Created Bank Account - ${name}`)
         if (!willCreateAnother) setOpen(false)
         formRef.current?.reset()
         // invalidate account queries
@@ -67,7 +63,6 @@ export function CreateBankAccountDialog({
       },
       onError(error, { name }) {
         toast.error(`Error creating Bank Account - ${name}`, {
-          id: ADD_BANK_ACCOUNT_STATUS_TOAST_ID,
           description: error.message,
         })
       },

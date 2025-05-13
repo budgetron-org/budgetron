@@ -1,13 +1,17 @@
 'use client'
 
+import { useMemo } from 'react'
+
 import { DataTable } from '~/components/table'
+import { getCurrencyFormatter } from '~/lib/format'
 import type { TransactionWithRelations } from '../types'
-import { columns } from './transactions-table-columns'
+import { getColumns } from './transactions-table-columns'
 
 type TransactionsTableProps = {
   data?: TransactionWithRelations[]
   isEditable?: boolean
   isLoading?: boolean
+  isReadOnly?: boolean
   onDataUpdate?: (data: TransactionWithRelations[]) => void
 }
 
@@ -15,8 +19,14 @@ function TransactionsTable({
   data = [],
   isEditable,
   isLoading,
+  isReadOnly,
   onDataUpdate,
 }: TransactionsTableProps) {
+  const currencyFormatter = useMemo(() => getCurrencyFormatter('USD'), [])
+  const columns = useMemo(
+    () => getColumns<TransactionWithRelations>({ isReadOnly }),
+    [isReadOnly],
+  )
   return (
     <DataTable
       data={data}
@@ -25,11 +35,14 @@ function TransactionsTable({
         externalId ?? `transaction-${date.getTime()}`
       }
       isLoading={isLoading}
+      isReadOnly={isReadOnly}
       meta={{
+        currencyFormatter,
         editable: isEditable
           ? {
               category: true,
               description: true,
+              type: true,
             }
           : undefined,
         deleteRow(_, rowIndex) {

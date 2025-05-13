@@ -26,9 +26,7 @@ function DeleteBankAccountDialog({
   const deleteBankAccount = useMutation(
     api.bankAccounts.delete.mutationOptions({
       onSuccess() {
-        toast.success(`Deleted Bank Account - ${bankAccount.name}`, {
-          id: bankAccount.id,
-        })
+        toast.success(`Deleted Bank Account - ${bankAccount.name}`)
         // invalidate account queries
         queryClient.invalidateQueries({
           queryKey: api.bankAccounts.getAll.key(),
@@ -38,7 +36,6 @@ function DeleteBankAccountDialog({
       },
       onError(error) {
         toast.error(`Error deleting Bank Account - ${bankAccount.name}`, {
-          id: bankAccount.id,
           description: error.message,
         })
       },

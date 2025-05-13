@@ -1,12 +1,10 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import { type ComponentProps } from 'react'
 import type { z } from 'zod'
 
 import { useAppForm } from '~/hooks/use-app-form'
 import { cn } from '~/lib/utils'
-import { api } from '~/rpc/client'
 import { UploadOFXFormSchema } from '../validators'
 
 type UploadOFXFormProps = Omit<ComponentProps<'form'>, 'onSubmit'> & {
@@ -24,12 +22,6 @@ function UploadOFXForm({ className, onSubmit, ...props }: UploadOFXFormProps) {
     },
   })
 
-  const accounts = useQuery(
-    api.bankAccounts.getAll.queryOptions({
-      select: (data) => data.map((acc) => ({ value: acc.id, label: acc.name })),
-    }),
-  )
-
   return (
     <form
       {...props}
@@ -40,10 +32,8 @@ function UploadOFXForm({ className, onSubmit, ...props }: UploadOFXFormProps) {
       }}>
       <form.AppField name="bankAccountId">
         {(field) => (
-          <field.SelectField
+          <field.BankAccountField
             label="Account"
-            isLoading={accounts.isPending}
-            data={accounts.data ?? []}
             placeholder="Select an account"
           />
         )}

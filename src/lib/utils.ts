@@ -1,10 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import {
-  Currencies,
-  type Currency,
-  type TransactionType,
-} from '~/server/db/enums'
+import { Currencies, type Currency } from '~/server/db/enums'
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -44,10 +40,6 @@ function toUTCString(date: Date) {
   ).toISOString()
 }
 
-function toTransactionType(type: 'income' | 'spending'): TransactionType {
-  return type === 'income' ? 'income' : 'expense'
-}
-
 function extractFromFormData(formData: FormData) {
   return Object.fromEntries(
     formData.entries().map(([key, value]) => [key, value.toString()]),
@@ -60,6 +52,5 @@ export {
   extractFromFormData,
   safeParseCurrency,
   safeParseNumber,
-  toTransactionType,
   toUTCString,
 }

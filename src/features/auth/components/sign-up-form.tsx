@@ -88,7 +88,9 @@ function SignUpForm() {
 
         <form.Subscribe selector={(formState) => [formState.canSubmit]}>
           {([canSubmit]) => (
-            <form.SubmitButton disabled={!canSubmit || signUp.isPending}>
+            <form.SubmitButton
+              disabled={!canSubmit}
+              isLoading={signUp.isPending}>
               Sign Up
             </form.SubmitButton>
           )}

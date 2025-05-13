@@ -28,6 +28,7 @@ interface DataTableProps<Data, Value>
   extends Pick<TableOptions<Data>, 'data' | 'getRowId' | 'meta'> {
   columns: ColumnDef<Data, Value>[]
   isLoading?: boolean
+  isReadOnly?: boolean
 }
 
 function DataTable<Data, Value>({
@@ -35,6 +36,7 @@ function DataTable<Data, Value>({
   data,
   getRowId,
   isLoading,
+  isReadOnly,
   meta,
 }: DataTableProps<Data, Value>) {
   // Sorting
@@ -112,7 +114,7 @@ function DataTable<Data, Value>({
           </TableBody>
         </Table>
       </SkeletonWrapper>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} showSelectedCount={!isReadOnly} />
     </div>
   )
 }

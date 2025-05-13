@@ -17,28 +17,32 @@ type TransactionFormHandle = {
 
 type TransactionFormProps = Omit<
   ComponentPropsWithoutRef<'form'>,
-  'onSubmit'
+  'defaultValue' | 'onSubmit'
 > & {
+  defaultValues?: z.infer<typeof TransactionFormSchema>
   ref?: Ref<TransactionFormHandle>
   onSubmit?: (value: z.infer<typeof TransactionFormSchema>) => void
 }
 
+const DEFAULT_VALUES = {
+  amount: '',
+  currency: 'USD',
+  date: new Date(),
+  description: '',
+  bankAccountId: '',
+  categoryId: '',
+  type: 'EXPENSE',
+} as z.infer<typeof TransactionFormSchema>
+
 function TransactionForm({
   className,
+  defaultValues = DEFAULT_VALUES,
   ref,
   onSubmit,
   ...props
 }: TransactionFormProps) {
   const form = useAppForm({
-    defaultValues: {
-      amount: '',
-      currency: 'USD',
-      date: new Date(),
-      description: '',
-      bankAccountId: '',
-      categoryId: '',
-      type: 'expense',
-    } as z.infer<typeof TransactionFormSchema>,
+    defaultValues,
     validators: {
       onSubmit: TransactionFormSchema,
     },
@@ -88,6 +92,7 @@ function TransactionForm({
           <field.CategoryField
             label="Category"
             placeholder="Select a category"
+            type={field.form.state.values.type}
           />
         )}
       </form.AppField>

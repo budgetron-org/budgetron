@@ -1,13 +1,14 @@
-import type { InferResultType } from '~/server/db/types'
+import type { TransactionType } from '~/server/db/enums'
 
-type CategorySpend = {
+type CategoryReport = {
   categoryId: string
   categoryName: string
   categoryIcon: string
+  categoryType: TransactionType
   parentCategoryId: string
   parentCategoryName: string
   parentCategoryIcon: string
-  total: number
+  total: string
 }
 
 type MonthlySummary = {
@@ -17,18 +18,4 @@ type MonthlySummary = {
   expense: number
 }
 
-type TransactionWithRelations = InferResultType<
-  'TransactionTable',
-  {
-    bankAccountId: false
-    categoryId: false
-    createdAt: false
-    groupId: false
-    id: false
-    updatedAt: false
-    userId: false
-  },
-  { bankAccount: true; category: true; group: true }
->
-
-export type { CategorySpend, MonthlySummary, TransactionWithRelations }
+export type { CategoryReport, MonthlySummary }

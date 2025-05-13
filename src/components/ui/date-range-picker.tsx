@@ -14,6 +14,7 @@ import {
   startOfToday,
   startOfYear,
   subMonths,
+  subYears,
 } from 'date-fns'
 import { type ComponentProps, useCallback, useId, useState } from 'react'
 import type { DateRange } from 'react-day-picker'
@@ -72,8 +73,8 @@ function getRangeFromPreset(preset: Preset) {
       }
     case 'lastYear':
       return {
-        from: startOfYear(subMonths(startOfToday(), 1)),
-        to: endOfYear(subMonths(startOfToday(), 1)),
+        from: startOfYear(subYears(startOfToday(), 1)),
+        to: endOfYear(subYears(startOfToday(), 1)),
       }
     default:
       throw Error(`DateRangePicker - Unknown preset - ${preset}`)
@@ -105,12 +106,19 @@ function isEqualRange(leftRange?: DateRange, rightRange?: DateRange) {
   )
 }
 
+function getRangeFromValue(value?: DateRangeRequired | Preset) {
+  if (typeof value === 'string') {
+    return getRangeFromPreset(value)
+  }
+  return value
+}
+
 type DateRangePickerProps = Omit<
   ComponentProps<typeof Button>,
   'defaultValue' | 'value' | 'onChange'
 > & {
   onChange?: (range: DateRangeRequired) => void
-  defaultValue?: DateRangeRequired
+  defaultValue?: DateRangeRequired | Preset
   align?: 'start' | 'center' | 'end'
 }
 
@@ -123,9 +131,9 @@ function DateRangePicker({
 }: DateRangePickerProps) {
   const id = useId()
   const [isOpen, setIsOpen] = useState(false)
-  const [range, setRange] = useState(defaultValue)
+  const [range, setRange] = useState(getRangeFromValue(defaultValue))
   const [transientRange, setTransientRange] = useState<DateRange | undefined>(
-    defaultValue ?? getRangeFromPreset('thisMonth'),
+    getRangeFromValue(defaultValue) ?? getRangeFromPreset('thisMonth'),
   )
   const [selectedPreset, setSelectedPreset] = useState<Preset | undefined>(
     transientRange ? getPresetFromRange(transientRange)?.name : undefined,
@@ -175,8 +183,8 @@ function DateRangePicker({
           <IconCalendar className="mr-2 h-4 w-4" />
           {range ? (
             <>
-              {format(range.from, 'LLL dd, y')} -{' '}
-              {format(range.to, 'LLL dd, y')}
+              {getPresetFromRange(range)?.label ??
+                `${format(range.from, 'LLL dd, y')} - ${format(range.to, 'LLL dd, y')}`}
             </>
           ) : (
             <span>Pick a date</span>

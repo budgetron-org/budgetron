@@ -27,13 +27,11 @@ const Stepper = defineStepper(
     description: 'Upload Transactions',
   },
 )
-const PARSE_OFX_STATUS_TOAST_ID = 'transactions-parseOFX'
-const UPLOAD_TRANSACTIONS_STATUS_TOAST_ID = 'transactions-upload'
 
 function UploadTransactionsWizard() {
   const uploadOFXFormId = useId()
   const [transactionsToUpload, setTransactionsToUpload] = useState<
-    Omit<TransactionWithRelations, 'id'>[]
+    TransactionWithRelations[]
   >([])
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -41,14 +39,11 @@ function UploadTransactionsWizard() {
   const parseOFX = useMutation(
     api.transactions.parseOFX.mutationOptions({
       onSuccess(data, { file }) {
-        toast.success(`Parsed file - ${file.name}`, {
-          id: PARSE_OFX_STATUS_TOAST_ID,
-        })
+        toast.success(`Parsed file - ${file.name}`)
         setTransactionsToUpload(data)
       },
       onError(error, { file }) {
         toast.error(`Error parsing ${file.name}`, {
-          id: PARSE_OFX_STATUS_TOAST_ID,
           description: error.message,
         })
       },
@@ -58,9 +53,7 @@ function UploadTransactionsWizard() {
   const uploadTransactions = useMutation(
     api.transactions.createMany.mutationOptions({
       onSuccess(_, input) {
-        toast.success(`Uploaded ${input.length} transactions successfully.`, {
-          id: UPLOAD_TRANSACTIONS_STATUS_TOAST_ID,
-        })
+        toast.success(`Uploaded ${input.length} transactions successfully.`)
 
         // invalidate caches
         queryClient.invalidateQueries({
@@ -70,7 +63,6 @@ function UploadTransactionsWizard() {
       },
       onError(error, input) {
         toast.error(`Error uploading ${input.length} transactions.`, {
-          id: UPLOAD_TRANSACTIONS_STATUS_TOAST_ID,
           description: error.message,
         })
       },
@@ -121,6 +113,7 @@ function UploadTransactionsWizard() {
                 <TransactionsTable
                   data={transactionsToUpload}
                   onDataUpdate={setTransactionsToUpload}
+                  isEditable
                 />
               ),
             })}

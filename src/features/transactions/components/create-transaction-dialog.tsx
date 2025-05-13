@@ -29,8 +29,6 @@ import {
 } from '~/features/transactions/components/transaction-form'
 import { api } from '~/rpc/client'
 
-const ADD_TRANSACTION_STATUS_TOAST_ID = 'transactions-add'
-
 type CreateTransactionDialogProps = ComponentProps<typeof Dialog> & {
   trigger: ReactNode
 }
@@ -48,15 +46,12 @@ export function CreateTransactionDialog({
   const createTransaction = useMutation(
     api.transactions.create.mutationOptions({
       onSuccess(_, { description }) {
-        toast.success(`Created transaction - ${description}`, {
-          id: ADD_TRANSACTION_STATUS_TOAST_ID,
-        })
+        toast.success(`Created transaction - ${description}`)
         if (!willCreateAnother) setOpen(false)
         formRef.current?.reset()
       },
       onError(error, { description }) {
         toast.error(`Error creating transaction - ${description}`, {
-          id: ADD_TRANSACTION_STATUS_TOAST_ID,
           description: error.message,
         })
       },

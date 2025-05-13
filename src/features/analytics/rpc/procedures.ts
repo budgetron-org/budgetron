@@ -1,24 +1,42 @@
 import { createRPCErrorFromUnknownError } from '~/rpc/utils'
 import { protectedProcedure } from '~/server/api/rpc'
 import {
-  getCategorySpend as getCategorySpendService,
+  getCategoryReport,
   getMonthlySummary as getMonthlySummaryService,
 } from '../service'
 import { fillMissingMonthsSummary } from '../utils'
 import {
-  GetCategorySpendInputSchema,
+  GetCategorySpendIncomeInputSchema,
   GetMonthlySummaryInputSchema,
 } from '../validators'
 
-const getCategorySpend = protectedProcedure
-  .input(GetCategorySpendInputSchema)
+const getCategoryIncome = protectedProcedure
+  .input(GetCategorySpendIncomeInputSchema)
   .handler(async ({ context, input }) => {
     const { user } = context.session
 
     try {
-      const result = await getCategorySpendService({
+      const result = await getCategoryReport({
         ...input,
         userId: user.id,
+        type: 'INCOME',
+      })
+      return result
+    } catch (error) {
+      throw createRPCErrorFromUnknownError(error)
+    }
+  })
+
+const getCategorySpend = protectedProcedure
+  .input(GetCategorySpendIncomeInputSchema)
+  .handler(async ({ context, input }) => {
+    const { user } = context.session
+
+    try {
+      const result = await getCategoryReport({
+        ...input,
+        userId: user.id,
+        type: 'EXPENSE',
       })
       return result
     } catch (error) {
@@ -47,4 +65,4 @@ const getMonthlySummary = protectedProcedure
     }
   })
 
-export { getCategorySpend, getMonthlySummary }
+export { getCategoryIncome, getCategorySpend, getMonthlySummary }

@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm'
 import { boolean, pgTable, text } from 'drizzle-orm/pg-core'
 
+import { UserRoleEnum } from '../enums'
 import { createdAt, id, updatedAt } from '../utils'
 import { BankAccountTable } from './bank-account'
 import { BudgetTable } from './budget'
@@ -18,6 +19,7 @@ export const UserTable = pgTable('users', {
   email: text().notNull().unique(),
   emailVerified: boolean().default(false),
   image: text(),
+  role: UserRoleEnum().default('USER'),
   createdAt,
   updatedAt,
 })

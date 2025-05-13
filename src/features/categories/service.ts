@@ -1,21 +1,33 @@
+import { and, eq, isNull, not, or } from 'drizzle-orm'
+
 import { db } from '~/server/db'
+import type { TransactionType } from '~/server/db/enums'
+import { CategoryTable } from '~/server/db/schema'
 
 type FindAllCategoriesOptions = {
   userId: string
   groupId?: string
+  type?: TransactionType
 }
 async function findAllCategories({
   userId,
   groupId,
+  type,
 }: FindAllCategoriesOptions) {
+  const unionConditions = [
+    and(isNull(CategoryTable.userId), isNull(CategoryTable.groupId)),
+    groupId && eq(CategoryTable.groupId, groupId),
+    !groupId && eq(CategoryTable.userId, userId),
+  ].filter(Boolean)
+  const conditions = [
+    or(...unionConditions),
+    type && eq(CategoryTable.type, type),
+  ].filter(Boolean)
   const queryResult = await db.query.CategoryTable.findMany({
     with: {
       parent: true,
     },
-    where: (t, { and, eq, isNull, or }) =>
-      groupId
-        ? or(eq(t.groupId, groupId), and(isNull(t.groupId), isNull(t.userId)))
-        : or(eq(t.userId, userId), and(isNull(t.userId))),
+    where: and(...conditions),
     orderBy: (t) => [t.name],
   })
 
@@ -34,4 +46,37 @@ async function findAllCategories({
   return results
 }
 
-export { findAllCategories }
+type FindAllSubCategoriesOptions = {
+  userId: string
+  groupId?: string
+  includeParent?: boolean
+  type?: TransactionType
+}
+async function findAllSubCategories({
+  userId,
+  groupId,
+  type,
+}: FindAllSubCategoriesOptions) {
+  const unionConditions = [
+    and(isNull(CategoryTable.userId), isNull(CategoryTable.groupId)),
+    groupId && eq(CategoryTable.groupId, groupId),
+    !groupId && eq(CategoryTable.userId, userId),
+  ].filter(Boolean)
+  const conditions = [
+    or(...unionConditions),
+    // only want sub-categories
+    not(isNull(CategoryTable.parentId)),
+    type && eq(CategoryTable.type, type),
+  ].filter(Boolean)
+  const result = await db.query.CategoryTable.findMany({
+    with: {
+      parent: true,
+    },
+    where: and(...conditions),
+    orderBy: (t) => [t.name],
+  })
+
+  return result
+}
+
+export { findAllCategories, findAllSubCategories }

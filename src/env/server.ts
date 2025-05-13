@@ -14,6 +14,8 @@ const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string().min(1),
 
     DB_URL: z.string().url(),
+
+    OLLAMA_URL: z.string().url(),
   },
   experimental__runtimeEnv: process.env,
 })
