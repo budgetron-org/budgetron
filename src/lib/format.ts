@@ -1,10 +1,15 @@
-import { CURRENCIES, type Currency } from '~/data/currencies'
+import type { Currency } from '~/server/db/enums'
 
-function getLocaleFromCurrency(currency: Currency['code']) {
+const CURRENCIES = [
+  { code: 'USD', symbol: '$', name: 'Dollar', locale: 'en-US' },
+  { code: 'INR', symbol: '₹', name: 'Rupee', locale: 'en-IN' },
+] as const
+
+function getLocaleFromCurrency(currency: Currency) {
   return CURRENCIES.find((item) => item.code === currency)?.locale
 }
 
-function getCurrencyFormatter(currency: Currency['code']) {
+function getCurrencyFormatter(currency: Currency) {
   const locale = getLocaleFromCurrency(currency)
   return new Intl.NumberFormat(locale, { style: 'currency', currency })
 }
@@ -16,4 +21,4 @@ function getPercentFormatter(locale: Intl.LocalesArgument) {
   })
 }
 
-export { getCurrencyFormatter, getLocaleFromCurrency, getPercentFormatter }
+export { getCurrencyFormatter, getPercentFormatter }
