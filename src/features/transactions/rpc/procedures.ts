@@ -120,11 +120,7 @@ const parseOFX = protectedProcedure
   .input(ParseOFXInputSchema)
   .handler(async ({ input }) => {
     try {
-      const transactions = await parseOFXFile(
-        input.file,
-        input.bankAccountId,
-        input.groupId,
-      )
+      const transactions = await parseOFXFile(input)
       return transactions
     } catch (error) {
       throw createRPCErrorFromUnknownError(error)

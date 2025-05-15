@@ -30,10 +30,12 @@ const ParseOFXInputSchema = z.object({
       (file) => /.*\.(qfx|ofx)$/.test(file.name),
       'Please provide an OFX file.',
     ),
+  shouldAutoCategorize: z.boolean(),
 })
 const UploadOFXFormSchema = ParseOFXInputSchema.pick({
   bankAccountId: true,
   file: true,
+  shouldAutoCategorize: true,
 })
 
 const CreateManyTransactionsInputSchema = CreateTransactionSchema.omit({

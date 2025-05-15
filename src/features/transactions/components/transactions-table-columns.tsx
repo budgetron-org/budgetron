@@ -1,6 +1,6 @@
 'use client'
 
-import { IconDots, IconPencil, IconTrash } from '@tabler/icons-react'
+import { IconDots, IconNotes, IconPencil, IconTrash } from '@tabler/icons-react'
 
 import {
   DataTableColumnHeader,
@@ -21,14 +21,27 @@ import { Input } from '~/components/ui/input'
 import { CategoryPicker } from '~/components/widgets/category-picker'
 import { TransactionTypePicker } from '~/components/widgets/transaction-type-picker'
 import type { TransactionWithRelations } from '~/features/transactions/types'
-import { safeParseNumber } from '~/lib/utils'
+import { cn, safeParseNumber } from '~/lib/utils'
 import { DeleteTransactionDialog } from './delete-transaction-dialog'
 import { UpdateTransactionDialog } from './update-transaction-dialog'
+import type { TableMeta } from '@tanstack/react-table'
+import { Textarea } from '~/components/ui/textarea'
+import { TagsInput } from '~/components/ui/tags-input'
+import { isEqual } from 'lodash'
 
 function isEditableColumn<Data>(table: Table<Data>, accessor: keyof Data) {
   const editable = table.options.meta?.editable
   if (typeof editable === 'boolean') return editable
   return !!editable?.[accessor]
+}
+
+function isActionEnabled<Data>(
+  table: Table<Data>,
+  action: keyof Extract<TableMeta<Data>['actions'], object>,
+) {
+  const actions = table.options.meta?.actions
+  if (typeof actions === 'boolean') return actions
+  return !!actions?.[action]
 }
 
 function getFormattedAmount<Data>(table: Table<Data>, value: string) {
@@ -38,15 +51,10 @@ function getFormattedAmount<Data>(table: Table<Data>, value: string) {
   )
 }
 
-type GetColumnsOptions = {
-  isReadOnly?: boolean
-}
-function getColumns<Data extends TransactionWithRelations>({
-  isReadOnly,
-}: GetColumnsOptions): ColumnDef<Data>[] {
-  const columns: (ColumnDef<Data> | false)[] = [
-    !isReadOnly && {
-      id: 'select',
+function getColumns<Data extends TransactionWithRelations>() {
+  return [
+    {
+      id: 'select' as const,
       header: ({ table }) => (
         <Checkbox
           checked={
@@ -65,9 +73,9 @@ function getColumns<Data extends TransactionWithRelations>({
         />
       ),
       enableSorting: false,
-      enableHiding: false,
     },
     {
+      id: 'date' as const,
       accessorKey: 'date',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Date" />
@@ -87,6 +95,7 @@ function getColumns<Data extends TransactionWithRelations>({
       },
     },
     {
+      id: 'description' as const,
       accessorKey: 'description',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Description" />
@@ -114,19 +123,25 @@ function getColumns<Data extends TransactionWithRelations>({
       },
     },
     {
+      id: 'amount' as const,
       accessorKey: 'amount',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Amount" />
       ),
       cell: ({ row, table }) => {
         return (
-          <div className="capitalize">
+          <div
+            className={cn(
+              row.original.type === 'INCOME' && 'text-success',
+              row.original.type === 'EXPENSE' && 'text-destructive',
+            )}>
             {getFormattedAmount(table, row.original.amount)}
           </div>
         )
       },
     },
     {
+      id: 'type' as const,
       accessorKey: 'type',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Type" />
@@ -160,6 +175,7 @@ function getColumns<Data extends TransactionWithRelations>({
       },
     },
     {
+      id: 'category' as const,
       accessorKey: 'category',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Category" />
@@ -193,6 +209,7 @@ function getColumns<Data extends TransactionWithRelations>({
       },
     },
     {
+      id: 'account' as const,
       accessorKey: 'account',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Account" />
@@ -204,9 +221,79 @@ function getColumns<Data extends TransactionWithRelations>({
           </Badge>
         ),
     },
-    !isReadOnly && {
-      id: 'actions',
-      cell: ({ row }) => (
+    {
+      id: 'notes' as const,
+      accessorKey: 'notes',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Notes" />
+      ),
+      cell: ({ row, table }) => {
+        if (isEditableColumn(table, 'notes')) {
+          return (
+            <Textarea
+              aria-label="Notes"
+              defaultValue={row.original.notes ?? ''}
+              onBlur={(event) => {
+                const value = event.target.value
+                // do not update if the value is not different
+                if (value === (row.original.notes ?? '')) return
+                table.options.meta?.updateCellData?.(
+                  row.index,
+                  'notes',
+                  value as Data['notes'],
+                )
+              }}
+            />
+          )
+        }
+        return (
+          row.original.notes && (
+            <div className="flex gap-2">
+              <IconNotes className="text-muted-foreground" />
+              {row.original.notes}
+            </div>
+          )
+        )
+      },
+    },
+    {
+      id: 'tags' as const,
+      accessorKey: 'tags',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Tags" />
+      ),
+      cell: ({ row, table }) => {
+        if (isEditableColumn(table, 'tags')) {
+          return (
+            <TagsInput
+              aria-label="Tags"
+              value={row.original.tags ?? []}
+              onValueChange={(value) => {
+                // do not update if the tags are not different
+                if (isEqual(row.original.tags, value)) return
+                table.options.meta?.updateCellData?.(
+                  row.index,
+                  'tags',
+                  value as Data['tags'],
+                )
+              }}
+            />
+          )
+        }
+        return (
+          row.original.tags && (
+            <div className="flex gap-2">
+              {row.original.tags.map((tag) => (
+                <Badge key={tag}>{tag}</Badge>
+              ))}
+            </div>
+          )
+        )
+      },
+    },
+    {
+      id: 'actions' as const,
+      cell: ({ row, table }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
@@ -216,32 +303,40 @@ function getColumns<Data extends TransactionWithRelations>({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <UpdateTransactionDialog
-              transaction={row.original}
-              trigger={
-                <DropdownMenuItem preventClosing>
-                  <IconPencil />
-                  Edit
-                </DropdownMenuItem>
-              }
-              refreshOnSuccess
-            />
-            <DeleteTransactionDialog
-              transaction={row.original}
-              trigger={
-                <DropdownMenuItem preventClosing>
-                  <IconTrash className="text-destructive" />
-                  Delete
-                </DropdownMenuItem>
-              }
-              refreshOnSuccess
-            />
+            {isActionEnabled(table, 'edit') && (
+              <UpdateTransactionDialog
+                transaction={row.original}
+                trigger={
+                  <DropdownMenuItem preventClosing>
+                    <IconPencil />
+                    Edit
+                  </DropdownMenuItem>
+                }
+                refreshOnSuccess
+              />
+            )}
+            {isActionEnabled(table, 'delete') && (
+              <DeleteTransactionDialog
+                transaction={row.original}
+                trigger={
+                  <DropdownMenuItem preventClosing>
+                    <IconTrash className="text-destructive" />
+                    Delete
+                  </DropdownMenuItem>
+                }
+                refreshOnSuccess
+              />
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       ),
     },
-  ]
-  return columns.filter(Boolean)
+  ] satisfies ColumnDef<Data>[]
 }
 
+type ColumnId = ReturnType<
+  typeof getColumns<TransactionWithRelations>
+>[number]['id']
+
 export { getColumns }
+export type { ColumnId }

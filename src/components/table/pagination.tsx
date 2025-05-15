@@ -17,16 +17,14 @@ import {
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>
-  showSelectedCount?: boolean
 }
 
 function DataTablePagination<TData>({
   table,
-  showSelectedCount = true,
 }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center justify-between px-2">
-      {showSelectedCount && (
+      {table.getFilteredSelectedRowModel().rows.length > 0 && (
         <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length} of{' '}
           {table.getFilteredRowModel().rows.length} row(s) selected.

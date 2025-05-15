@@ -92,11 +92,18 @@ async function selectTransactions(filters: SelectTransactionFilters) {
   })
 }
 
-async function parseOFXFile(
-  file: File,
-  bankAccountId: string,
-  groupId?: string,
-) {
+type ParseOFXFileParams = {
+  file: File
+  bankAccountId: string
+  groupId?: string
+  shouldAutoCategorize: boolean
+}
+async function parseOFXFile({
+  file,
+  bankAccountId,
+  groupId,
+  shouldAutoCategorize,
+}: ParseOFXFileParams) {
   // fetch bank account
   const [bankAccount] = await db
     .select()
@@ -140,7 +147,13 @@ async function parseOFXFile(
     orderBy: (t) => [t.name],
   })
 
-  return parseTransactions(file, bankAccount, categories, group)
+  return parseTransactions({
+    bankAccount,
+    categories,
+    file,
+    group,
+    shouldAutoCategorize,
+  })
 }
 
 async function deleteTransaction(

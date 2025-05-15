@@ -41,7 +41,7 @@ function CategoryTransactionsTable({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <TransactionsTable data={data ?? []} isLoading={isPending} isReadOnly />
+        <TransactionsTable data={data ?? []} isLoading={isPending} />
       </CardContent>
     </Card>
   )

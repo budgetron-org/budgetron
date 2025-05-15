@@ -2,6 +2,12 @@ import type { RowData } from '@tanstack/react-table'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
+    actions?:
+      | boolean
+      | {
+          edit?: boolean
+          delete?: boolean
+        }
     currencyFormatter: Intl.NumberFormat
     editable?: boolean | Partial<Record<keyof TData, boolean>>
     deleteRow?: (rowId: string, rowIndex: number) => void

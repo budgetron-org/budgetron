@@ -2,7 +2,7 @@ import { UploadTransactionsWizard } from '~/features/transactions/components/upl
 
 export default async function UploadTransactionsPage() {
   return (
-    <div className="flex w-full flex-col gap-6">
+    <div className="flex h-full w-full flex-col gap-6">
       <div>
         <h2 className="text-2xl">Upload Transactions</h2>
         <h3 className="text-muted-foreground">
@@ -10,7 +10,7 @@ export default async function UploadTransactionsPage() {
         </h3>
       </div>
 
-      <UploadTransactionsWizard />
+      <UploadTransactionsWizard className="min-h-0 flex-1" />
     </div>
   )
 }

@@ -13,7 +13,9 @@ type UploadOFXFormProps = Omit<ComponentProps<'form'>, 'onSubmit'> & {
 
 function UploadOFXForm({ className, onSubmit, ...props }: UploadOFXFormProps) {
   const form = useAppForm({
-    defaultValues: {} as z.infer<typeof UploadOFXFormSchema>,
+    defaultValues: {
+      shouldAutoCategorize: false,
+    } as z.infer<typeof UploadOFXFormSchema>,
     validators: {
       onSubmit: UploadOFXFormSchema,
     },
@@ -41,6 +43,12 @@ function UploadOFXForm({ className, onSubmit, ...props }: UploadOFXFormProps) {
 
       <form.AppField name="file">
         {(field) => <field.FileField accept=".ofx,.qfx" label="File" />}
+      </form.AppField>
+
+      <form.AppField name="shouldAutoCategorize">
+        {(field) => (
+          <field.CheckboxField label="Auto-categorize transactions" />
+        )}
       </form.AppField>
     </form>
   )

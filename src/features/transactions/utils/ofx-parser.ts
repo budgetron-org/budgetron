@@ -12,12 +12,20 @@ import {
 } from '~/server/db/schema'
 import type { InferResultType } from '~/server/db/types'
 
-async function parseTransactions(
-  file: File,
-  bankAccount: typeof BankAccountTable.$inferSelect,
-  categories: InferResultType<'CategoryTable', undefined, { parent: true }>[],
-  group: typeof GroupTable.$inferSelect | null = null,
-): Promise<TransactionWithRelations[]> {
+type ParseTransactionsOptions = {
+  bankAccount: typeof BankAccountTable.$inferSelect
+  categories: InferResultType<'CategoryTable', undefined, { parent: true }>[]
+  file: File
+  group?: typeof GroupTable.$inferSelect
+  shouldAutoCategorize: boolean
+}
+async function parseTransactions({
+  bankAccount,
+  categories,
+  file,
+  group,
+  shouldAutoCategorize,
+}: ParseTransactionsOptions): Promise<TransactionWithRelations[]> {
   const ofx = Ofx.fromBuffer(Buffer.from(await file.arrayBuffer()))
 
   const content = ofx.getContent()
@@ -37,7 +45,7 @@ async function parseTransactions(
     return {
       bankAccount,
       bankAccountId: bankAccount.id,
-      group,
+      group: group ?? null,
       groupId: group?.id ?? null,
       amount: Math.abs(t.TRNAMT).toString(),
       currency,
@@ -58,10 +66,9 @@ async function parseTransactions(
     } satisfies TransactionWithRelations
   })
 
-  const categorizedTransactions = await categorizeTransactions(
-    processedTransactions,
-    categories,
-  )
+  const categorizedTransactions = shouldAutoCategorize
+    ? await categorizeTransactions(processedTransactions, categories)
+    : {}
 
   // fill in the categories for the parsed transactions
   const result = processedTransactions.map((t) => ({

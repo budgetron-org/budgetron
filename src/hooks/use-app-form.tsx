@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { capitalize } from 'lodash'
 import { useMemo, type ComponentProps } from 'react'
 
+import { CheckboxField } from '~/components/form/checkbox-field'
 import { DateField } from '~/components/form/date-field'
 import { FileField } from '~/components/form/file-field'
 import { SelectField } from '~/components/form/select-field'
@@ -92,6 +93,12 @@ const { useAppForm } = createFormHook({
           field={field}
         />
       )
+    },
+    CheckboxField: (
+      props: Omit<ComponentProps<typeof CheckboxField>, 'field'>,
+    ) => {
+      const field = useFieldContext<boolean>()
+      return <CheckboxField {...props} field={field} />
     },
     DateField: (props: Omit<ComponentProps<typeof DateField>, 'field'>) => {
       const field = useFieldContext<Date>()

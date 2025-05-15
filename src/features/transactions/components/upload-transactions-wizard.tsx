@@ -13,6 +13,7 @@ import { defineStepper } from '~/components/ui/stepper'
 import { TransactionsTable } from '~/features/transactions/components/transactions-table'
 import { UploadOFXForm } from '~/features/transactions/components/upload-ofx-form'
 import type { TransactionWithRelations } from '~/features/transactions/types'
+import { cn } from '~/lib/utils'
 import { api } from '~/rpc/client'
 
 const Stepper = defineStepper(
@@ -28,7 +29,13 @@ const Stepper = defineStepper(
   },
 )
 
-function UploadTransactionsWizard() {
+type UploadTransactionsWizardProps = {
+  className?: string
+}
+
+function UploadTransactionsWizard({
+  className,
+}: UploadTransactionsWizardProps) {
   const uploadOFXFormId = useId()
   const [transactionsToUpload, setTransactionsToUpload] = useState<
     TransactionWithRelations[]
@@ -71,7 +78,7 @@ function UploadTransactionsWizard() {
 
   return (
     <Stepper.StepperProvider
-      className="grid gap-4"
+      className={cn('flex flex-col gap-4', className)}
       variant="horizontal"
       labelOrientation="vertical">
       {({ methods }) => (
@@ -95,7 +102,7 @@ function UploadTransactionsWizard() {
             ))}
           </Stepper.StepperNavigation>
 
-          <Stepper.StepperPanel>
+          <Stepper.StepperPanel className="min-h-0 flex-1">
             {methods.switch({
               'step-1': () => (
                 <UploadOFXForm
@@ -111,9 +118,21 @@ function UploadTransactionsWizard() {
               ),
               'step-2': () => (
                 <TransactionsTable
+                  className="max-h-full"
                   data={transactionsToUpload}
+                  defaultColumnVisibility={{
+                    account: false,
+                    select: false,
+                  }}
+                  defaultEditable={{
+                    category: true,
+                    description: true,
+                    notes: true,
+                    tags: true,
+                    type: true,
+                  }}
                   onDataUpdate={setTransactionsToUpload}
-                  isEditable
+                  hasEditAction={false}
                 />
               ),
             })}

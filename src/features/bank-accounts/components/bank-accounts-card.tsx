@@ -105,6 +105,14 @@ async function BankAccountsCard(props: ComponentPropsWithoutRef<typeof Card>) {
     0,
   )
   const formatter = getCurrencyFormatter('USD')
+
+  const cashAndChecking = [
+    ...(grouped.CHECKING ?? []),
+    ...(grouped.SAVINGS ?? []),
+  ]
+  const credit = grouped.CREDIT ?? []
+  const hasNoAccounts = cashAndChecking.length === 0 && credit.length === 0
+
   return (
     <Card {...props}>
       <CardHeader className="pb-6">
@@ -126,20 +134,27 @@ async function BankAccountsCard(props: ComponentPropsWithoutRef<typeof Card>) {
           <span>Net Worth</span>
           <span className="ml-auto">{formatter.format(netWorth)}</span>
         </h2>
+        {hasNoAccounts && (
+          <p className="text-muted-foreground p-8 text-center">
+            Add an account to get started
+          </p>
+        )}
 
-        <BankAccountDetailSection title="Cash & Checking">
-          {[...(grouped.CHECKING ?? []), ...(grouped.SAVINGS ?? [])].map(
-            (acc) => (
+        {cashAndChecking.length > 0 && (
+          <BankAccountDetailSection title="Cash & Checking">
+            {cashAndChecking.map((acc) => (
               <BankAccountDetailItem key={acc.id} bankAccount={acc} />
-            ),
-          )}
-        </BankAccountDetailSection>
+            ))}
+          </BankAccountDetailSection>
+        )}
 
-        <BankAccountDetailSection title="Credit">
-          {grouped.CREDIT?.map((acc) => (
-            <BankAccountDetailItem key={acc.id} bankAccount={acc} />
-          ))}
-        </BankAccountDetailSection>
+        {credit.length > 0 && (
+          <BankAccountDetailSection title="Credit">
+            {credit.map((acc) => (
+              <BankAccountDetailItem key={acc.id} bankAccount={acc} />
+            ))}
+          </BankAccountDetailSection>
+        )}
       </CardContent>
     </Card>
   )

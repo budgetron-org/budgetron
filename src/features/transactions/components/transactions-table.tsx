@@ -1,62 +1,70 @@
 'use client'
 
-import { useMemo } from 'react'
+import type { TableMeta } from '@tanstack/react-table'
+import { useMemo, useState } from 'react'
 
 import { DataTable } from '~/components/table'
 import { getCurrencyFormatter } from '~/lib/format'
 import type { TransactionWithRelations } from '../types'
-import { getColumns } from './transactions-table-columns'
+import { type ColumnId, getColumns } from './transactions-table-columns'
 
 type TransactionsTableProps = {
+  className?: string
   data?: TransactionWithRelations[]
-  isEditable?: boolean
+  defaultColumnVisibility?: Partial<Record<ColumnId, boolean>>
+  defaultEditable?: TableMeta<TransactionWithRelations>['editable']
+  hasEditAction?: boolean
+  hasDeleteAction?: boolean
   isLoading?: boolean
-  isReadOnly?: boolean
   onDataUpdate?: (data: TransactionWithRelations[]) => void
 }
 
 function TransactionsTable({
+  className,
   data = [],
-  isEditable,
+  defaultColumnVisibility,
+  hasEditAction = true,
+  hasDeleteAction = true,
+  defaultEditable,
   isLoading,
-  isReadOnly,
   onDataUpdate,
 }: TransactionsTableProps) {
-  const currencyFormatter = useMemo(() => getCurrencyFormatter('USD'), [])
-  const columns = useMemo(
-    () => getColumns<TransactionWithRelations>({ isReadOnly }),
-    [isReadOnly],
+  const columns = useMemo(() => getColumns<TransactionWithRelations>(), [])
+  const [editable] = useState(defaultEditable)
+  const meta = useMemo<TableMeta<TransactionWithRelations>>(
+    () => ({
+      actions: {
+        edit: hasEditAction,
+        delete: hasDeleteAction,
+      },
+      currencyFormatter: getCurrencyFormatter('USD'),
+      editable,
+      deleteRow(_, rowIndex) {
+        onDataUpdate?.(data.filter((_, index) => index !== rowIndex))
+      },
+      updateCellData(rowIndex, columnId, value) {
+        onDataUpdate?.(
+          data.map((row, index) => {
+            if (index === rowIndex) return { ...row, [columnId]: value }
+            return row
+          }),
+        )
+      },
+    }),
+    [hasEditAction, hasDeleteAction, editable, onDataUpdate, data],
   )
+
   return (
     <DataTable
+      className={className}
       data={data}
       columns={columns}
+      defaultColumnVisibility={defaultColumnVisibility}
       getRowId={({ externalId, date }) =>
         externalId ?? `transaction-${date.getTime()}`
       }
       isLoading={isLoading}
-      isReadOnly={isReadOnly}
-      meta={{
-        currencyFormatter,
-        editable: isEditable
-          ? {
-              category: true,
-              description: true,
-              type: true,
-            }
-          : undefined,
-        deleteRow(_, rowIndex) {
-          onDataUpdate?.(data.filter((_, index) => index !== rowIndex))
-        },
-        updateCellData(rowIndex, columnId, value) {
-          onDataUpdate?.(
-            data.map((row, index) => {
-              if (index === rowIndex) return { ...row, [columnId]: value }
-              return row
-            }),
-          )
-        },
-      }}
+      meta={meta}
     />
   )
 }

@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { ScrollArea } from '~/components/ui/scroll-area'
 
 export default function TransactionsLayout({
   children,
@@ -7,8 +6,8 @@ export default function TransactionsLayout({
   children: ReactNode
 }) {
   return (
-    <ScrollArea className="max-h-[calc(100%-var(--header-height))] flex-1 p-4">
+    <div className="max-h-[calc(100%-var(--header-height))] flex-1 p-4">
       {children}
-    </ScrollArea>
+    </div>
   )
 }

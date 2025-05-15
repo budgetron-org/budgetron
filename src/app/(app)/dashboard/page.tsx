@@ -21,7 +21,7 @@ async function DashboardPageImpl() {
   ])
 
   return (
-    <div className="grid h-full grid-cols-2 gap-2">
+    <div className="grid h-full grid-cols-[minmax(30vw,max-content)_minmax(0,1fr)] gap-2">
       <div className="row-span-full h-full">
         <BankAccountsCard className="h-full" />
       </div>

@@ -7,9 +7,11 @@ import {
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
+  type ColumnFiltersState,
   type RowSelectionState,
   type SortingState,
   type TableOptions,
+  type VisibilityState,
 } from '@tanstack/react-table'
 import { useState } from 'react'
 
@@ -22,25 +24,34 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table'
+import { cn } from '~/lib/utils'
 import { DataTablePagination } from './pagination'
 
 interface DataTableProps<Data, Value>
   extends Pick<TableOptions<Data>, 'data' | 'getRowId' | 'meta'> {
+  className?: string
   columns: ColumnDef<Data, Value>[]
+  defaultColumnVisibility?: VisibilityState
   isLoading?: boolean
-  isReadOnly?: boolean
 }
 
 function DataTable<Data, Value>({
+  className,
   columns,
   data,
+  defaultColumnVisibility,
   getRowId,
   isLoading,
-  isReadOnly,
   meta,
 }: DataTableProps<Data, Value>) {
   // Sorting
   const [sorting, setSorting] = useState<SortingState>([])
+  // Column filtering
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  // Column visibility
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    defaultColumnVisibility ?? {},
+  )
   // Selection
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   const table = useReactTable({
@@ -52,25 +63,30 @@ function DataTable<Data, Value>({
     getRowId,
     getSortedRowModel: getSortedRowModel(),
     meta,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     onSortingChange: (args) => {
       setSorting(args)
       table.resetPageIndex()
     },
     state: {
+      columnFilters,
+      columnVisibility,
       pagination: { pageIndex: 0, pageSize: 50 },
-      sorting,
       rowSelection,
+      sorting,
     },
   })
 
   return (
-    <div className="flex flex-col gap-4 rounded-md border pb-2">
+    <div
+      className={cn('flex flex-col gap-4 rounded-md border pb-2', className)}>
       <SkeletonWrapper isLoading={isLoading}>
-        <Table>
-          <TableHeader>
+        <Table className="overflow-scroll">
+          <TableHeader className="sticky top-0 z-10 overflow-hidden rounded-t-md">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="bg-background">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -114,7 +130,7 @@ function DataTable<Data, Value>({
           </TableBody>
         </Table>
       </SkeletonWrapper>
-      <DataTablePagination table={table} showSelectedCount={!isReadOnly} />
+      <DataTablePagination table={table} />
     </div>
   )
 }
