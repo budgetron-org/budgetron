@@ -76,7 +76,7 @@ function NavUser({ user }: { user: User }) {
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.image ?? undefined} alt={user.name} />
                 <AvatarFallback className="rounded-lg">
                   {initials(user.name)}
@@ -120,7 +120,7 @@ function NavUser({ user }: { user: User }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={signOut.mutate}>
+            <DropdownMenuItem onClick={() => signOut.mutate({})}>
               <IconLogout />
               Log out
             </DropdownMenuItem>

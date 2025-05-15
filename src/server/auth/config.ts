@@ -1,6 +1,6 @@
 import { type BetterAuthOptions } from 'better-auth'
-import { nextCookies } from 'better-auth/next-js'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { nextCookies } from 'better-auth/next-js'
 
 import { env } from '~/env/server'
 import { db } from '~/server/db'
@@ -36,6 +36,13 @@ export const authConfig = {
     additionalFields: {
       firstName: { type: 'string' },
       lastName: { type: 'string' },
+      image: { type: 'string', required: false },
+      role: {
+        type: 'string',
+        required: false,
+        defaultValue: schema.UserRoleEnum.enumValues[0],
+        input: false,
+      },
     },
   },
   verification: { modelName: 'verifications' },
@@ -51,9 +58,19 @@ export const authConfig = {
   emailAndPassword: { enabled: true },
   socialProviders: {
     google: {
-      enabled: true,
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+      enabled: true,
+      overrideUserInfoOnSignIn: true,
+      prompt: 'select_account',
+      mapProfileToUser(profile) {
+        return {
+          firstName: profile.given_name,
+          lastName: profile.family_name,
+          image: profile.picture,
+          role: schema.UserRoleEnum.enumValues[0],
+        }
+      },
     },
   },
 

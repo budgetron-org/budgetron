@@ -4,6 +4,7 @@ import { IconExclamationCircle } from '@tabler/icons-react'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useCallback } from 'react'
 import type { z } from 'zod'
 
 import { GoogleIcon } from '~/components/icons'
@@ -14,6 +15,7 @@ import { SignInSchema } from '~/features/auth/validators'
 import { api } from '~/rpc/client'
 import { useAuthForm } from '../hooks/use-auth-form'
 import { AuthScreenLayout } from './auth-screen-layout'
+import { authClient } from '../client'
 
 function SignInForm() {
   const router = useRouter()
@@ -30,6 +32,13 @@ function SignInForm() {
       },
     }),
   )
+
+  const doGoogleSignIn = useCallback(() => {
+    authClient.signIn.social({
+      provider: 'google',
+    })
+  }, [])
+
   const form = useAuthForm({
     defaultValues: {
       email: '',
@@ -81,7 +90,7 @@ function SignInForm() {
 
       <SeparatorText>Or continue with</SeparatorText>
 
-      <Button variant="outline" className="w-full">
+      <Button variant="outline" className="w-full" onClick={doGoogleSignIn}>
         <GoogleIcon />
         Sign in with Google
       </Button>
