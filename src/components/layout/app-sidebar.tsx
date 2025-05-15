@@ -13,8 +13,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '~/components/ui/sidebar'
+import { api } from '~/rpc/server'
 
 async function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
+  const session = await api.auth.session()
+  if (!session) return null
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -31,7 +35,7 @@ async function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         <NavSecondary className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <NavUser user={session.user} />
       </SidebarFooter>
     </Sidebar>
   )

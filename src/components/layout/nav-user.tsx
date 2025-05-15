@@ -5,7 +5,7 @@ import {
   IconLogout,
   IconUserCircle,
 } from '@tabler/icons-react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
@@ -25,6 +25,7 @@ import {
   useSidebar,
 } from '~/components/ui/sidebar'
 import { Skeleton } from '~/components/ui/skeleton'
+import type { User } from '~/features/auth/types'
 import { api } from '~/rpc/client'
 
 function initials(fname: string, lname?: string) {
@@ -38,9 +39,8 @@ function initials(fname: string, lname?: string) {
     : (firstName[0] ?? '').repeat(2)
 }
 
-function NavUser() {
+function NavUser({ user }: { user: User }) {
   const { isMobile } = useSidebar()
-  const session = useQuery(api.auth.session.queryOptions())
   const router = useRouter()
   const signOut = useMutation(
     api.auth.signOut.mutationOptions({
@@ -56,7 +56,7 @@ function NavUser() {
     }),
   )
 
-  if (!session.data?.user) {
+  if (!user) {
     return (
       <div className="flex items-center gap-2">
         <Skeleton className="h-8 w-8 rounded-lg" />
@@ -68,7 +68,6 @@ function NavUser() {
     )
   }
 
-  const { user } = session.data
   return (
     <SidebarMenu>
       <SidebarMenuItem>
