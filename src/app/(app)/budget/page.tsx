@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle } from '~/components/ui/card'
 
-export default async function SpendingPlanPage() {
+export default async function BudgetPage() {
   return (
     <Card>
       <CardHeader>
