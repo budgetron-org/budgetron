@@ -25,7 +25,7 @@ import {
   useSidebar,
 } from '~/components/ui/sidebar'
 import { Skeleton } from '~/components/ui/skeleton'
-import type { User } from '~/features/auth/types'
+import type { User } from '~/features/user/types'
 import { api } from '~/rpc/client'
 
 function initials(fname: string, lname?: string) {
