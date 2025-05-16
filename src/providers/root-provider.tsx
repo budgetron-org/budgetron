@@ -5,8 +5,6 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from 'next-themes'
 import { type ReactNode } from 'react'
 
-import { GroupProvider } from './group-provider'
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -28,7 +26,7 @@ export function RootProvider({ children }: { children: ReactNode }) {
         defaultTheme="system"
         enableSystem
         disableTransitionOnChange>
-        <GroupProvider>{children}</GroupProvider>
+        {children}
       </ThemeProvider>
       <ReactQueryDevtools />
     </QueryClientProvider>

@@ -17,7 +17,7 @@ import {
 import { Button } from '~/components/ui/button'
 import { ProgressButton } from '~/components/ui/progress-button'
 
-type AlertActionButtonProps = ComponentProps<typeof ProgressButton> & {
+interface AlertActionButtonProps extends ComponentProps<typeof ProgressButton> {
   alertTitle?: string
   alertDescription?: string
   onConfirm?: () => void

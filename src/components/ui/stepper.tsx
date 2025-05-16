@@ -26,10 +26,8 @@ type StepperConfig = {
   tracking?: boolean
 }
 
-type DefineStepperProps<Steps extends Stepperize.Step[]> = Omit<
-  Stepperize.StepperReturn<Steps>,
-  'Scoped'
-> & {
+interface DefineStepperProps<Steps extends Stepperize.Step[]>
+  extends Omit<Stepperize.StepperReturn<Steps>, 'Scoped'> {
   StepperProvider: (
     props: Omit<Stepperize.ScopedProps<Steps>, 'children'> &
       Omit<ComponentProps<'div'>, 'children'> &
@@ -60,7 +58,7 @@ type DefineStepperProps<Steps extends Stepperize.Step[]> = Omit<
   ) => ReactElement
 }
 
-type CircleStepIndicatorProps = {
+interface CircleStepIndicatorProps {
   currentStep: number
   totalSteps: number
   size?: number

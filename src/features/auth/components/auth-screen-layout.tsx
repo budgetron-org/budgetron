@@ -4,13 +4,17 @@ import type { ReactNode } from 'react'
 import bannerImage from '~/../public/images/banner.jpg'
 import { BrandLogo } from '~/components/ui/brand-logo'
 
-type Props = {
+interface AuthScreenLayoutProps {
   children: ReactNode
   title: string
   subtitle?: string
 }
 
-function AuthScreenLayout({ children, title, subtitle }: Props) {
+function AuthScreenLayout({
+  children,
+  title,
+  subtitle,
+}: AuthScreenLayoutProps) {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">

@@ -7,7 +7,7 @@ import { useAppForm } from '~/hooks/use-app-form'
 import { cn } from '~/lib/utils'
 import { UploadOFXFormSchema } from '../validators'
 
-type UploadOFXFormProps = Omit<ComponentProps<'form'>, 'onSubmit'> & {
+interface UploadOFXFormProps extends Omit<ComponentProps<'form'>, 'onSubmit'> {
   onSubmit?: (value: z.infer<typeof UploadOFXFormSchema>) => void
 }
 

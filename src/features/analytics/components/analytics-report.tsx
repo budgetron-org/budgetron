@@ -10,7 +10,7 @@ import { CategoryReportCard } from '~/components/widgets/category-report-card'
 import { CategoryTransactionsTable } from '~/components/widgets/category-transactions-table'
 import { api } from '~/rpc/client'
 
-type AnalyticsReportProps = {
+interface AnalyticsReportProps {
   title: string
   description?: string
   reportFor: 'income' | 'spending'

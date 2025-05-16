@@ -8,7 +8,7 @@ import { getCurrencyFormatter } from '~/lib/format'
 import type { TransactionWithRelations } from '../types'
 import { type ColumnId, getColumns } from './transactions-table-columns'
 
-type TransactionsTableProps = {
+interface TransactionsTableProps {
   className?: string
   data?: TransactionWithRelations[]
   defaultColumnVisibility?: Partial<Record<ColumnId, boolean>>

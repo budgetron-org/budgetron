@@ -15,10 +15,8 @@ type BankAccountFormHandle = {
   reset: () => void
 }
 
-type BankAccountFormProps = Omit<
-  ComponentPropsWithoutRef<'form'>,
-  'defaultValue' | 'onSubmit'
-> & {
+interface BankAccountFormProps
+  extends Omit<ComponentPropsWithoutRef<'form'>, 'defaultValue' | 'onSubmit'> {
   defaultValues?: z.infer<typeof BankAccountFormSchema>
   ref?: Ref<BankAccountFormHandle>
   onSubmit?: (value: z.infer<typeof BankAccountFormSchema>) => void

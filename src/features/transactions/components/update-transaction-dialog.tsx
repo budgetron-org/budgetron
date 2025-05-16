@@ -30,7 +30,7 @@ import {
 import { api } from '~/rpc/client'
 import type { Transaction } from '../types'
 
-type UpdateTransactionDialogProps = ComponentProps<typeof Dialog> & {
+interface UpdateTransactionDialogProps extends ComponentProps<typeof Dialog> {
   transaction: Transaction
   refreshOnSuccess?: boolean
   trigger: ReactNode

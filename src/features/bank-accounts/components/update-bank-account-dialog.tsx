@@ -30,7 +30,7 @@ import {
   type BankAccountFormHandle,
 } from './bank-account-form'
 
-type UpdateBankAccountDialogProps = ComponentProps<typeof Dialog> & {
+interface UpdateBankAccountDialogProps extends ComponentProps<typeof Dialog> {
   bankAccount: BankAccount
   refreshOnSuccess?: boolean
   trigger: ReactNode

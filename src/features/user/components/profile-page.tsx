@@ -13,7 +13,7 @@ import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
 import { ProfileFormSchema } from '../validators'
 
-type ProfilePageProps = {
+interface ProfilePageProps {
   user: User
 }
 

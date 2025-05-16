@@ -42,7 +42,7 @@ function findLabel<V extends string, D extends Data<unknown>>(
   return `${parent.label} - ${parent.children.find((child) => child.value === value)?.label ?? fallback}`
 }
 
-type SelectImplProps<V extends string, D> = {
+interface SelectImplProps<V extends string, D> {
   data: Readonly<D[]> | Promise<Readonly<D[]>>
   field: FieldApi<V | undefined>
   id?: ComponentProps<typeof SelectTrigger>['id']
@@ -100,10 +100,11 @@ function SelectImpl<V extends string, D extends Data<V>>({
   )
 }
 
-type SelectFieldProps<V extends string, D extends Data<V>> = Pick<
-  ComponentProps<typeof SelectImpl<V, D>>,
-  'data' | 'field' | 'placeholder'
-> & {
+interface SelectFieldProps<V extends string, D extends Data<V>>
+  extends Pick<
+    ComponentProps<typeof SelectImpl<V, D>>,
+    'data' | 'field' | 'placeholder'
+  > {
   className?: string
   // TODO: React.use and Suspense is not working with useQuery.promise
   // So use isLoading for now.

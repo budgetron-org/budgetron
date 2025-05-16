@@ -16,6 +16,7 @@ const env = createEnv({
     DB_URL: z.string().url(),
 
     OLLAMA_URL: z.string().url(),
+    OLLAMA_MODEL: z.string().min(1), // TODO: Add enum with supported models?
   },
   experimental__runtimeEnv: process.env,
 })

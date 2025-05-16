@@ -9,12 +9,13 @@ import {
 } from '~/components/ui/select'
 import { TransactionTypes } from '~/server/db/enums'
 
-type TransactionTypePickerProps = Pick<
-  ComponentProps<typeof Select>,
-  'value' | 'defaultValue' | 'onValueChange'
-> &
-  Pick<ComponentProps<typeof SelectValue>, 'placeholder'> &
-  Pick<ComponentProps<typeof SelectTrigger>, 'aria-label'>
+interface TransactionTypePickerProps
+  extends Pick<
+      ComponentProps<typeof Select>,
+      'value' | 'defaultValue' | 'onValueChange'
+    >,
+    Pick<ComponentProps<typeof SelectValue>, 'placeholder'>,
+    Pick<ComponentProps<typeof SelectTrigger>, 'aria-label'> {}
 
 function TransactionTypePicker({
   'aria-label': ariaLabel,

@@ -1,4 +1,4 @@
-type IconProps = {
+interface IconProps {
   size?: string | number
 }
 

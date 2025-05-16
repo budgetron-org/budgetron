@@ -23,8 +23,9 @@ function useBreadcrumbs() {
 
   return useMemo(() => {
     // If a title is specified, then use that
-    const title = PATH_TITLES[pathname]
-    if (title) return title
+    if (pathname in PATH_TITLES) {
+      return PATH_TITLES[pathname as keyof typeof PATH_TITLES]
+    }
 
     // If no title is specified, then return path bits as
     // crumbs

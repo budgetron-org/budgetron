@@ -98,7 +98,8 @@ function useGroupedCategories(data: CategoryReport[]) {
   }, [data])
 }
 
-type CategoryReportCardProps = ComponentPropsWithoutRef<typeof Card> & {
+interface CategoryReportCardProps
+  extends ComponentPropsWithoutRef<typeof Card> {
   data: CategoryReport[]
   title: string
   description?: string

@@ -30,7 +30,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-type SummaryCardProps = ComponentPropsWithoutRef<typeof Card> & {
+interface SummaryCardProps extends ComponentPropsWithoutRef<typeof Card> {
   data: MonthlySummary[]
   title: string
   description: string

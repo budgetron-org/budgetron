@@ -13,12 +13,13 @@ import {
 } from '~/components/ui/popover'
 import { cn } from '~/lib/utils'
 
-type DatePickerProps = {
+interface DatePickerProps
+  extends Omit<ComponentPropsWithoutRef<typeof Button>, 'value' | 'onChange'> {
   format?: string
   placeholder?: string
   value?: Date
   onChange?: (value: Date) => void
-} & Omit<ComponentPropsWithoutRef<typeof Button>, 'value' | 'onChange'>
+}
 
 function DatePicker({
   className,

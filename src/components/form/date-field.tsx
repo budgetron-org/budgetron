@@ -5,7 +5,7 @@ import { Label } from '~/components/ui/label'
 import { cn } from '~/lib/utils'
 import type { FieldApi } from './types'
 
-type DateFieldProps = {
+interface DateFieldProps {
   className?: string
   field: FieldApi<Date>
   label: string

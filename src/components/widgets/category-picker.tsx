@@ -44,14 +44,15 @@ function findLabel<V extends string, D extends Data>(
   return `${parent.label} - ${parent.children.find((child) => child.value === value)?.label ?? fallback}`
 }
 
-type CategoryPickerProps = Pick<
-  ComponentProps<typeof Select>,
-  'value' | 'defaultValue' | 'onValueChange'
-> &
-  Pick<ComponentProps<typeof SelectValue>, 'placeholder'> &
-  Pick<ComponentProps<typeof SelectTrigger>, 'aria-label'> & {
-    type?: TransactionType | 'ALL'
-  }
+interface CategoryPickerProps
+  extends Pick<
+      ComponentProps<typeof Select>,
+      'value' | 'defaultValue' | 'onValueChange'
+    >,
+    Pick<ComponentProps<typeof SelectValue>, 'placeholder'>,
+    Pick<ComponentProps<typeof SelectTrigger>, 'aria-label'> {
+  type?: TransactionType | 'ALL'
+}
 
 function CategoryPicker({
   'aria-label': ariaLabel,

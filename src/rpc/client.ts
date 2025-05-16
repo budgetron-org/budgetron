@@ -51,6 +51,10 @@ const client = createORPCClient<RouterClient<AppRouter>>(
   }),
 )
 
+/**
+ * The ORPC client specific for using with React Query. This is used to call useQuery and useMutation hooks
+ * from the client side.
+ */
 const api = createORPCReactQueryUtils(client)
 
 export { api }

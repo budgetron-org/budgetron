@@ -2,7 +2,7 @@ import { ORPCError, os } from '@orpc/server'
 import { connection } from 'next/server'
 
 import { auth } from '~/server/auth'
-import type { AwaitedReturnType } from '~/types/generic'
+import type { AwaitedReturnType } from '~/types/shared'
 
 /**
  * 1. CONTEXT

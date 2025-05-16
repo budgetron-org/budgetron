@@ -3,9 +3,9 @@ import type { ComponentProps } from 'react'
 
 import { Button } from '~/components/ui/button'
 
-type Props = ComponentProps<typeof Button> & {}
+type SignInButtonProps = ComponentProps<typeof Button>
 
-function SignInButton(props: Props) {
+function SignInButton(props: SignInButtonProps) {
   return (
     <Link href="/sign-in">
       <Button {...props} />

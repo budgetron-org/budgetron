@@ -19,7 +19,8 @@ import {
 } from '~/components/ui/popover'
 import { cn } from '~/lib/utils'
 
-type ComboboxProps = ComponentProps<typeof Button> & {
+interface ComboboxProps
+  extends Omit<ComponentProps<typeof Button>, 'onChange'> {
   data: { value: string; label: string }[]
   placeholder?: string
   value?: string

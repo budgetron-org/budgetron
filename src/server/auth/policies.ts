@@ -1,5 +1,8 @@
 import { z } from 'zod'
 
+/**
+ * New password policy for users.
+ */
 const PasswordPolicy = z
   .string()
   .min(8, 'Password should be atleast 8 characters.')

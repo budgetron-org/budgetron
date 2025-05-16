@@ -12,7 +12,7 @@ import {
 import { TransactionsTable } from '~/features/transactions/components/transactions-table'
 import { api } from '~/rpc/client'
 
-type CategoryTransactionsTableProps = {
+interface CategoryTransactionsTableProps {
   categoryId: string
   from?: Date
   to?: Date

@@ -12,13 +12,13 @@ const SIZE_CLASS = {
   },
 }
 
-type Props = {
+interface BrandLogoProps {
   href?: string
   isIconOnly?: boolean
   size?: keyof (typeof SIZE_CLASS)[keyof typeof SIZE_CLASS]
 }
 
-function BrandLogo({ href, isIconOnly = false, size = 'md' }: Props) {
+function BrandLogo({ href, isIconOnly = false, size = 'md' }: BrandLogoProps) {
   const Comp = href ? 'a' : 'div'
   return (
     <Comp href={href} className="flex items-center gap-2">

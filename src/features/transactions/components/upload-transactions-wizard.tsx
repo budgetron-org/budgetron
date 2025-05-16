@@ -29,7 +29,7 @@ const Stepper = defineStepper(
   },
 )
 
-type UploadTransactionsWizardProps = {
+interface UploadTransactionsWizardProps {
   className?: string
 }
 

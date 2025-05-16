@@ -6,12 +6,6 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-function assertContextExists(value: unknown, message: string): asserts value {
-  if (value == null) {
-    throw new Error(message)
-  }
-}
-
 function safeParseNumber(mayBeNumber: unknown, fallback: number = 0) {
   if (typeof mayBeNumber === 'number') return mayBeNumber
   if (mayBeNumber == null || typeof mayBeNumber !== 'string') return fallback
@@ -26,31 +20,4 @@ function safeParseCurrency(mayBeCurrency: unknown, fallback: Currency = 'USD') {
   return fallback
 }
 
-function toUTCString(date: Date) {
-  return new Date(
-    Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes(),
-      date.getSeconds(),
-      date.getMilliseconds(),
-    ),
-  ).toISOString()
-}
-
-function extractFromFormData(formData: FormData) {
-  return Object.fromEntries(
-    formData.entries().map(([key, value]) => [key, value.toString()]),
-  )
-}
-
-export {
-  assertContextExists,
-  cn,
-  extractFromFormData,
-  safeParseCurrency,
-  safeParseNumber,
-  toUTCString,
-}
+export { cn, safeParseCurrency, safeParseNumber }

@@ -5,7 +5,7 @@ import { Label } from '~/components/ui/label'
 import { cn } from '~/lib/utils'
 import type { FieldApi } from './types'
 
-type CheckboxFieldProps = {
+interface CheckboxFieldProps {
   className?: string
   field: FieldApi<boolean>
   label: string

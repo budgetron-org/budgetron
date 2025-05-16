@@ -1,7 +1,7 @@
 import { IconLoader2 } from '@tabler/icons-react'
 import { Suspense } from 'react'
 
-type SuspenseBoundaryProps = {
+interface SuspenseBoundaryProps {
   children: React.ReactNode
   fallback?: React.ReactNode
 }

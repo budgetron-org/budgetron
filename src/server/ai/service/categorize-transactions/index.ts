@@ -17,6 +17,18 @@ const schema = z.object({
   ),
 })
 
+/**
+ * Categorizes transactions using AI. Returns the category for each transaction identified by externalId.
+ * We use externalId as the key instead of id as the id will only be available after the transaction is saved to the database.
+ * We also want to process the transactions when they are uploaded using a file and we want to categorize them
+ * before saving them to the database.
+ * Also, we want to process the transactions in chunks to avoid token limit issues. For example, the Ollama model
+ * has a token limit of 2048 ~ 8000 characters. Leaving 2000 characters for system prompt, we have to process
+ * transactions in 6000 characters chunk.
+ * @param transactions The transactions to categorize.
+ * @param categories The categories to use for categorization.
+ * @returns The categorized transactions. The key is the externalId of the transaction and the value is the category.
+ */
 async function categorizeTransactions(
   transactions: Transaction[],
   categories: Category[],

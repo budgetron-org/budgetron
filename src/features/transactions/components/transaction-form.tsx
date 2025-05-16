@@ -11,14 +11,12 @@ import { useAppForm } from '~/hooks/use-app-form'
 import { cn } from '~/lib/utils'
 import { TransactionFormSchema } from '../validators'
 
-type TransactionFormHandle = {
+interface TransactionFormHandle {
   reset: () => void
 }
 
-type TransactionFormProps = Omit<
-  ComponentPropsWithoutRef<'form'>,
-  'defaultValue' | 'onSubmit'
-> & {
+interface TransactionFormProps
+  extends Omit<ComponentPropsWithoutRef<'form'>, 'defaultValue' | 'onSubmit'> {
   defaultValues?: z.infer<typeof TransactionFormSchema>
   ref?: Ref<TransactionFormHandle>
   onSubmit?: (value: z.infer<typeof TransactionFormSchema>) => void

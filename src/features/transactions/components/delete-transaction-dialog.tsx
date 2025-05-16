@@ -9,7 +9,8 @@ import { AlertActionButton } from '~/components/ui/alert-action-button'
 import { api } from '~/rpc/client'
 import type { Transaction } from '../types'
 
-type DeleteTransactionDialogProps = ComponentProps<typeof AlertActionButton> & {
+interface DeleteTransactionDialogProps
+  extends ComponentProps<typeof AlertActionButton> {
   transaction: Transaction
   refreshOnSuccess?: boolean
   trigger: ReactNode

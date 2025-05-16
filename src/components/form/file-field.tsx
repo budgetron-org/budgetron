@@ -5,7 +5,7 @@ import { Label } from '~/components/ui/label'
 import { cn } from '~/lib/utils'
 import type { FieldApi } from './types'
 
-type FileFieldProps = {
+interface FileFieldProps {
   accept?: ComponentProps<typeof Input>['accept']
   className?: string
   field: FieldApi<File | undefined>

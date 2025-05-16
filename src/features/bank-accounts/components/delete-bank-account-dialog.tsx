@@ -9,7 +9,8 @@ import { AlertActionButton } from '~/components/ui/alert-action-button'
 import { api } from '~/rpc/client'
 import type { BankAccount } from '../types'
 
-type DeleteBankAccountDialogProps = ComponentProps<typeof AlertActionButton> & {
+interface DeleteBankAccountDialogProps
+  extends ComponentProps<typeof AlertActionButton> {
   bankAccount: BankAccount
   refreshOnSuccess?: boolean
   trigger: ReactNode

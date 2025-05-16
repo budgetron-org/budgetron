@@ -29,7 +29,7 @@ import {
 } from '~/features/transactions/components/transaction-form'
 import { api } from '~/rpc/client'
 
-type CreateTransactionDialogProps = ComponentProps<typeof Dialog> & {
+interface CreateTransactionDialogProps extends ComponentProps<typeof Dialog> {
   trigger: ReactNode
 }
 

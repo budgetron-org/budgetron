@@ -6,7 +6,7 @@ import type { Transaction } from './types'
  * system prompt, we have to process transaction in 6000 characters chunk.
  * @param transactions The whole list of transactions
  * @param maxChars The max characters allowed for each chunk
- * @returns THe chunked transactions
+ * @returns The chunked transactions
  */
 function chunkTransactions(transactions: Transaction[], maxChars = 6000) {
   const chunks: Transaction[][] = []

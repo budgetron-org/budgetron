@@ -3,9 +3,9 @@ import type { ComponentProps } from 'react'
 
 import { Button } from '~/components/ui/button'
 
-type Props = ComponentProps<typeof Button> & {}
+type SignUpButtonProps = ComponentProps<typeof Button>
 
-function SignUpButton(props: Props) {
+function SignUpButton(props: SignUpButtonProps) {
   return (
     <Link href="sign-up">
       <Button {...props} />

@@ -8,7 +8,8 @@ type DateParts = {
   year: number
 }
 
-type DateInputProps = Omit<ComponentProps<'div'>, 'value' | 'onChange'> & {
+interface DateInputProps
+  extends Omit<ComponentProps<'div'>, 'value' | 'onChange'> {
   value?: Date
   onChange: (date: Date) => void
 }

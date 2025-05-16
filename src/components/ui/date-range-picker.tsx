@@ -113,10 +113,11 @@ function getRangeFromValue(value?: DateRangeRequired | Preset) {
   return value
 }
 
-type DateRangePickerProps = Omit<
-  ComponentProps<typeof Button>,
-  'defaultValue' | 'value' | 'onChange'
-> & {
+interface DateRangePickerProps
+  extends Omit<
+    ComponentProps<typeof Button>,
+    'defaultValue' | 'value' | 'onChange'
+  > {
   onChange?: (range: DateRangeRequired) => void
   defaultValue?: DateRangeRequired | Preset
   align?: 'start' | 'center' | 'end'
