@@ -3,6 +3,7 @@ import { authRouter } from '~/features/auth/rpc/router'
 import { bankAccountsRouter } from '~/features/bank-accounts/rpc/router'
 import { categoriesRouter } from '~/features/categories/rpc/router'
 import { transactionsRouter } from '~/features/transactions/rpc/router'
+import { userRouter } from '~/features/user/rpc/router'
 import { base } from './rpc'
 
 /**
@@ -16,6 +17,7 @@ const appRouter = base.router({
   bankAccounts: bankAccountsRouter,
   categories: categoriesRouter,
   transactions: transactionsRouter,
+  user: userRouter,
 })
 
 /**

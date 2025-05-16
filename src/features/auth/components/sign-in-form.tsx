@@ -12,10 +12,10 @@ import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
 import { SeparatorText } from '~/components/ui/separator-text'
 import { SignInSchema } from '~/features/auth/validators'
+import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
-import { useAuthForm } from '../hooks/use-auth-form'
+import { authClient } from '~/features/auth/client'
 import { AuthScreenLayout } from './auth-screen-layout'
-import { authClient } from '../client'
 
 function SignInForm() {
   const router = useRouter()
@@ -39,7 +39,7 @@ function SignInForm() {
     })
   }, [])
 
-  const form = useAuthForm({
+  const form = useAppForm({
     defaultValues: {
       email: '',
       password: '',

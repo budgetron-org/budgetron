@@ -11,8 +11,8 @@ import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
 import { SeparatorText } from '~/components/ui/separator-text'
 import { SignUpSchema } from '~/features/auth/validators'
+import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
-import { useAuthForm } from '../hooks/use-auth-form'
 import { AuthScreenLayout } from './auth-screen-layout'
 
 function SignUpForm() {
@@ -29,7 +29,7 @@ function SignUpForm() {
       },
     }),
   )
-  const form = useAuthForm({
+  const form = useAppForm({
     defaultValues: {
       firstName: '',
       lastName: '',

@@ -1,8 +1,7 @@
 import { endOfToday, subMonths } from 'date-fns'
 import { connection } from 'next/server'
-import { Suspense } from 'react'
 
-import { Skeleton } from '~/components/ui/skeleton'
+import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { SummaryCard } from '~/components/widgets/summary-card'
 import { redirectUnauthenticated } from '~/features/auth/server'
 import { BankAccountsCard } from '~/features/bank-accounts/components/bank-accounts-card'
@@ -46,16 +45,8 @@ async function DashboardPageImpl() {
 
 export default function DashboardPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="grid h-full grid-cols-2 grid-rows-3 gap-4">
-          <Skeleton className="row-span-full h-full" />
-          <Skeleton className="h-auto" />
-          <Skeleton className="h-auto" />
-          <Skeleton className="h-auto" />
-        </div>
-      }>
+    <SuspenseBoundary>
       <DashboardPageImpl />
-    </Suspense>
+    </SuspenseBoundary>
   )
 }

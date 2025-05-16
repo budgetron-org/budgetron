@@ -1,6 +1,6 @@
 import type { auth } from '~/server/auth'
 import type { AwaitedReturnType } from '~/types/generic'
 
-type Session = NonNullable<AwaitedReturnType<typeof auth.api.getSession>>
+type User = NonNullable<AwaitedReturnType<typeof auth.api.getSession>>['user']
 
-export type { Session }
+export type { User }

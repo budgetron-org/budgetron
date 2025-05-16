@@ -1,6 +1,4 @@
-import { Suspense } from 'react'
-
-import { Skeleton } from '~/components/ui/skeleton'
+import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { redirectUnauthenticated } from '~/features/auth/server'
 import { TransactionsExplorer } from '~/features/transactions/components/transactions-explorer'
 
@@ -16,8 +14,8 @@ async function TransactionsPageImpl() {
 
 export default async function TransactionsPage() {
   return (
-    <Suspense fallback={<Skeleton className="h-60 w-full" />}>
+    <SuspenseBoundary>
       <TransactionsPageImpl />
-    </Suspense>
+    </SuspenseBoundary>
   )
 }

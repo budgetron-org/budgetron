@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
-import { Suspense } from 'react'
 
+import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { SignUpForm } from '~/features/auth/components/sign-up-form'
 import { api } from '~/rpc/server'
 
@@ -14,8 +14,8 @@ async function SignUpPageImpl() {
 
 export default async function SignUpPage() {
   return (
-    <Suspense>
+    <SuspenseBoundary>
       <SignUpPageImpl />
-    </Suspense>
+    </SuspenseBoundary>
   )
 }

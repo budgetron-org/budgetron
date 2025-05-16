@@ -18,7 +18,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <AppSidebar variant="inset" />
       <SidebarInset>
         <AppHeader />
-        {children}
+        <div className="max-h-[calc(100%-var(--header-height))] flex-1 p-4">
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   )

@@ -10,7 +10,8 @@ import { DateField } from '~/components/form/date-field'
 import { FileField } from '~/components/form/file-field'
 import { SelectField } from '~/components/form/select-field'
 import { TextField } from '~/components/form/text-field'
-import { Button } from '~/components/ui/button'
+import { ProgressButton } from '~/components/ui/progress-button'
+import { cn } from '~/lib/utils'
 import { api } from '~/rpc/client'
 import {
   BankAccountTypeEnum,
@@ -133,11 +134,17 @@ const { useAppForm } = createFormHook({
   },
   fieldContext,
   formComponents: {
-    SubmitButton: (props: { disabled?: boolean; children: string }) => {
+    SubmitButton: ({
+      className,
+      ...props
+    }: Omit<ComponentProps<typeof ProgressButton>, 'type'>) => {
       return (
-        <Button type="submit" className="w-full" disabled={props.disabled}>
+        <ProgressButton
+          type="submit"
+          className={cn('w-full', className)}
+          {...props}>
           {props.children}
-        </Button>
+        </ProgressButton>
       )
     },
   },
