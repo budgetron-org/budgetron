@@ -48,10 +48,4 @@ Each transaction should be matched to the most appropriate category using descri
 Only choose from the Available categories.
 `
 
-export {
-  generatePromptForAvailableCategories,
-  generatePromptForSingleTransaction,
-  generatePromptForTransactionsToCategorize,
-  generateUserPrompt,
-  SYSTEM_PROMPT,
-}
+export { generatePromptForSingleTransaction, generateUserPrompt, SYSTEM_PROMPT }

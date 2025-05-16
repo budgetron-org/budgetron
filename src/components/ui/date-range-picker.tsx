@@ -281,4 +281,3 @@ function DateRangePicker({
 }
 
 export { DateRangePicker }
-export type { DateRangeRequired }

@@ -1,3 +1,5 @@
+import 'server-only'
+
 import { generateObject } from 'ai'
 import Fuse from 'fuse.js'
 import { z } from 'zod'

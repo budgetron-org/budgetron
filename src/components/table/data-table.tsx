@@ -137,4 +137,3 @@ function DataTable<Data, Value>({
 
 export type { ColumnDef, Table } from '@tanstack/react-table'
 export { DataTable }
-export type { DataTableProps }

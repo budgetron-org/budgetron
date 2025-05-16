@@ -14,11 +14,4 @@ function getCurrencyFormatter(currency: Currency) {
   return new Intl.NumberFormat(locale, { style: 'currency', currency })
 }
 
-function getPercentFormatter(locale: Intl.LocalesArgument) {
-  return new Intl.NumberFormat(locale, {
-    style: 'percent',
-    maximumFractionDigits: 2,
-  })
-}
-
-export { getCurrencyFormatter, getPercentFormatter }
+export { getCurrencyFormatter }
