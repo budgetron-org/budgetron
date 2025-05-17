@@ -1,6 +1,7 @@
 import 'server-only'
 
 import { put } from '@vercel/blob'
+import { env } from '~/env/server'
 
 type UploadOptions = {
   path: string
@@ -21,6 +22,7 @@ async function upload({ path, fileName, file }: UploadOptions) {
   const blob = await put(`${path}/${fileName}`, file, {
     access: 'public',
     addRandomSuffix: true,
+    token: env.BLOB_READ_WRITE_TOKEN,
   })
   return {
     url: blob.url,

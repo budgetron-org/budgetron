@@ -16,7 +16,7 @@ type SendEmailOptions = {
  */
 async function sendEmail({ to, subject, body }: SendEmailOptions) {
   const { data, error } = await provider.emails.send({
-    from: env.RESEND_FROM_EMAIL,
+    from: env.EMAIL_PROVIDER_FROM_EMAIL,
     to,
     subject,
     react: body,

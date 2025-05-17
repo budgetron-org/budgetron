@@ -19,6 +19,16 @@ const PASSWORD_RESET_TOKEN_VALIDITY_IN_SECONDS = 15 * 60
  * @see https://www.better-auth.com/docs/reference/options
  */
 export const authConfig = {
+  /**
+   * Specify the options explicitly instead of letting the auth
+   * framework infer them from environment variables.
+   * This way, we can fail the build when the environment variables
+   * are not set as we validate them.
+   */
+  baseURL: env.BASE_URL,
+  // BASE_PATH represents the app's base path. We need to append /api/auth to it.
+  basePath: `${env.BASE_PATH}/api/auth`,
+  secret: env.AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema: {

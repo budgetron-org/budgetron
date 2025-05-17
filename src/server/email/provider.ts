@@ -7,6 +7,6 @@ import { env } from '~/env/server'
  * This can be replaced with any other email provider.
  * Note: Using a different email provider will require changes in the server/email/service.ts file.
  */
-const provider = new Resend(env.RESEND_API_KEY)
+const provider = new Resend(env.EMAIL_PROVIDER_API_KEY)
 
 export { provider }
