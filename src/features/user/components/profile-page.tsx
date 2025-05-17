@@ -61,6 +61,7 @@ function ProfilePage({ user }: ProfilePageProps) {
               className="md:col-span-2"
               name="image"
               currentImage={user.image ?? undefined}
+              // userName={user.name}
               onFileChange={field.handleChange}
             />
           )}

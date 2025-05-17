@@ -1,21 +1,21 @@
 import { redirect } from 'next/navigation'
 
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
-import { SignInForm } from '~/features/auth/components/sign-in-form'
+import { ForgotPasswordForm } from '~/features/auth/components/forgot-password-form'
 import { api } from '~/rpc/server'
 
-async function SignInPageImpl() {
+async function ForgotPasswordPageImpl() {
   // Redirect to home if already signed in
   const session = await api.auth.session()
   if (session?.user) redirect('/dashboard')
 
-  return <SignInForm />
+  return <ForgotPasswordForm />
 }
 
-export default async function SignInPage() {
+export default async function ForgotPasswordPage() {
   return (
     <SuspenseBoundary fullScreenFallback>
-      <SignInPageImpl />
+      <ForgotPasswordPageImpl />
     </SuspenseBoundary>
   )
 }

@@ -73,9 +73,16 @@ function SignInForm() {
           {(field) => <field.TextField label="Email" />}
         </form.AppField>
 
-        <form.AppField name="password">
-          {(field) => <field.TextField label="Password" type="password" />}
-        </form.AppField>
+        <div>
+          <form.AppField name="password">
+            {(field) => <field.TextField label="Password" type="password" />}
+          </form.AppField>
+          <Link
+            href="/forgot-password"
+            className="text-sm underline underline-offset-4">
+            Forgot Password?
+          </Link>
+        </div>
 
         <form.Subscribe selector={(formState) => [formState.canSubmit]}>
           {([canSubmit]) => (

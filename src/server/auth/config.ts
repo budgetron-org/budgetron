@@ -2,9 +2,16 @@ import { type BetterAuthOptions } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
 
+import ResetPasswordEmail from '~/emails/reset-password-email'
 import { env } from '~/env/server'
 import { db } from '~/server/db'
 import * as schema from '~/server/db/schema'
+import { sendEmail } from '~/server/email/service'
+
+/**
+ * The validity of the password reset token will expire in 15 minutes.
+ */
+const PASSWORD_RESET_TOKEN_VALIDITY_IN_SECONDS = 15 * 60
 
 /**
  * Options for configuring Better Auth
@@ -55,7 +62,21 @@ export const authConfig = {
   },
 
   // Supported auths
-  emailAndPassword: { enabled: true },
+  emailAndPassword: {
+    enabled: true,
+    async sendResetPassword(data) {
+      await sendEmail({
+        to: data.user.email,
+        subject: 'Your password reset link',
+        body: ResetPasswordEmail({
+          name: data.user.name,
+          resetPasswordUrl: data.url,
+          resetPasswordUrlExpiresIn: PASSWORD_RESET_TOKEN_VALIDITY_IN_SECONDS,
+        }),
+      })
+    },
+    resetPasswordTokenExpiresIn: PASSWORD_RESET_TOKEN_VALIDITY_IN_SECONDS,
+  },
   socialProviders: {
     google: {
       clientId: env.GOOGLE_CLIENT_ID,

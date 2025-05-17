@@ -14,7 +14,7 @@ async function SignUpPageImpl() {
 
 export default async function SignUpPage() {
   return (
-    <SuspenseBoundary>
+    <SuspenseBoundary fullScreenFallback>
       <SignUpPageImpl />
     </SuspenseBoundary>
   )

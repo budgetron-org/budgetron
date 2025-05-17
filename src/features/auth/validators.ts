@@ -19,4 +19,19 @@ const SignUpSchema = z
     path: ['confirmPassword'],
   })
 
-export { SignInSchema, SignUpSchema }
+const ForgotPasswordSchema = z.object({
+  email: z.string().email(),
+})
+
+const ResetPasswordSchema = z
+  .object({
+    password: PasswordPolicy,
+    confirmPassword: z.string(),
+    token: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match.',
+    path: ['confirmPassword'],
+  })
+
+export { ForgotPasswordSchema, ResetPasswordSchema, SignInSchema, SignUpSchema }

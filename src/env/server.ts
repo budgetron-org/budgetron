@@ -17,6 +17,9 @@ const env = createEnv({
 
     OLLAMA_URL: z.string().url(),
     OLLAMA_MODEL: z.string().min(1), // TODO: Add enum with supported models?
+
+    RESEND_API_KEY: z.string().min(1),
+    RESEND_FROM_EMAIL: z.string().min(1),
   },
   experimental__runtimeEnv: process.env,
 })

@@ -45,6 +45,11 @@ const eslintConfig = [
         },
         {
           mode: 'full',
+          type: 'emails',
+          pattern: ['src/emails/**/*'],
+        },
+        {
+          mode: 'full',
           type: 'feature',
           capture: ['featureName'],
           pattern: ['src/features/*/**/*'],
@@ -75,7 +80,7 @@ const eslintConfig = [
           rules: [
             {
               from: ['shared'],
-              allow: ['api', 'feature', 'shared'],
+              allow: ['api', 'emails', 'feature', 'shared'],
             },
             {
               from: ['api'],
@@ -85,6 +90,7 @@ const eslintConfig = [
               from: ['feature'],
               allow: [
                 'api',
+                'emails',
                 'shared',
                 ['feature', { featureName: '${from.featureName}' }],
               ],
@@ -96,6 +102,10 @@ const eslintConfig = [
             {
               from: ['app'],
               allow: [['app', { fileName: '*.css' }]],
+            },
+            {
+              from: ['emails'],
+              allow: ['emails', 'shared'],
             },
           ],
         },

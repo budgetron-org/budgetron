@@ -24,7 +24,7 @@ function BrandLogo({ href, isIconOnly = false, size = 'md' }: BrandLogoProps) {
     <Comp href={href} className="flex items-center gap-2">
       <div
         className={cn(
-          'bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square items-center justify-center rounded-lg',
+          'bg-primary text-primary-foreground flex aspect-square items-center justify-center rounded-lg',
           SIZE_CLASS.ICON[size],
         )}>
         <IconPigMoney />

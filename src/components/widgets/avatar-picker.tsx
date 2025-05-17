@@ -1,10 +1,11 @@
 'use client'
 
-import { IconTrash } from '@tabler/icons-react'
-import Image from 'next/image'
+import { IconTrash, IconUserFilled } from '@tabler/icons-react'
+import _ from 'lodash'
 import { useCallback, useId, useState, type ChangeEventHandler } from 'react'
 import { toast } from 'sonner'
 
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
 import { cn } from '~/lib/utils'
@@ -14,6 +15,7 @@ interface AvatarPickerProps {
   currentImage?: string
   maxFileSize?: number
   name?: string
+  userName?: string
   onFileChange?: (file: File | undefined) => void
 }
 function AvatarPicker({
@@ -21,6 +23,7 @@ function AvatarPicker({
   currentImage,
   maxFileSize = 5 * 1024 * 1024, // 5MB
   name,
+  userName,
   onFileChange,
 }: AvatarPickerProps) {
   const id = useId()
@@ -55,19 +58,18 @@ function AvatarPicker({
 
   return (
     <div className={cn('relative h-max w-max', className)}>
-      <Label htmlFor={id} className="h-[100px] w-[100px] cursor-pointer p-0">
-        {preview && (
-          <Image
-            alt="Profile Image"
-            src={preview}
-            width={100}
-            height={100}
-            className="aspect-square rounded-full"
-          />
-        )}
-        {!preview && (
-          <div className="bg-muted h-[100px] w-[100px] rounded-full" />
-        )}
+      <Label htmlFor={id} className="cursor-pointer p-0">
+        <Avatar className="size-[100px]">
+          <AvatarImage src={preview ?? undefined} />
+          <AvatarFallback className="text-5xl">
+            {userName ? (
+              _.capitalize(userName?.[0])
+            ) : (
+              <IconUserFilled className="text-muted-foreground size-12" />
+            )}
+          </AvatarFallback>
+        </Avatar>
+
         <input
           id={id}
           type="file"
@@ -77,14 +79,16 @@ function AvatarPicker({
           onChange={handleFileChange}
         />
       </Label>
-      <Button
-        size="icon"
-        variant="destructive"
-        className="absolute right-0 bottom-0 rounded-full"
-        onClick={clearFile}>
-        <IconTrash />
-        <span className="sr-only">Remove Profile Picture</span>
-      </Button>
+      {preview && (
+        <Button
+          size="icon"
+          variant="destructive"
+          className="absolute right-0 bottom-0 rounded-full"
+          onClick={clearFile}>
+          <IconTrash />
+          <span className="sr-only">Remove Profile Picture</span>
+        </Button>
+      )}
     </div>
   )
 }
