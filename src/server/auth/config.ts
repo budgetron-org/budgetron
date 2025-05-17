@@ -2,7 +2,7 @@ import { type BetterAuthOptions } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
 
-import ResetPasswordEmail from '~/emails/reset-password-email'
+import { ResetPasswordEmail } from '~/emails/reset-password-email'
 import { env } from '~/env/server'
 import { db } from '~/server/db'
 import * as schema from '~/server/db/schema'
