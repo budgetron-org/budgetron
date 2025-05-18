@@ -9,6 +9,7 @@ const env = createEnv({
       .default('development'),
 
     AUTH_SECRET: z.string().min(1),
+    AUTH_URL: z.string().url(),
 
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),

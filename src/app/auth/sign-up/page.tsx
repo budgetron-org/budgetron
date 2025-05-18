@@ -8,7 +8,7 @@ import { signupFeatureFlag } from '~/server/flags'
 
 async function SignUpPageImpl() {
   // Redirect to home if already signed in
-  redirectAuthenticated()
+  await redirectAuthenticated()
 
   // check to see if signup is allowed
   const signupAllowed = await signupFeatureFlag()

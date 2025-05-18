@@ -2,16 +2,19 @@ import { ORPCError } from '@orpc/client'
 import { APIError } from 'better-auth/api'
 
 import { PATHS } from '~/data/routes'
+import { env } from '~/env/shared'
 import {
   createRPCErrorFromStatus,
   createRPCErrorFromUnknownError,
 } from '~/rpc/utils'
 import { publicProcedure } from '~/server/api/rpc'
 import { auth } from '~/server/auth'
+import { signupFeatureFlag } from '~/server/flags'
 import {
   ForgotPasswordSchema,
   ResetPasswordSchema,
   SignInSchema,
+  SignInWithSocialSchema,
   SignUpSchema,
 } from '../validators'
 
@@ -24,6 +27,35 @@ const signIn = publicProcedure
         headers: context.headers,
       })
       return { success: true }
+    } catch (error) {
+      if (error instanceof APIError) {
+        if (typeof error.status === 'string') {
+          throw new ORPCError(error.status, {
+            message: error.message,
+            cause: error.cause,
+          })
+        }
+        throw createRPCErrorFromStatus(error.status, error.message, error.cause)
+      }
+      throw createRPCErrorFromUnknownError(error)
+    }
+  })
+
+const signInWithSocial = publicProcedure
+  .input(SignInWithSocialSchema)
+  .handler(async ({ context, input }) => {
+    try {
+      const callbackURL = `${env.NEXT_PUBLIC_BASE_PATH ?? ''}${PATHS.DASHBOARD}`
+      const requestSignUp = await signupFeatureFlag()
+      const { url } = await auth.api.signInSocial({
+        body: {
+          provider: input.provider,
+          callbackURL,
+          requestSignUp,
+        },
+        headers: context.headers,
+      })
+      return { success: true, redirectUrl: url }
     } catch (error) {
       if (error instanceof APIError) {
         if (typeof error.status === 'string') {
@@ -141,4 +173,12 @@ const resetPassword = publicProcedure
     }
   })
 
-export { forgotPassword, resetPassword, session, signIn, signOut, signUp }
+export {
+  forgotPassword,
+  resetPassword,
+  session,
+  signIn,
+  signInWithSocial,
+  signOut,
+  signUp,
+}

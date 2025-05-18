@@ -4,7 +4,7 @@ import { redirectAuthenticated } from '~/features/auth/server'
 
 async function ForgotPasswordPageImpl() {
   // Redirect to home if already signed in
-  redirectAuthenticated()
+  await redirectAuthenticated()
 
   return <ForgotPasswordForm />
 }

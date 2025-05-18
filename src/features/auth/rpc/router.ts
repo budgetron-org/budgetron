@@ -3,6 +3,7 @@ import {
   resetPassword,
   session,
   signIn,
+  signInWithSocial,
   signOut,
   signUp,
 } from './procedures'
@@ -12,6 +13,7 @@ const authRouter = {
   resetPassword,
   session,
   signIn,
+  signInWithSocial,
   signUp,
   signOut,
 }

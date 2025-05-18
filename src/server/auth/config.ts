@@ -3,8 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
 
 import { ResetPasswordEmail } from '~/emails/reset-password-email'
-import { env as clientEnv } from '~/env/client'
-import { env as serverEnv } from '~/env/server'
+import { env } from '~/env/server'
 import { db } from '~/server/db'
 import * as schema from '~/server/db/schema'
 import { sendEmail } from '~/server/email/service'
@@ -20,15 +19,8 @@ const PASSWORD_RESET_TOKEN_VALIDITY_IN_SECONDS = 15 * 60
  * @see https://www.better-auth.com/docs/reference/options
  */
 export const authConfig = {
-  /**
-   * Specify the options explicitly instead of letting the auth
-   * framework infer them from environment variables.
-   * This way, we can fail the build when the environment variables
-   * are not set as we validate them.
-   */
-  baseURL: clientEnv.NEXT_PUBLIC_BASE_URL,
-  basePath: clientEnv.NEXT_PUBLIC_BASE_PATH,
-  secret: serverEnv.AUTH_SECRET,
+  baseURL: env.AUTH_URL,
+  secret: env.AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema: {
@@ -90,8 +82,8 @@ export const authConfig = {
   },
   socialProviders: {
     google: {
-      clientId: serverEnv.GOOGLE_CLIENT_ID,
-      clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
       disableImplicitSignUp: true,
       enabled: true,
       prompt: 'select_account',

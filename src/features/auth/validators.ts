@@ -6,6 +6,12 @@ const SignInSchema = z.object({
   password: z.string(),
 })
 
+const SignInWithSocialSchema = z.object({
+  // TODO: Add more providers as we add support for them
+  provider: z.enum(['google']),
+  callbackURL: z.string().url().optional(),
+})
+
 const SignUpSchema = z
   .object({
     firstName: z.string().min(1, 'First Name is required.'),
@@ -34,4 +40,10 @@ const ResetPasswordSchema = z
     path: ['confirmPassword'],
   })
 
-export { ForgotPasswordSchema, ResetPasswordSchema, SignInSchema, SignUpSchema }
+export {
+  ForgotPasswordSchema,
+  ResetPasswordSchema,
+  SignInSchema,
+  SignInWithSocialSchema,
+  SignUpSchema,
+}

@@ -8,6 +8,7 @@ import type {
   RouterClient,
 } from '@orpc/server'
 
+import { env } from '~/env/shared'
 import type { AppRouter } from '~/server/api/router'
 
 /**
@@ -29,14 +30,18 @@ type ClientContext = {
 }
 
 function getBaseUrl() {
-  if (typeof window !== 'undefined') return window.location.origin
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  return `http://localhost:${process.env.PORT ?? 3000}`
+  if (typeof window === 'undefined') {
+    throw new Error('getBaseUrl can only be called on the client side')
+  }
+  return `${window.location.origin}${env.NEXT_PUBLIC_BASE_PATH ?? ''}`
 }
 
 const client = createORPCClient<RouterClient<AppRouter>>(
   new RPCLink<ClientContext>({
-    url: getBaseUrl() + '/api/rpc',
+    url: () => {
+      // This should only be called on the client side
+      return getBaseUrl() + '/api/rpc'
+    },
     plugins: [
       new BatchLinkPlugin({
         groups: [

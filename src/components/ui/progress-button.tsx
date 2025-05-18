@@ -35,7 +35,7 @@ function ProgressButton({
       <div className={cn(progressButtonVariants({ textAlign }))}>
         <div
           className={cn(
-            'col-start-1 col-end-2 row-start-1 row-end-2',
+            'col-start-1 col-end-2 row-start-1 row-end-2 inline-flex items-center justify-center gap-2',
             isLoading ? 'invisible' : 'visible',
           )}>
           {children}

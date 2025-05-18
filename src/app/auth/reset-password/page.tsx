@@ -8,7 +8,7 @@ async function ResetPasswordPageImpl({
   searchParams,
 }: Pick<NextServerPageProps, 'searchParams'>) {
   // Redirect to home if already signed in
-  redirectAuthenticated()
+  await redirectAuthenticated()
 
   // If there is no token or invalid token show the token expired page
   const searchParamsValue = await searchParams

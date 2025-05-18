@@ -1,5 +1,5 @@
-import { env } from '~/env/client'
 import type { NextConfig } from 'next'
+import { env } from './src/env/shared'
 
 const nextConfig: NextConfig = {
   basePath: env.NEXT_PUBLIC_BASE_PATH,

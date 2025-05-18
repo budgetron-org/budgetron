@@ -1,3 +1,6 @@
+# Build arguments
+ARG PORT=3000
+
 FROM node:alpine AS base
 
 # Stage 1: Install dependencies
@@ -29,5 +32,5 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-EXPOSE 3000
+EXPOSE ${PORT}
 CMD ["node", "server.js"]
