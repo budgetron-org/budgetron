@@ -25,9 +25,7 @@ export const authConfig = {
    * This way, we can fail the build when the environment variables
    * are not set as we validate them.
    */
-  baseURL: env.BASE_URL,
-  // BASE_PATH represents the app's base path. We need to append /api/auth to it.
-  basePath: `${env.BASE_PATH}/api/auth`,
+  baseURL: `${env.BASE_URL}${env.BASE_PATH ?? ''}`,
   secret: env.AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: 'pg',
@@ -74,6 +72,7 @@ export const authConfig = {
   // Supported auths
   emailAndPassword: {
     enabled: true,
+    autoSignIn: true,
     async sendResetPassword(data) {
       await sendEmail({
         to: data.user.email,
@@ -91,6 +90,7 @@ export const authConfig = {
     google: {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+      disableImplicitSignUp: true,
       enabled: true,
       prompt: 'select_account',
       mapProfileToUser(profile) {
