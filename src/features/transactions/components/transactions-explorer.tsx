@@ -8,6 +8,7 @@ import { useState } from 'react'
 
 import { Button } from '~/components/ui/button'
 import { DateRangePicker } from '~/components/ui/date-range-picker'
+import { PATHS } from '~/data/routes'
 import { api } from '~/rpc/client'
 import { CreateTransactionDialog } from './create-transaction-dialog'
 import { TransactionsTable } from './transactions-table'
@@ -31,7 +32,7 @@ function TransactionsExplorer() {
           onChange={setTransactionRange}
         />
         <Button asChild>
-          <Link href="/transactions/upload">
+          <Link href={PATHS.TRANSACTIONS_UPLOAD}>
             <IconCloudUpload />
             Import
           </Link>

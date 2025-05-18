@@ -7,6 +7,7 @@ import type { z } from 'zod'
 
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
+import { PATHS } from '~/data/routes'
 import { ResetPasswordSchema } from '~/features/auth/validators'
 import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
@@ -77,7 +78,7 @@ function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         {resetPassword.isSuccess && (
           <div className="flex flex-col gap-4">
             <p>Password reset successfully. Please sign in.</p>
-            <Link href="/sign-in" className="self-center">
+            <Link href={PATHS.SIGN_IN} className="self-center">
               <Button>Go to Sign In</Button>
             </Link>
           </div>
@@ -95,7 +96,7 @@ function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                 Please try again or contact support.
               </AlertDescription>
             </Alert>
-            <Link href="/sign-in" className="self-center">
+            <Link href={PATHS.SIGN_IN} className="self-center">
               <Button>Go back to Sign In</Button>
             </Link>
           </div>

@@ -25,7 +25,7 @@ const updatePassword = protectedProcedure
         },
         headers: context.headers,
       })
-      return { success: true, redirect: '/dashboard' }
+      return { success: true }
     } catch (error) {
       if (error instanceof APIError) {
         if (typeof error.status === 'string') {
@@ -63,7 +63,7 @@ const updateInfo = protectedProcedure
         },
         headers: context.headers,
       })
-      return { success: true, redirect: '/dashboard' }
+      return { success: true }
     } catch (error) {
       if (error instanceof APIError) {
         if (typeof error.status === 'string') {

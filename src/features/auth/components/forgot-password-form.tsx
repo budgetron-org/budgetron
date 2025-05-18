@@ -7,6 +7,7 @@ import type { z } from 'zod'
 
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
+import { PATHS } from '~/data/routes'
 import { ForgotPasswordSchema } from '~/features/auth/validators'
 import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
@@ -51,7 +52,7 @@ function ForgotPasswordForm() {
               We have sent you a link to reset your password. Please check your
               email.
             </p>
-            <Link href="/sign-in" className="self-center">
+            <Link href={PATHS.SIGN_IN} className="self-center">
               <Button>Go to Sign In</Button>
             </Link>
           </div>
@@ -81,7 +82,9 @@ function ForgotPasswordForm() {
 
             <div className="text-center text-sm">
               Remembered your password?{' '}
-              <Link href="/sign-in" className="underline underline-offset-4">
+              <Link
+                href={PATHS.SIGN_IN}
+                className="underline underline-offset-4">
                 Sign in
               </Link>
             </div>

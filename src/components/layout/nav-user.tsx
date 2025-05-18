@@ -25,6 +25,7 @@ import {
   useSidebar,
 } from '~/components/ui/sidebar'
 import { Skeleton } from '~/components/ui/skeleton'
+import { PATHS } from '~/data/routes'
 import type { User } from '~/features/user/types'
 import { api } from '~/rpc/client'
 
@@ -114,7 +115,7 @@ function NavUser({ user }: { user: User }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push('/account')}>
+              <DropdownMenuItem onClick={() => router.push(PATHS.ACCOUNT)}>
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>

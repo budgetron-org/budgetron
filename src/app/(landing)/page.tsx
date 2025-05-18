@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { BrandLogo } from '~/components/ui/brand-logo'
 import { Button } from '~/components/ui/button'
 import { Skeleton } from '~/components/ui/skeleton'
+import { PATHS } from '~/data/routes'
 import { SignInButton } from '~/features/auth/components/sign-in-button'
 import { SignUpButton } from '~/features/auth/components/sign-up-button'
 import { SignedIn } from '~/features/auth/components/signed-in'
@@ -16,7 +17,7 @@ export default function LandingPage() {
       <div className="flex gap-4">
         <SignedIn fallback={<Skeleton className="h-9 w-48" />}>
           <Button variant="default" asChild>
-            <Link href="/dashboard">
+            <Link href={PATHS.DASHBOARD}>
               Start tracking expenses <IconPigMoney />
             </Link>
           </Button>

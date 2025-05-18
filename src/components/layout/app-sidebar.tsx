@@ -13,11 +13,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '~/components/ui/sidebar'
+import { PATHS } from '~/data/routes'
+import { redirectToSignIn } from '~/features/auth/server'
 import { api } from '~/rpc/server'
 
 async function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const session = await api.auth.session()
-  if (!session) return null
+  if (!session?.user) redirectToSignIn()
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -25,7 +27,7 @@ async function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <BrandLogo href="/dashboard" />
+              <BrandLogo href={PATHS.DASHBOARD} />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

@@ -5,22 +5,24 @@ import {
   IconReportAnalytics,
   IconTransactionDollar,
 } from '@tabler/icons-react'
+
 import { NavMenu } from '~/components/layout/nav-menu'
+import { PATHS } from '~/data/routes'
 
 const items = [
   {
     title: 'Dashboard',
-    url: '/dashboard',
+    url: PATHS.DASHBOARD,
     icon: IconLayoutDashboard,
   },
   {
     title: 'Transactions',
-    url: '/transactions',
+    url: PATHS.TRANSACTIONS,
     icon: IconTransactionDollar,
   },
   {
     title: 'Reports',
-    url: '/reports',
+    url: PATHS.REPORTS,
     icon: IconReportAnalytics,
   },
 ]

@@ -2,10 +2,11 @@
 
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
-import type { z } from 'zod'
 import { toast } from 'sonner'
+import type { z } from 'zod'
 
 import { Button } from '~/components/ui/button'
+import { PATHS } from '~/data/routes'
 import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
 import { SecurityFormSchema } from '../validators'
@@ -62,7 +63,7 @@ function SecurityPage() {
         </form.AppField>
 
         <div className="flex flex-col gap-2 md:flex-row">
-          <Link href="/dashboard">
+          <Link href={PATHS.DASHBOARD}>
             <Button variant="outline">Cancel</Button>
           </Link>
           <form.Subscribe

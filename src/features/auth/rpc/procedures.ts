@@ -1,6 +1,7 @@
 import { ORPCError } from '@orpc/client'
 import { APIError } from 'better-auth/api'
 
+import { PATHS } from '~/data/routes'
 import {
   createRPCErrorFromStatus,
   createRPCErrorFromUnknownError,
@@ -22,7 +23,7 @@ const signIn = publicProcedure
         body: input,
         headers: context.headers,
       })
-      return { success: true, redirect: '/dashboard' }
+      return { success: true }
     } catch (error) {
       if (error instanceof APIError) {
         if (typeof error.status === 'string') {
@@ -52,7 +53,7 @@ const signUp = publicProcedure
         },
         headers: context.headers,
       })
-      return { success: true, redirect: '/dashboard' }
+      return { success: true }
     } catch (error) {
       if (error instanceof APIError) {
         if (typeof error.status === 'string') {
@@ -96,7 +97,7 @@ const forgotPassword = publicProcedure
   .handler(async ({ context, input }) => {
     try {
       const { status } = await auth.api.forgetPassword({
-        body: { email: input.email, redirectTo: '/reset-password' },
+        body: { email: input.email, redirectTo: PATHS.RESET_PASSWORD },
         headers: context.headers,
       })
       return { success: status }

@@ -1,17 +1,14 @@
-import { redirect } from 'next/navigation'
-
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { ResetPasswordExpiredPage } from '~/features/auth/components/reset-password-expired-page'
 import { ResetPasswordForm } from '~/features/auth/components/reset-password-form'
-import { api } from '~/rpc/server'
+import { redirectAuthenticated } from '~/features/auth/server'
 import type { NextServerPageProps } from '~/types/shared'
 
 async function ResetPasswordPageImpl({
   searchParams,
 }: Pick<NextServerPageProps, 'searchParams'>) {
   // Redirect to home if already signed in
-  const session = await api.auth.session()
-  if (session?.user) redirect('/dashboard')
+  redirectAuthenticated()
 
   // If there is no token or invalid token show the token expired page
   const searchParamsValue = await searchParams

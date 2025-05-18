@@ -9,6 +9,7 @@ import type { z } from 'zod'
 
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { SeparatorText } from '~/components/ui/separator-text'
+import { PATHS } from '~/data/routes'
 import { SignUpSchema } from '~/features/auth/validators'
 import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
@@ -111,7 +112,7 @@ function SignUpForm({ redirectAfterSignUp, providers = [] }: SignUpFormProps) {
 
         <div className="text-center text-sm">
           Already have an account?{' '}
-          <Link href="/sign-in" className="underline underline-offset-4">
+          <Link href={PATHS.SIGN_IN} className="underline underline-offset-4">
             Sign in
           </Link>
           !

@@ -9,6 +9,7 @@ import type { z } from 'zod'
 
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { SeparatorText } from '~/components/ui/separator-text'
+import { PATHS } from '~/data/routes'
 import { SignInSchema } from '~/features/auth/validators'
 import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
@@ -74,7 +75,7 @@ function SignInForm({ redirectAfterSignIn, providers = [] }: SignInFormProps) {
               {(field) => <field.TextField label="Password" type="password" />}
             </form.AppField>
             <Link
-              href="/forgot-password"
+              href={PATHS.FORGOT_PASSWORD}
               className="text-sm underline underline-offset-4">
               Forgot Password?
             </Link>
@@ -98,7 +99,7 @@ function SignInForm({ redirectAfterSignIn, providers = [] }: SignInFormProps) {
 
         <div className="text-center text-sm">
           Don&apos;t have an account?{' '}
-          <Link href="/sign-up" className="underline underline-offset-4">
+          <Link href={PATHS.SIGN_UP} className="underline underline-offset-4">
             Sign up
           </Link>{' '}
           now!

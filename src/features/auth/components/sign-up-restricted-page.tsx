@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { Button } from '~/components/ui/button'
+import { PATHS } from '~/data/routes'
 import { AuthHeader } from './auth-header'
 
 function SignUpRestrictedPage() {
@@ -10,7 +11,7 @@ function SignUpRestrictedPage() {
         title="Signups are currently disabled"
         subtitle="We’re not accepting new registrations at the moment. Please check back later or contact support if you need assistance."
       />
-      <Link href="/sign-in" className="mx-auto">
+      <Link href={PATHS.SIGN_IN} className="mx-auto">
         <Button>Go back to Sign In</Button>
       </Link>
     </div>

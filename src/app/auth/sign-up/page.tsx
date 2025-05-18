@@ -1,16 +1,14 @@
-import { redirect } from 'next/navigation'
-
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
+import { PATHS } from '~/data/routes'
 import { SignInWithGoogle } from '~/features/auth/components/sign-in-with-google'
 import { SignUpForm } from '~/features/auth/components/sign-up-form'
 import { SignUpRestrictedPage } from '~/features/auth/components/sign-up-restricted-page'
-import { api } from '~/rpc/server'
+import { redirectAuthenticated } from '~/features/auth/server'
 import { signupFeatureFlag } from '~/server/flags'
 
 async function SignUpPageImpl() {
   // Redirect to home if already signed in
-  const session = await api.auth.session()
-  if (session?.user) redirect('/dashboard')
+  redirectAuthenticated()
 
   // check to see if signup is allowed
   const signupAllowed = await signupFeatureFlag()
@@ -20,7 +18,7 @@ async function SignUpPageImpl() {
 
   return (
     <SignUpForm
-      redirectAfterSignUp="/dashboard"
+      redirectAfterSignUp={PATHS.DASHBOARD}
       providers={[<SignInWithGoogle key="google" />]}
     />
   )

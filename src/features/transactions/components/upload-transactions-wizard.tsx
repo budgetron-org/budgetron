@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import { Button } from '~/components/ui/button'
 import { ProgressButton } from '~/components/ui/progress-button'
 import { defineStepper } from '~/components/ui/stepper'
+import { PATHS } from '~/data/routes'
 import { TransactionsTable } from '~/features/transactions/components/transactions-table'
 import { UploadOFXForm } from '~/features/transactions/components/upload-ofx-form'
 import type { TransactionWithRelations } from '~/features/transactions/types'
@@ -66,7 +67,7 @@ function UploadTransactionsWizard({
         queryClient.invalidateQueries({
           queryKey: api.transactions.getByDateRange.key(),
         })
-        router.push('/transactions')
+        router.push(PATHS.TRANSACTIONS)
       },
       onError(error, input) {
         toast.error(`Error uploading ${input.length} transactions.`, {
@@ -142,7 +143,7 @@ function UploadTransactionsWizard({
             {methods.switch({
               'step-1': () => (
                 <>
-                  <Link href="/transactions">
+                  <Link href={PATHS.TRANSACTIONS}>
                     <Button variant="secondary">Cancel</Button>
                   </Link>
                   <ProgressButton

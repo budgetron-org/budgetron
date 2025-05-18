@@ -12,6 +12,7 @@ import type { User } from '~/features/user/types'
 import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
 import { ProfileFormSchema } from '../validators'
+import { PATHS } from '~/data/routes'
 
 interface ProfilePageProps {
   user: User
@@ -94,7 +95,7 @@ function ProfilePage({ user }: ProfilePageProps) {
         </form.AppField>
 
         <div className="flex flex-col gap-2 md:col-span-2 md:flex-row">
-          <Link href="/dashboard">
+          <Link href={PATHS.DASHBOARD}>
             <Button variant="outline">Cancel</Button>
           </Link>
           <form.Subscribe

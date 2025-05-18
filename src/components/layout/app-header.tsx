@@ -15,7 +15,7 @@ import {
 } from '~/components/ui/breadcrumb'
 import { Separator } from '~/components/ui/separator'
 import { SidebarTrigger } from '~/components/ui/sidebar'
-import { PATH_TITLES } from '~/data/path-titles'
+import { PATH_TITLE_MAP } from '~/data/routes'
 
 function useBreadcrumbs() {
   // get path name without the leading /
@@ -23,8 +23,8 @@ function useBreadcrumbs() {
 
   return useMemo(() => {
     // If a title is specified, then use that
-    if (pathname in PATH_TITLES) {
-      return PATH_TITLES[pathname as keyof typeof PATH_TITLES]
+    if (pathname in PATH_TITLE_MAP) {
+      return PATH_TITLE_MAP[pathname as keyof typeof PATH_TITLE_MAP]
     }
 
     // If no title is specified, then return path bits as
