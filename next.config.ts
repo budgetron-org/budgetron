@@ -1,10 +1,11 @@
-import { env } from '~/env/server'
+import { env } from '~/env/client'
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  basePath: env.BASE_PATH,
+  basePath: env.NEXT_PUBLIC_BASE_PATH,
   /* config options here */
   output: 'standalone',
+  transpilePackages: ['@t3-oss/env-nextjs', '@t3-oss/env-core'],
   images: {
     remotePatterns: [
       {

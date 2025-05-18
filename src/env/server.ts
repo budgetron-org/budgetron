@@ -8,9 +8,6 @@ const env = createEnv({
       .enum(['development', 'test', 'production'])
       .default('development'),
 
-    BASE_URL: z.string().url(),
-    BASE_PATH: z.string().optional(),
-
     AUTH_SECRET: z.string().min(1),
 
     GOOGLE_CLIENT_ID: z.string().min(1),

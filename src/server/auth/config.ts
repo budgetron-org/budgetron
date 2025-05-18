@@ -3,7 +3,8 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
 
 import { ResetPasswordEmail } from '~/emails/reset-password-email'
-import { env } from '~/env/server'
+import { env as clientEnv } from '~/env/client'
+import { env as serverEnv } from '~/env/server'
 import { db } from '~/server/db'
 import * as schema from '~/server/db/schema'
 import { sendEmail } from '~/server/email/service'
@@ -25,8 +26,9 @@ export const authConfig = {
    * This way, we can fail the build when the environment variables
    * are not set as we validate them.
    */
-  baseURL: `${env.BASE_URL}${env.BASE_PATH ?? ''}`,
-  secret: env.AUTH_SECRET,
+  baseURL: clientEnv.NEXT_PUBLIC_BASE_URL,
+  basePath: clientEnv.NEXT_PUBLIC_BASE_PATH,
+  secret: serverEnv.AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema: {
@@ -88,8 +90,8 @@ export const authConfig = {
   },
   socialProviders: {
     google: {
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      clientId: serverEnv.GOOGLE_CLIENT_ID,
+      clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
       disableImplicitSignUp: true,
       enabled: true,
       prompt: 'select_account',
