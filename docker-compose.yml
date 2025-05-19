@@ -4,8 +4,6 @@ services:
     build: .
     args:
       - PORT=$DOCKER_PORT
-    ports:
-      - '$DOCKER_PORT:$DOCKER_PORT'
     environment:
       - NODE_ENV=production
     networks:
@@ -14,8 +12,10 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik
-      - traefik.http.routers.budgetify.rule=(Host(`omen.local`) && PathPrefix(`/budgetify`))
-      - traefik.http.routers.budgetify.entrypoints=web
+      - traefik.http.routers.budgetify.rule=Host(`budgetify.raghavan.app`)
+      - traefik.http.routers.budgetify.entrypoints=https
+      - traefik.http.routers.budgetify.tls=true
+      - traefik.http.services.budgetify.loadbalancer.server.port=$DOCKER_PORT
 
 networks:
   internal:
