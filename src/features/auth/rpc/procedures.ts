@@ -7,7 +7,7 @@ import {
   createRPCErrorFromUnknownError,
 } from '~/rpc/utils'
 import { publicProcedure } from '~/server/api/rpc'
-import { auth } from '~/server/auth'
+import { getAuth } from '~/server/auth'
 import { signupFeatureFlag } from '~/server/flags'
 import {
   ForgotPasswordSchema,
@@ -21,7 +21,7 @@ const signIn = publicProcedure
   .input(SignInSchema)
   .handler(async ({ context, input }) => {
     try {
-      await auth.api.signInEmail({
+      await getAuth().api.signInEmail({
         body: input,
         headers: context.headers,
       })
@@ -46,7 +46,7 @@ const signInWithSocial = publicProcedure
     try {
       const callbackURL = PATHS.DASHBOARD
       const requestSignUp = await signupFeatureFlag()
-      const { url } = await auth.api.signInSocial({
+      const { url } = await getAuth().api.signInSocial({
         body: {
           provider: input.provider,
           callbackURL,
@@ -74,7 +74,7 @@ const signUp = publicProcedure
   .handler(async ({ context, input }) => {
     const { email, firstName, lastName, password } = input
     try {
-      await auth.api.signUpEmail({
+      await getAuth().api.signUpEmail({
         body: {
           email,
           firstName,
@@ -101,7 +101,7 @@ const signUp = publicProcedure
 
 const signOut = publicProcedure.handler(async ({ context }) => {
   try {
-    await auth.api.signOut({
+    await getAuth().api.signOut({
       headers: context.headers,
     })
     return { success: true, redirect: '/' }
@@ -120,14 +120,14 @@ const signOut = publicProcedure.handler(async ({ context }) => {
 })
 
 const session = publicProcedure.handler(async ({ context }) => {
-  return auth.api.getSession({ headers: context.headers })
+  return getAuth().api.getSession({ headers: context.headers })
 })
 
 const forgotPassword = publicProcedure
   .input(ForgotPasswordSchema)
   .handler(async ({ context, input }) => {
     try {
-      const { status } = await auth.api.forgetPassword({
+      const { status } = await getAuth().api.forgetPassword({
         body: { email: input.email, redirectTo: PATHS.RESET_PASSWORD },
         headers: context.headers,
       })
@@ -150,7 +150,7 @@ const resetPassword = publicProcedure
   .input(ResetPasswordSchema)
   .handler(async ({ context, input }) => {
     try {
-      const { status } = await auth.api.resetPassword({
+      const { status } = await getAuth().api.resetPassword({
         body: {
           newPassword: input.password,
           token: input.token,

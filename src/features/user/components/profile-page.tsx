@@ -8,11 +8,11 @@ import type { z } from 'zod'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { AvatarPicker } from '~/components/widgets/avatar-picker'
-import type { User } from '~/features/user/types'
+import { PATHS } from '~/data/routes'
 import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
+import type { User } from '~/server/auth'
 import { ProfileFormSchema } from '../validators'
-import { PATHS } from '~/data/routes'
 
 interface ProfilePageProps {
   user: User

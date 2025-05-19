@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { env } from '~/env/server'
-import { provider } from './provider'
+import { getProvider } from './provider'
 
 type SendEmailOptions = {
   to: string | string[]
@@ -15,7 +15,7 @@ type SendEmailOptions = {
  * @returns The response from the email provider.
  */
 async function sendEmail({ to, subject, body }: SendEmailOptions) {
-  const { data, error } = await provider.emails.send({
+  const { data, error } = await getProvider().emails.send({
     from: env.EMAIL_PROVIDER_FROM_EMAIL,
     to,
     subject,

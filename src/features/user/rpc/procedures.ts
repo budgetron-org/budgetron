@@ -6,19 +6,19 @@ import {
   createRPCErrorFromUnknownError,
 } from '~/rpc/utils'
 import { protectedProcedure } from '~/server/api/rpc'
-import { auth } from '~/server/auth'
-import { UpdateInfoInputSchema, UpdatePasswordInputSchema } from '../validators'
+import { getAuth } from '~/server/auth'
 import { upload } from '~/server/blob/service'
+import { UpdateInfoInputSchema, UpdatePasswordInputSchema } from '../validators'
 
 const listAccounts = protectedProcedure.handler(async ({ context }) => {
-  return auth.api.listUserAccounts({ headers: context.headers })
+  return getAuth().api.listUserAccounts({ headers: context.headers })
 })
 
 const updatePassword = protectedProcedure
   .input(UpdatePasswordInputSchema)
   .handler(async ({ context, input }) => {
     try {
-      await auth.api.changePassword({
+      await getAuth().api.changePassword({
         body: {
           newPassword: input.newPassword,
           currentPassword: input.oldPassword,
@@ -54,7 +54,7 @@ const updateInfo = protectedProcedure
         })
         imageUrl = url
       }
-      await auth.api.updateUser({
+      await getAuth().api.updateUser({
         body: {
           firstName: input.firstName,
           lastName: input.lastName,

@@ -1,7 +1,7 @@
 import { ORPCError, os } from '@orpc/server'
 import { connection } from 'next/server'
 
-import { auth } from '~/server/auth'
+import { getAuth } from '~/server/auth'
 import type { AwaitedReturnType } from '~/types/shared'
 
 /**
@@ -15,7 +15,7 @@ import type { AwaitedReturnType } from '~/types/shared'
  * wrap this and provides the required context.
  */
 async function createRPCContext(options: { headers: Headers }) {
-  const session = await auth.api.getSession({ headers: options.headers })
+  const session = await getAuth().api.getSession({ headers: options.headers })
   return { session, ...options }
 }
 
