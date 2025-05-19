@@ -1,5 +1,6 @@
 # Build arguments
 ARG PORT=3000
+ARG CI=false
 
 FROM node:alpine AS base
 
@@ -14,6 +15,8 @@ RUN corepack enable pnpm && pnpm install --frozen-lockfile
 # Stage 2: Build the application
 FROM base AS builder
 WORKDIR /app
+# Set CI environment variable
+ENV CI=${CI}
 # Disable Next telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
