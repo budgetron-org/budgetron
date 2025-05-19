@@ -15,6 +15,7 @@ RUN corepack enable pnpm && pnpm install --frozen-lockfile
 # Stage 2: Build the application
 FROM base AS builder
 WORKDIR /app
+ARG CI
 # Set CI environment variable
 ENV CI=${CI}
 # Disable Next telemetry
