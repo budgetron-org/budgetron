@@ -1,9 +1,10 @@
 services:
   web:
     restart: unless-stopped
-    build: .
-    args:
-      - PORT=$DOCKER_PORT
+    build:
+      context: .
+      args:
+        - PORT=$DOCKER_PORT
     environment:
       - NODE_ENV=production
     networks:
