@@ -2,6 +2,8 @@ name: Build and Push Docker Image
 
 on:
   push:
+    branches:
+      - master
     tags:
       - 'v*' # Trigger on tag push like v1.0.0
 
