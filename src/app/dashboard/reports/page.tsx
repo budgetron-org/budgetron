@@ -1,7 +1,11 @@
+import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
 import { AnalyticsReport } from '~/features/analytics/components/analytics-report'
+import { redirectUnauthenticated } from '~/features/auth/server'
 
-export default async function ReportsPage() {
+async function ReportsPageImpl() {
+  await redirectUnauthenticated()
+
   return (
     <Tabs defaultValue="spending" className="flex h-full w-full flex-col">
       <TabsList>
@@ -15,5 +19,13 @@ export default async function ReportsPage() {
         <AnalyticsReport reportFor="income" title="Income by Category" />
       </TabsContent>
     </Tabs>
+  )
+}
+
+export default async function ReportsPage() {
+  return (
+    <SuspenseBoundary>
+      <ReportsPageImpl />
+    </SuspenseBoundary>
   )
 }

@@ -2,7 +2,6 @@ import { ORPCError } from '@orpc/client'
 import { APIError } from 'better-auth/api'
 
 import { PATHS } from '~/data/routes'
-import { env } from '~/env/shared'
 import {
   createRPCErrorFromStatus,
   createRPCErrorFromUnknownError,
@@ -45,7 +44,7 @@ const signInWithSocial = publicProcedure
   .input(SignInWithSocialSchema)
   .handler(async ({ context, input }) => {
     try {
-      const callbackURL = `${env.NEXT_PUBLIC_BASE_PATH ?? ''}${PATHS.DASHBOARD}`
+      const callbackURL = PATHS.DASHBOARD
       const requestSignUp = await signupFeatureFlag()
       const { url } = await auth.api.signInSocial({
         body: {

@@ -8,7 +8,6 @@ import type {
   RouterClient,
 } from '@orpc/server'
 
-import { env } from '~/env/shared'
 import type { AppRouter } from '~/server/api/router'
 
 /**
@@ -33,7 +32,7 @@ function getBaseUrl() {
   if (typeof window === 'undefined') {
     throw new Error('getBaseUrl can only be called on the client side')
   }
-  return `${window.location.origin}${env.NEXT_PUBLIC_BASE_PATH ?? ''}`
+  return window.location.origin
 }
 
 const client = createORPCClient<RouterClient<AppRouter>>(

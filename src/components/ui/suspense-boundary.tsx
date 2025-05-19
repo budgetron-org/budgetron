@@ -16,12 +16,13 @@ function SuspenseBoundary({
   return (
     <Suspense
       fallback={
-        <div className={cn(fullScreenFallback && 'h-screen w-screen')}>
-          {fallback ?? (
-            <div className="flex h-full w-full items-center justify-center">
-              <IconLoader2 className="animate-spin" />
-            </div>
-          )}
+        <div
+          className={cn(
+            'flex items-center justify-center',
+            fullScreenFallback && 'h-screen w-screen',
+            !fullScreenFallback && 'h-full w-full',
+          )}>
+          {fallback ?? <IconLoader2 className="animate-spin" />}
         </div>
       }>
       {children}

@@ -1,10 +1,15 @@
 import { defineConfig } from 'drizzle-kit'
-import { env } from './src/env/server'
+
+// assert the required env variables
+console.assert(
+  process.env.DB_URL,
+  '❌ Incorrect environment variables: DB_URL is required',
+)
 
 export default defineConfig({
   dialect: 'postgresql',
   dbCredentials: {
-    url: env.DB_URL,
+    url: process.env.DB_URL!,
     ssl: false,
   },
   out: './src/server/db/migrations',
