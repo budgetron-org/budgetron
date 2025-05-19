@@ -1,9 +1,6 @@
 import { createEnv } from '@t3-oss/env-nextjs'
 import { z } from 'zod'
 
-console.log('CI: ', process.env.CI)
-console.log('Skip Validations: ', process.env.CI === 'true')
-
 const env = createEnv({
   emptyStringAsUndefined: true,
   server: {
