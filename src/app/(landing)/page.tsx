@@ -9,6 +9,7 @@ import { SignInButton } from '~/features/auth/components/sign-in-button'
 import { SignUpButton } from '~/features/auth/components/sign-up-button'
 import { SignedIn } from '~/features/auth/components/signed-in'
 import { SignedOut } from '~/features/auth/components/signed-out'
+import { APP_VERSION } from '~/lib/version'
 
 export default function LandingPage() {
   return (
@@ -26,6 +27,12 @@ export default function LandingPage() {
           <SignInButton variant="secondary">Sign In</SignInButton>
           <SignUpButton variant="default">Join now</SignUpButton>
         </SignedOut>
+      </div>
+      <div className="absolute right-4 bottom-4 left-4">
+        <div className="text-muted-foreground text-center text-sm">
+          <p>© {new Date().getFullYear()} Budgetify. All rights reserved.</p>
+          <p>Version: {APP_VERSION}</p>
+        </div>
       </div>
     </div>
   )
