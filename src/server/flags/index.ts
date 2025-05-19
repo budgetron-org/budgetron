@@ -10,8 +10,11 @@ type SignUpEntity = {
 }
 const identifySignup = dedupe<Parameters<Identify<SignUpEntity>>, SignUpEntity>(
   ({ headers }) => {
-    const host = headers.get('host')
-    return { host }
+    if (headers.get('host')) return { host: headers.get('host') }
+    if (headers.get('x-host')) return { host: headers.get('x-host') }
+    if (headers.get('x-forwarded-host'))
+      return { host: headers.get('x-forwarded-host') }
+    return { host: null }
   },
 )
 const signupFeatureFlag = flag<boolean, SignUpEntity>({
@@ -19,18 +22,21 @@ const signupFeatureFlag = flag<boolean, SignUpEntity>({
   defaultValue: false,
   identify: identifySignup,
   async decide({ entities }) {
-    if (typeof entities?.host !== 'string') return false
     const allowed = await db.query.FeatureFlagsTable.findFirst({
       where: (t, { eq }) => eq(t.name, 'allow_signup'),
     })
-    if (!allowed) return false
+    if (!allowed || !allowed.enabled) return false
+
+    // If the allowed domains contains a wildcard, then we allow signup for all domains
+    if (allowed.domains.includes('*')) return true
+
+    // If we cannot identify the domain, then we do not allow signup
+    if (!entities?.host) return false
+
     // The signup feature flag is enabled if:
     // 1. The flag is enabled
-    // 2. The domain is in the allowed domains or the allowed domains contains a wildcard
-    return (
-      allowed.enabled &&
-      (allowed.domains.includes(entities.host) || allowed.domains.includes('*'))
-    )
+    // 2. The domain is in the allowed domains
+    return allowed.domains.includes(entities.host)
   },
 })
 
