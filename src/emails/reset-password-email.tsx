@@ -1,5 +1,8 @@
 import { Button, Heading, Link, Section, Text } from '@react-email/components'
+
+import { APP_NAME } from '~/lib/app-metadata'
 import { EmailLayout } from './shared/email-layout'
+import { capitalize } from 'lodash'
 
 interface ResetPasswordEmailProps {
   name: string
@@ -19,9 +22,9 @@ function ResetPasswordEmail({
       <Section>
         <Text>Hi {name},</Text>
         <Text>
-          We received a request to reset the password for your Budgetify
-          account. If this was you, please click the button below to reset your
-          password.
+          We received a request to reset the password for your{' '}
+          <strong>{capitalize(APP_NAME)}</strong> account. If this was you,
+          please click the button below to reset your password.
         </Text>
         <Button
           className="bg-primary text-primary-foreground rounded-lg p-3"
@@ -58,7 +61,7 @@ export { ResetPasswordEmail }
  */
 ResetPasswordEmail.PreviewProps = {
   name: 'John Doe',
-  resetPasswordUrl: 'https://budgetify.com/reset-password',
+  resetPasswordUrl: 'https://example.com/reset-password',
   resetPasswordUrlExpiresIn: 15 * 60,
 } satisfies ResetPasswordEmailProps
 export default ResetPasswordEmail

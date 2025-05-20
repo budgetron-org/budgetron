@@ -3,7 +3,6 @@ import type { ComponentProps } from 'react'
 import { NavMain } from '~/components/layout/nav-main'
 import { NavSecondary } from '~/components/layout/nav-secondary'
 import { NavUser } from '~/components/layout/nav-user'
-import { BrandLogo } from '~/components/ui/brand-logo'
 import {
   Sidebar,
   SidebarContent,
@@ -13,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '~/components/ui/sidebar'
+import { BrandLogo } from '~/components/widgets/brand-logo'
 import { PATHS } from '~/data/routes'
 import { redirectToSignIn } from '~/features/auth/server'
 import { api } from '~/rpc/server'

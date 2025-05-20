@@ -1,10 +1,12 @@
+import { capitalize } from 'lodash'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { ReactNode } from 'react'
 
-import { RootProvider } from '~/providers/root-provider'
 import { Toaster } from '~/components/ui/sonner'
+import { APP_DESCRIPTION, APP_KEYWORDS, APP_NAME } from '~/lib/app-metadata'
 import { cn } from '~/lib/utils'
+import { RootProvider } from '~/providers/root-provider'
 import './globals.css'
 
 const geistSans = Geist({
@@ -18,8 +20,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Budgetify',
-  description: 'Every Dollar Counts.',
+  title: capitalize(APP_NAME),
+  description: APP_DESCRIPTION,
+  keywords: APP_KEYWORDS,
 }
 
 export default function RootLayout({

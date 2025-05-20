@@ -1,7 +1,7 @@
 'use client'
 
 import { IconTrash, IconUserFilled } from '@tabler/icons-react'
-import _ from 'lodash'
+import { capitalize } from 'lodash'
 import { useCallback, useId, useState, type ChangeEventHandler } from 'react'
 import { toast } from 'sonner'
 
@@ -63,7 +63,7 @@ function AvatarPicker({
           <AvatarImage src={preview ?? undefined} />
           <AvatarFallback className="text-5xl">
             {userName ? (
-              _.capitalize(userName?.[0])
+              capitalize(userName?.[0])
             ) : (
               <IconUserFilled className="text-muted-foreground size-12" />
             )}

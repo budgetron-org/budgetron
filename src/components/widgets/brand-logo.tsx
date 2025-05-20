@@ -1,4 +1,7 @@
-import { IconPigMoney } from '@tabler/icons-react'
+import { capitalize } from 'lodash'
+import Image from 'next/image'
+
+import { APP_NAME } from '~/lib/app-metadata'
 import { cn } from '~/lib/utils'
 
 const SIZE_CLASS = {
@@ -24,14 +27,14 @@ function BrandLogo({ href, isIconOnly = false, size = 'md' }: BrandLogoProps) {
     <Comp href={href} className="flex items-center gap-2">
       <div
         className={cn(
-          'bg-primary text-primary-foreground flex aspect-square items-center justify-center rounded-lg',
+          'relative aspect-square overflow-hidden rounded-lg',
           SIZE_CLASS.ICON[size],
         )}>
-        <IconPigMoney />
+        <Image src="/images/logo.png" alt={APP_NAME} fill />
       </div>
       {!isIconOnly && (
         <div className={cn('flex-1', SIZE_CLASS.TEXT[size])}>
-          <span className="font-bold">Budgetify</span>
+          <span className="font-bold">{capitalize(APP_NAME)}</span>
         </div>
       )}
     </Comp>

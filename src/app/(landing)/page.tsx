@@ -1,15 +1,15 @@
-import { IconPigMoney } from '@tabler/icons-react'
+import { capitalize } from 'lodash'
 import Link from 'next/link'
 
-import { BrandLogo } from '~/components/ui/brand-logo'
 import { Button } from '~/components/ui/button'
 import { Skeleton } from '~/components/ui/skeleton'
+import { BrandLogo } from '~/components/widgets/brand-logo'
 import { PATHS } from '~/data/routes'
 import { SignInButton } from '~/features/auth/components/sign-in-button'
 import { SignUpButton } from '~/features/auth/components/sign-up-button'
 import { SignedIn } from '~/features/auth/components/signed-in'
 import { SignedOut } from '~/features/auth/components/signed-out'
-import { APP_VERSION } from '~/lib/version'
+import { APP_NAME, APP_VERSION } from '~/lib/app-metadata'
 
 export default function LandingPage() {
   return (
@@ -18,9 +18,7 @@ export default function LandingPage() {
       <div className="flex gap-4">
         <SignedIn fallback={<Skeleton className="h-9 w-48" />}>
           <Button variant="default" asChild>
-            <Link href={PATHS.DASHBOARD}>
-              Start tracking expenses <IconPigMoney />
-            </Link>
+            <Link href={PATHS.DASHBOARD}>Start tracking expenses</Link>
           </Button>
         </SignedIn>
         <SignedOut fallback={<Skeleton className="h-9 w-48" />}>
@@ -30,7 +28,10 @@ export default function LandingPage() {
       </div>
       <div className="absolute right-4 bottom-4 left-4">
         <div className="text-muted-foreground text-center text-sm">
-          <p>© {new Date().getFullYear()} Budgetify. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} {capitalize(APP_NAME)}. All rights
+            reserved.
+          </p>
           <p>Version: {APP_VERSION}</p>
         </div>
       </div>
