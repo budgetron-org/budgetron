@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useMemo, type ComponentProps } from 'react'
+import { useState, type ComponentProps } from 'react'
 
 import {
   Select,
@@ -21,34 +21,26 @@ type Data = {
   children?: Omit<Data, 'children'>[]
 }
 
-function isHierarchicalData<D extends Data>(data: Readonly<D[]>) {
-  return data.some((i) => i.children != null)
-}
-
 function findLabel<V extends string, D extends Data>(
-  data: Readonly<D[]>,
-  value: V,
-  fallback = 'NO_NAME_ERROR',
+  data: Readonly<D[]> | undefined,
+  value: V | undefined,
 ) {
+  if (!data || !value) return undefined
   const parent = data.find(
     (item) =>
       item.value === value ||
       item.children?.some((child) => child.value === value),
   )
   if (!parent) {
-    debugger
-    return fallback
+    return undefined
   }
   if (parent.value === value || parent.children == null) return parent.label
 
-  return `${parent.label} - ${parent.children.find((child) => child.value === value)?.label ?? fallback}`
+  return `${parent.label} - ${parent.children.find((child) => child.value === value)?.label ?? undefined}`
 }
 
 interface CategoryPickerProps
-  extends Pick<
-      ComponentProps<typeof Select>,
-      'value' | 'defaultValue' | 'onValueChange'
-    >,
+  extends Pick<ComponentProps<typeof Select>, 'defaultValue' | 'onValueChange'>,
     Pick<ComponentProps<typeof SelectValue>, 'placeholder'>,
     Pick<ComponentProps<typeof SelectTrigger>, 'aria-label'> {
   type?: TransactionType | 'ALL'
@@ -60,7 +52,6 @@ function CategoryPicker({
   onValueChange,
   placeholder,
   type = 'ALL',
-  value,
 }: CategoryPickerProps) {
   const { data, isPending } = useQuery(
     api.categories.getAll.queryOptions({
@@ -78,20 +69,20 @@ function CategoryPicker({
         })),
     }),
   )
-  const hasGroups = useMemo(() => data && isHierarchicalData(data), [data])
-  const displayValue = useMemo(() => {
-    if (!hasGroups || !value || !data) return undefined
-    return findLabel(data, value)
-  }, [data, hasGroups, value])
+  const [internalValue, setInternalValue] = useState(defaultValue)
 
   return (
     <SkeletonWrapper isLoading={isPending}>
       <Select
-        defaultValue={defaultValue}
-        value={value}
-        onValueChange={onValueChange}>
+        value={internalValue}
+        onValueChange={(value) => {
+          setInternalValue(value)
+          onValueChange?.(value)
+        }}>
         <SelectTrigger aria-label={ariaLabel}>
-          <SelectValue placeholder={placeholder}>{displayValue}</SelectValue>
+          <SelectValue placeholder={placeholder}>
+            {findLabel(data, internalValue)}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {data?.map((item) =>

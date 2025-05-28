@@ -34,7 +34,6 @@ function findLabel<V extends string, D extends Data<unknown>>(
       item.children?.some((child) => child.value === value),
   )
   if (!parent) {
-    debugger
     return fallback
   }
   if (parent.value === value || parent.children == null) return parent.label

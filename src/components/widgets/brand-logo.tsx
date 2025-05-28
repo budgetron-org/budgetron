@@ -25,12 +25,13 @@ function BrandLogo({ href, isIconOnly = false, size = 'md' }: BrandLogoProps) {
   const Comp = href ? 'a' : 'div'
   return (
     <Comp href={href} className="flex items-center gap-2">
-      <div
-        className={cn(
-          'relative aspect-square overflow-hidden rounded-lg',
-          SIZE_CLASS.ICON[size],
-        )}>
-        <Image src="/images/logo.png" alt={APP_NAME} fill />
+      <div className={cn('relative aspect-square', SIZE_CLASS.ICON[size])}>
+        <Image
+          src="/images/logo.png"
+          alt={APP_NAME}
+          className="overflow-hidden rounded-lg"
+          fill
+        />
       </div>
       {!isIconOnly && (
         <div className={cn('flex-1', SIZE_CLASS.TEXT[size])}>

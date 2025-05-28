@@ -11,6 +11,7 @@ import {
 import { Label, Pie, PieChart, Sector } from 'recharts'
 import type { PieSectorDataItem } from 'recharts/types/polar/Pie'
 
+import { Button } from '~/components/ui/button'
 import {
   Card,
   CardContent,
@@ -37,9 +38,17 @@ import type { CategoryReport } from '~/features/analytics/types'
 import { getCurrencyFormatter } from '~/lib/format'
 import { safeParseNumber } from '~/lib/utils'
 
-type ChartItem = { category: string; total: number; fill: string }
+type ChartItem = {
+  category: string
+  total: number
+  fill: string
+  opacity: number
+}
 
-function useChartDataAndConfig(data: CategoryReport[]) {
+function useChartDataAndConfig(
+  data: CategoryReport[],
+  selectedCategory?: string,
+) {
   return useMemo(() => {
     const chartData: ChartItem[] = []
     const chartConfig: ChartConfig = {
@@ -60,6 +69,8 @@ function useChartDataAndConfig(data: CategoryReport[]) {
         category: key,
         total: safeParseNumber(item.total),
         fill: `var(--color-${key})`,
+        opacity:
+          selectedCategory === undefined || selectedCategory === key ? 1 : 0.3,
       })
 
       chartConfig[key] = {
@@ -69,7 +80,7 @@ function useChartDataAndConfig(data: CategoryReport[]) {
     })
 
     return { chartData, chartConfig }
-  }, [data])
+  }, [data, selectedCategory])
 }
 
 function useGroupedCategories(data: CategoryReport[]) {
@@ -112,7 +123,11 @@ function CategoryReportCard({
   onCategorySelect,
   ...props
 }: CategoryReportCardProps) {
-  const { chartConfig, chartData } = useChartDataAndConfig(data)
+  const [selectedCategory, setSelectedCategory] = useState<string>()
+  const { chartConfig, chartData } = useChartDataAndConfig(
+    data,
+    selectedCategory,
+  )
   const chartId = useId()
   const categories = useGroupedCategories(data)
 
@@ -123,7 +138,6 @@ function CategoryReportCard({
     )
   }, [chartData, formatter])
 
-  const [selectedCategory, setSelectedCategory] = useState<string>()
   const activeIndex = useMemo(() => {
     return chartData.findIndex((item) => item.category === selectedCategory)
   }, [selectedCategory, chartData])
@@ -145,46 +159,56 @@ function CategoryReportCard({
         <CardTitle>{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
         {categories.length > 0 && (
-          <Select
-            value={selectedCategory}
-            onValueChange={(value) => {
-              onCategorySelect?.(value)
-              setSelectedCategory(value)
-            }}>
-            <SelectTrigger
-              className="h-7 w-[150px] rounded-lg pl-2.5"
-              aria-label="Select category to filter">
-              <SelectValue placeholder="Select category" />
-            </SelectTrigger>
-            <SelectContent align="end" className="p-4" data-chart={chartId}>
-              <ChartStyle id={chartId} config={chartConfig} />
-              {categories.map((category) => (
-                <SelectGroup key={category.id}>
-                  <SelectLabel>{category.name}</SelectLabel>
-                  {category.children.map((subcategory) => {
-                    const config =
-                      chartConfig[subcategory.id as keyof typeof chartConfig]
-                    if (!config) {
-                      return null
-                    }
-                    return (
-                      <SelectItem key={subcategory.id} value={subcategory.id}>
-                        <div className="flex items-center gap-2 text-xs">
-                          <span
-                            className="flex h-3 w-3 shrink-0 rounded-sm"
-                            style={{
-                              backgroundColor: `var(--color-${subcategory.id})`,
-                            }}
-                          />
-                          {subcategory.name}
-                        </div>
-                      </SelectItem>
-                    )
-                  })}
-                </SelectGroup>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            <Select
+              value={selectedCategory}
+              onValueChange={(value) => {
+                onCategorySelect?.(value)
+                setSelectedCategory(value)
+              }}>
+              <SelectTrigger
+                className="h-7 w-[150px] rounded-lg pl-2.5"
+                aria-label="Select category to filter">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent align="end" className="p-4" data-chart={chartId}>
+                <ChartStyle id={chartId} config={chartConfig} />
+                {categories.map((category) => (
+                  <SelectGroup key={category.id}>
+                    <SelectLabel>{category.name}</SelectLabel>
+                    {category.children.map((subcategory) => {
+                      const config =
+                        chartConfig[subcategory.id as keyof typeof chartConfig]
+                      if (!config) {
+                        return null
+                      }
+                      return (
+                        <SelectItem key={subcategory.id} value={subcategory.id}>
+                          <div className="flex items-center gap-2 text-xs">
+                            <span
+                              className="flex h-3 w-3 shrink-0 rounded-sm"
+                              style={{
+                                backgroundColor: `var(--color-${subcategory.id})`,
+                              }}
+                            />
+                            {subcategory.name}
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectGroup>
+                ))}
+              </SelectContent>
+            </Select>
+            {selectedCategory && (
+              <Button
+                className="h-7 rounded-lg"
+                variant="outline"
+                onClick={() => setSelectedCategory(undefined)}>
+                Clear
+              </Button>
+            )}
+          </div>
         )}
       </CardHeader>
       <CardContent>
@@ -238,7 +262,7 @@ function CategoryReportCard({
                             dominantBaseline="middle">
                             <tspan
                               x={viewBox.cx}
-                              y={(viewBox.cy ?? 0) - 170}
+                              y={(viewBox.cy ?? 0) - 200}
                               className="fill-foreground text-xl font-semibold">
                               {centerContent.title}
                             </tspan>
@@ -257,10 +281,11 @@ function CategoryReportCard({
               </PieChart>
             </ChartContainer>
             <div className="grid auto-rows-min grid-cols-[min-content_minmax(0,1fr)] gap-4">
-              {chartData.map((item, index) => (
+              {chartData.map((item) => (
                 <Fragment key={item.category}>
                   <div
-                    className={`bg-(--chart-${index + 1}) aspect-square size-6 rounded-md`}
+                    style={{ backgroundColor: item.fill }}
+                    className="aspect-square size-4 self-center rounded-sm"
                   />
                   <div className="text-muted-foreground flex justify-between gap-2">
                     {chartConfig[item.category]?.label}

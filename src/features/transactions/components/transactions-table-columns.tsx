@@ -199,9 +199,13 @@ function getColumns<Data extends TransactionWithRelations>() {
             />
           )
         }
+
         return (
           row.original.category && (
             <div className="flex items-center gap-2">
+              {row.original.category.parent && (
+                <>{row.original.category.parent.name} / </>
+              )}
               {row.original.category.name}
             </div>
           )

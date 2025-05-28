@@ -164,7 +164,7 @@ function UploadTransactionsWizard({
                         transactionsToUpload.map((t) => ({
                           ...t,
                           bankAccountId: t.bankAccount?.id,
-                          categoryId: t.category?.id,
+                          categoryId: t.categoryId ?? t.category?.id,
                           groupId: t.group?.id,
                         })),
                       )

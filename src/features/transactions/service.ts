@@ -84,7 +84,11 @@ async function selectTransactions(filters: SelectTransactionFilters) {
   return db.query.TransactionTable.findMany({
     with: {
       bankAccount: true,
-      category: true,
+      category: {
+        with: {
+          parent: true,
+        },
+      },
       group: true,
     },
     where: and(...conditions),
