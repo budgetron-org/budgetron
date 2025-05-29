@@ -5,7 +5,7 @@ import {
   type ComponentPropsWithoutRef,
   type Ref,
 } from 'react'
-import type { z } from 'zod'
+import type { z } from 'zod/v4'
 
 import { useAppForm } from '~/hooks/use-app-form'
 import { cn } from '~/lib/utils'

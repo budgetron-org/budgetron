@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v4'
 import { TransactionTypes } from '~/server/db/enums'
 
 const GetAllCategoriesInputSchema = z.object({

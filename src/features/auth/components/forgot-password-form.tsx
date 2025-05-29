@@ -3,7 +3,7 @@
 import { IconExclamationCircle } from '@tabler/icons-react'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
-import type { z } from 'zod'
+import type { z } from 'zod/v4'
 
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'

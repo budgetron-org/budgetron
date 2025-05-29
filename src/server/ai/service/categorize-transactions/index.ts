@@ -2,6 +2,7 @@ import 'server-only'
 
 import { generateObject } from 'ai'
 import Fuse from 'fuse.js'
+// TODO: Use Zod 4. Currently cannot use zod 4 as it is not compatible with ai.
 import { z } from 'zod'
 
 import { env } from '~/env/server'
@@ -11,12 +12,12 @@ import type { Category, Transaction } from './types'
 import { chunkTransactions } from './utils'
 
 const schema = z.object({
-  result: z.array(
-    z.object({
+  result: z
+    .object({
       index: z.number(),
       category: z.string(),
-    }),
-  ),
+    })
+    .array(),
 })
 
 /**

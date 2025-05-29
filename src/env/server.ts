@@ -1,5 +1,5 @@
 import { createEnv } from '@t3-oss/env-nextjs'
-import { z } from 'zod'
+import { z } from 'zod/v4'
 
 const env = createEnv({
   emptyStringAsUndefined: true,
@@ -8,21 +8,21 @@ const env = createEnv({
       .enum(['development', 'test', 'production'])
       .default('development'),
 
-    AUTH_SECRET: z.string().min(1),
-    AUTH_URL: z.string().url(),
+    AUTH_SECRET: z.string().nonempty(),
+    AUTH_URL: z.url(),
 
-    GOOGLE_CLIENT_ID: z.string().min(1),
-    GOOGLE_CLIENT_SECRET: z.string().min(1),
+    GOOGLE_CLIENT_ID: z.string().nonempty(),
+    GOOGLE_CLIENT_SECRET: z.string().nonempty(),
 
-    DB_URL: z.string().url(),
+    DB_URL: z.url(),
 
-    OLLAMA_URL: z.string().url(),
-    OLLAMA_MODEL: z.string().min(1), // TODO: Add enum with supported models?
+    OLLAMA_URL: z.url(),
+    OLLAMA_MODEL: z.string().nonempty(), // TODO: Add enum with supported models?
 
-    EMAIL_PROVIDER_API_KEY: z.string().min(1),
-    EMAIL_PROVIDER_FROM_EMAIL: z.string().min(1),
+    EMAIL_PROVIDER_API_KEY: z.string().nonempty(),
+    EMAIL_PROVIDER_FROM_EMAIL: z.string().nonempty(),
 
-    BLOB_READ_WRITE_TOKEN: z.string().min(1),
+    BLOB_READ_WRITE_TOKEN: z.string().nonempty(),
   },
   experimental__runtimeEnv: process.env,
   // Skip build time validation when running on CI as the env variables are not available

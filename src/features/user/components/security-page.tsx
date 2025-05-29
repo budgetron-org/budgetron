@@ -3,7 +3,7 @@
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import type { z } from 'zod'
+import type { z } from 'zod/v4'
 
 import { Button } from '~/components/ui/button'
 import { PATHS } from '~/data/routes'

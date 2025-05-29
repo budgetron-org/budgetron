@@ -1,5 +1,5 @@
 import { createInsertSchema, createUpdateSchema } from 'drizzle-zod'
-import { z } from 'zod'
+import { z } from 'zod/v4'
 
 import { TransactionTable } from '~/server/db/schema'
 
@@ -27,10 +27,13 @@ const ParseOFXInputSchema = z.object({
   files: z
     .instanceof(File)
     .array()
-    .min(1)
+    .nonempty()
     .refine(
       (files) => files.every((file) => /.*\.(qfx|ofx)$/.test(file.name)),
-      'Files should be of format .ofx or .qfx.',
+      {
+        error: 'Files should be of format .ofx or .qfx.',
+        path: ['files'],
+      },
     ),
   shouldAutoCategorize: z.boolean(),
 })
@@ -47,7 +50,7 @@ const CreateManyTransactionsInputSchema = CreateTransactionSchema.omit({
   userId: true,
 })
   .array()
-  .min(1)
+  .nonempty()
 
 const GetByDateRangeInputSchema = z.object({
   from: z.coerce.date(),

@@ -53,7 +53,7 @@ const createMany = protectedProcedure
       userId: CreateTransactionSchema.shape.userId.default(user.id),
     })
       .array()
-      .min(1)
+      .nonempty()
       .safeParse(input)
     if (error) throw new ORPCError('BAD_REQUEST', { message: error.message })
 

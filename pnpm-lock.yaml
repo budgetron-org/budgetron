@@ -63,7 +63,7 @@ importers:
         version: 5.1.5(react@19.1.0)(typescript@5.8.3)
       '@t3-oss/env-nextjs':
         specifier: ^0.13.6
-        version: 0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.24.4)
+        version: 0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.34)
       '@tabler/icons-react':
         specifier: ^3.33.0
         version: 3.33.0(react@19.1.0)
@@ -81,7 +81,7 @@ importers:
         version: 1.1.1
       ai:
         specifier: ^4.3.16
-        version: 4.3.16(react@19.1.0)(zod@3.24.4)
+        version: 4.3.16(react@19.1.0)(zod@3.25.34)
       better-auth:
         specifier: ^1.2.8
         version: 1.2.8
@@ -102,7 +102,7 @@ importers:
         version: 0.44.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(kysely@0.28.2)(pg@8.16.0)
       drizzle-zod:
         specifier: ^0.8.2
-        version: 0.8.2(drizzle-orm@0.44.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(kysely@0.28.2)(pg@8.16.0))(zod@3.24.4)
+        version: 0.8.2(drizzle-orm@0.44.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(kysely@0.28.2)(pg@8.16.0))(zod@3.25.34)
       flags:
         specifier: ^4.0.1
         version: 4.0.1(@opentelemetry/api@1.9.0)(next@15.3.2(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -123,7 +123,7 @@ importers:
         version: 1.4.8
       ollama-ai-provider:
         specifier: ^1.2.0
-        version: 1.2.0(zod@3.24.4)
+        version: 1.2.0(zod@3.25.34)
       pg:
         specifier: ^8.16.0
         version: 8.16.0
@@ -155,8 +155,8 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.1.8)
       zod:
-        specifier: ~3.24.4
-        version: 3.24.4
+        specifier: ~3.25.34
+        version: 3.25.34
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.3.1
@@ -6689,40 +6689,40 @@ packages:
     peerDependencies:
       zod: ^3.24.1
 
-  zod@3.24.4:
+  zod@3.25.34:
     resolution:
       {
-        integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==,
+        integrity: sha512-lZHvSc2PpWdcfpHlyB33HA9nqP16GpC9IpiG4lYq9jZCJVLZNnWd6Y1cj79bcLSBKTkxepfpjckPv5Y5VOPlwA==,
       }
 
 snapshots:
-  '@ai-sdk/provider-utils@2.2.8(zod@3.24.4)':
+  '@ai-sdk/provider-utils@2.2.8(zod@3.25.34)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
       nanoid: 3.3.11
       secure-json-parse: 2.7.0
-      zod: 3.24.4
+      zod: 3.25.34
 
   '@ai-sdk/provider@1.1.3':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@1.2.12(react@19.1.0)(zod@3.24.4)':
+  '@ai-sdk/react@1.2.12(react@19.1.0)(zod@3.25.34)':
     dependencies:
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.24.4)
-      '@ai-sdk/ui-utils': 1.2.11(zod@3.24.4)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.34)
+      '@ai-sdk/ui-utils': 1.2.11(zod@3.25.34)
       react: 19.1.0
       swr: 2.3.3(react@19.1.0)
       throttleit: 2.1.0
     optionalDependencies:
-      zod: 3.24.4
+      zod: 3.25.34
 
-  '@ai-sdk/ui-utils@1.2.11(zod@3.24.4)':
+  '@ai-sdk/ui-utils@1.2.11(zod@3.25.34)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.24.4)
-      zod: 3.24.4
-      zod-to-json-schema: 3.24.5(zod@3.24.4)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.34)
+      zod: 3.25.34
+      zod-to-json-schema: 3.24.5(zod@3.25.34)
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -7914,19 +7914,19 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@t3-oss/env-core@0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.24.4)':
+  '@t3-oss/env-core@0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.34)':
     optionalDependencies:
       arktype: 2.1.20
       typescript: 5.8.3
-      zod: 3.24.4
+      zod: 3.25.34
 
-  '@t3-oss/env-nextjs@0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.24.4)':
+  '@t3-oss/env-nextjs@0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.34)':
     dependencies:
-      '@t3-oss/env-core': 0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.24.4)
+      '@t3-oss/env-core': 0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.34)
     optionalDependencies:
       arktype: 2.1.20
       typescript: 5.8.3
-      zod: 3.24.4
+      zod: 3.25.34
 
   '@tabler/icons-react@3.33.0(react@19.1.0)':
     dependencies:
@@ -8288,15 +8288,15 @@ snapshots:
 
   acorn@8.14.1: {}
 
-  ai@4.3.16(react@19.1.0)(zod@3.24.4):
+  ai@4.3.16(react@19.1.0)(zod@3.25.34):
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.24.4)
-      '@ai-sdk/react': 1.2.12(react@19.1.0)(zod@3.24.4)
-      '@ai-sdk/ui-utils': 1.2.11(zod@3.24.4)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.34)
+      '@ai-sdk/react': 1.2.12(react@19.1.0)(zod@3.25.34)
+      '@ai-sdk/ui-utils': 1.2.11(zod@3.25.34)
       '@opentelemetry/api': 1.9.0
       jsondiffpatch: 0.6.0
-      zod: 3.24.4
+      zod: 3.25.34
     optionalDependencies:
       react: 19.1.0
 
@@ -8439,7 +8439,7 @@ snapshots:
       jose: 5.10.0
       kysely: 0.28.2
       nanostores: 0.11.4
-      zod: 3.24.4
+      zod: 3.25.34
 
   better-call@1.0.9:
     dependencies:
@@ -8725,10 +8725,10 @@ snapshots:
       kysely: 0.28.2
       pg: 8.16.0
 
-  drizzle-zod@0.8.2(drizzle-orm@0.44.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(kysely@0.28.2)(pg@8.16.0))(zod@3.24.4):
+  drizzle-zod@0.8.2(drizzle-orm@0.44.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(kysely@0.28.2)(pg@8.16.0))(zod@3.25.34):
     dependencies:
       drizzle-orm: 0.44.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.2)(kysely@0.28.2)(pg@8.16.0)
-      zod: 3.24.4
+      zod: 3.25.34
 
   dunder-proto@1.0.1:
     dependencies:
@@ -9815,13 +9815,13 @@ snapshots:
 
   ofx-data-extractor@1.4.8: {}
 
-  ollama-ai-provider@1.2.0(zod@3.24.4):
+  ollama-ai-provider@1.2.0(zod@3.25.34):
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.24.4)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.34)
       partial-json: 0.1.7
     optionalDependencies:
-      zod: 3.24.4
+      zod: 3.25.34
 
   onetime@7.0.0:
     dependencies:
@@ -10716,8 +10716,8 @@ snapshots:
 
   yoctocolors@2.1.1: {}
 
-  zod-to-json-schema@3.24.5(zod@3.24.4):
+  zod-to-json-schema@3.24.5(zod@3.25.34):
     dependencies:
-      zod: 3.24.4
+      zod: 3.25.34
 
-  zod@3.24.4: {}
+  zod@3.25.34: {}
