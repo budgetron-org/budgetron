@@ -46,8 +46,9 @@ function TransactionsExplorer() {
           }
         />
       </div>
-      <div className="flex-1">
+      <div className="min-h-0 flex-1">
         <TransactionsTable
+          className="max-h-full min-h-full"
           isLoading={transactions.isLoading}
           data={transactions.data}
         />

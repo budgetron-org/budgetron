@@ -24,17 +24,19 @@ const TransactionFormSchema = CreateTransactionSchema.pick({
 const ParseOFXInputSchema = z.object({
   bankAccountId: z.string(),
   groupId: z.string().optional(),
-  file: z
+  files: z
     .instanceof(File)
+    .array()
+    .min(1)
     .refine(
-      (file) => /.*\.(qfx|ofx)$/.test(file.name),
-      'Please provide an OFX file.',
+      (files) => files.every((file) => /.*\.(qfx|ofx)$/.test(file.name)),
+      'Files should be of format .ofx or .qfx.',
     ),
   shouldAutoCategorize: z.boolean(),
 })
 const UploadOFXFormSchema = ParseOFXInputSchema.pick({
   bankAccountId: true,
-  file: true,
+  files: true,
   shouldAutoCategorize: true,
 })
 

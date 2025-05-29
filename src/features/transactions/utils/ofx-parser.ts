@@ -2,7 +2,7 @@ import { unescape } from 'lodash'
 import { randomUUID } from 'node:crypto'
 
 import type { TransactionWithRelations } from '~/features/transactions/types'
-import { Ofx, Types, type StatementTransaction } from '~/lib/ofx-data-extractor'
+import { Ofx } from 'ofx-data-extractor'
 import { safeParseCurrency } from '~/lib/utils'
 import { categorizeTransactions } from '~/server/ai/service/categorize-transactions'
 import {
@@ -31,11 +31,11 @@ async function parseTransactions({
   const content = ofx.getContent()
   const type = ofx.getType()
   const transactions =
-    type === Types.BANK
+    type === 'BANK'
       ? ofx.getBankTransferList()
       : ofx.getCreditCardTransferList()
   const currency = safeParseCurrency(
-    type === Types.BANK
+    type === 'BANK'
       ? content.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.CURDEF
       : content.OFX.CREDITCARDMSGSRSV1.CCSTMTTRNRS.CCSTMTRS.CURDEF,
   )
@@ -79,7 +79,7 @@ async function parseTransactions({
   return result
 }
 
-function getDescription(txn: StatementTransaction, isExpense: boolean) {
+function getDescription(txn: Record<string, string>, isExpense: boolean) {
   // clean any HTML parts
   return unescape(
     txn['NAME'] ?? txn.MEMO ?? `Unknown ${isExpense ? 'expense' : 'income'}`,

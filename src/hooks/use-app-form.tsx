@@ -106,7 +106,7 @@ const { useAppForm } = createFormHook({
       return <DateField {...props} field={field} />
     },
     FileField: (props: Omit<ComponentProps<typeof FileField>, 'field'>) => {
-      const field = useFieldContext<File | undefined>()
+      const field = useFieldContext<File[] | undefined>()
       return <FileField {...props} field={field} />
     },
     SelectField: (props: Omit<ComponentProps<typeof SelectField>, 'field'>) => {

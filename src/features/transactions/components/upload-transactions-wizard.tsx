@@ -46,12 +46,12 @@ function UploadTransactionsWizard({
 
   const parseOFX = useMutation(
     api.transactions.parseOFX.mutationOptions({
-      onSuccess(data, { file }) {
-        toast.success(`Parsed file - ${file.name}`)
+      onSuccess(data, { files }) {
+        toast.success(`Parsed ${files.length} file(s).`)
         setTransactionsToUpload(data)
       },
-      onError(error, { file }) {
-        toast.error(`Error parsing ${file.name}`, {
+      onError(error, { files }) {
+        toast.error(`Error parsing ${files.length} file(s)`, {
           description: error.message,
         })
       },

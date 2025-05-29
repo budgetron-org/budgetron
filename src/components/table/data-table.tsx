@@ -73,15 +73,23 @@ function DataTable<Data, Value>({
     state: {
       columnFilters,
       columnVisibility,
-      pagination: { pageIndex: 0, pageSize: 50 },
       rowSelection,
       sorting,
+    },
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 50,
+      },
     },
   })
 
   return (
     <div
-      className={cn('flex flex-col gap-4 rounded-md border pb-2', className)}>
+      className={cn(
+        'flex flex-col justify-between gap-2 rounded-md border pb-2',
+        className,
+      )}>
       <SkeletonWrapper isLoading={isLoading}>
         <Table className="overflow-scroll">
           <TableHeader className="sticky top-0 z-10 overflow-hidden rounded-t-md">

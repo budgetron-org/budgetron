@@ -41,8 +41,10 @@ function UploadOFXForm({ className, onSubmit, ...props }: UploadOFXFormProps) {
         )}
       </form.AppField>
 
-      <form.AppField name="file">
-        {(field) => <field.FileField accept=".ofx,.qfx" label="File" />}
+      <form.AppField name="files">
+        {(field) => (
+          <field.FileField accept=".ofx,.qfx" label="Files" multiple />
+        )}
       </form.AppField>
 
       <form.AppField name="shouldAutoCategorize">

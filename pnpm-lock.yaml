@@ -118,6 +118,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      ofx-data-extractor:
+        specifier: ^1.4.8
+        version: 1.4.8
       ollama-ai-provider:
         specifier: ^1.2.0
         version: 1.2.0(zod@3.24.4)
@@ -5280,6 +5283,12 @@ packages:
         integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==,
       }
 
+  ofx-data-extractor@1.4.8:
+    resolution:
+      {
+        integrity: sha512-YouH8YOoB9IU/8w7LHpv9fr9zU9qEDdc6DCUb/+iO0KX7+E4IPOgq1gKBf1lLpvOsLaF5lETRqS+ut3uu9RrlQ==,
+      }
+
   ollama-ai-provider@1.2.0:
     resolution:
       {
@@ -9723,6 +9732,8 @@ snapshots:
       es-object-atoms: 1.1.1
 
   obuf@1.1.2: {}
+
+  ofx-data-extractor@1.4.8: {}
 
   ollama-ai-provider@1.2.0(zod@3.24.4):
     dependencies:

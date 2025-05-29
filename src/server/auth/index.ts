@@ -22,4 +22,4 @@ type Session = Auth['$Infer']['Session']
 type User = Session['user']
 
 export { getAuth }
-export type { Auth, Session, User }
+export type { User }

@@ -120,7 +120,17 @@ const parseOFX = protectedProcedure
   .input(ParseOFXInputSchema)
   .handler(async ({ input }) => {
     try {
-      const transactions = await parseOFXFile(input)
+      const promises = input.files.map((file) =>
+        parseOFXFile({
+          bankAccountId: input.bankAccountId,
+          file,
+          shouldAutoCategorize: input.shouldAutoCategorize,
+          groupId: input.groupId,
+        }),
+      )
+      const transactions = (await Promise.all(promises))
+        .flat()
+        .sort((a, b) => b.date.getTime() - a.date.getTime())
       return transactions
     } catch (error) {
       throw createRPCErrorFromUnknownError(error)
