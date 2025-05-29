@@ -185,6 +185,7 @@ function getColumns<Data extends TransactionWithRelations>() {
           return (
             <CategoryPicker
               aria-label="Category"
+              placeholder="Select Category"
               type={row.original.type}
               defaultValue={row.original.category?.id}
               onValueChange={(value) => {
@@ -204,7 +205,7 @@ function getColumns<Data extends TransactionWithRelations>() {
           row.original.category && (
             <div className="flex items-center gap-2">
               {row.original.category.parent && (
-                <>{row.original.category.parent.name} / </>
+                <>{row.original.category.parent.name} - </>
               )}
               {row.original.category.name}
             </div>

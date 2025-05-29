@@ -127,7 +127,6 @@ function UploadTransactionsWizard({
                   }}
                   defaultEditable={{
                     category: true,
-                    description: true,
                     notes: true,
                     tags: true,
                     type: true,

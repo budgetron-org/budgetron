@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useState, type ComponentProps } from 'react'
+import { useMemo, useState, type ComponentProps } from 'react'
 
 import {
   Select,
@@ -31,12 +31,17 @@ function findLabel<V extends string, D extends Data>(
       item.value === value ||
       item.children?.some((child) => child.value === value),
   )
-  if (!parent) {
-    return undefined
-  }
-  if (parent.value === value || parent.children == null) return parent.label
+  const item = parent?.children?.find((child) => child.value === value)
 
-  return `${parent.label} - ${parent.children.find((child) => child.value === value)?.label ?? undefined}`
+  // If there is no parent, there will be no item as well. This means we are
+  // in an INVALID state. Return the INVALID state.
+  if (!parent) return 'NO_NAME_ERROR'
+
+  // If the parent's value is the value or there is no item, then return the parents label
+  if (parent.value === value || !item) return parent.label
+
+  // If the parent's value is not the value, then return the parent's label and the item's label
+  return `${parent.label} - ${item.label}`
 }
 
 interface CategoryPickerProps
@@ -69,7 +74,11 @@ function CategoryPicker({
         })),
     }),
   )
-  const [internalValue, setInternalValue] = useState(defaultValue)
+  const [internalValue, setInternalValue] = useState(defaultValue ?? '')
+  const displayValue = useMemo(
+    () => findLabel(data, internalValue),
+    [data, internalValue],
+  )
 
   return (
     <SkeletonWrapper isLoading={isPending}>
@@ -81,7 +90,7 @@ function CategoryPicker({
         }}>
         <SelectTrigger aria-label={ariaLabel}>
           <SelectValue placeholder={placeholder}>
-            {findLabel(data, internalValue)}
+            {displayValue && <span>{displayValue}</span>}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
