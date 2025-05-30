@@ -42,7 +42,7 @@ VALUES
 
   (gen_random_uuid(), 'Electricity', 'icon:plug', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Utilities'), NULL, NULL, now(), now()),
   (gen_random_uuid(), 'Water & Sewer', 'icon:droplet', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Utilities'), NULL, NULL, now(), now()),
-  (gen_random_uuid(), 'Gas', 'icon:brand-gas', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Utilities'), NULL, NULL, now(), now()),
+  (gen_random_uuid(), 'Gas/Heat', 'icon:brand-gas', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Utilities'), NULL, NULL, now(), now()),
   (gen_random_uuid(), 'Trash', 'icon:trash', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Utilities'), NULL, NULL, now(), now()),
   (gen_random_uuid(), 'Internet', 'icon:wifi', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Utilities'), NULL, NULL, now(), now()),
   (gen_random_uuid(), 'Phone', 'icon:device-mobile', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Utilities'), NULL, NULL, now(), now()),
