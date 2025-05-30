@@ -27,8 +27,9 @@ const signupFeatureFlag = flag<boolean, SignUpEntity>({
     })
     if (!allowed || !allowed.enabled) return false
 
-    // If the allowed domains contains a wildcard, then we allow signup for all domains
-    if (allowed.domains.includes('*')) return true
+    // If there are no allowed domains or the allowed domains contains a wildcard, then we allow signup for all domains
+    if (allowed.domains.length === 0 || allowed.domains.includes('*'))
+      return true
 
     // If we cannot identify the domain, then we do not allow signup
     if (!entities?.host) return false
