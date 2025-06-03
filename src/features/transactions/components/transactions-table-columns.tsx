@@ -167,7 +167,11 @@ function getColumns<Data extends TransactionWithRelations>() {
         return (
           <Badge
             variant={
-              row.original.type === 'EXPENSE' ? 'destructive' : 'success'
+              row.original.type === 'EXPENSE'
+                ? 'destructive'
+                : row.original.type === 'INCOME'
+                  ? 'success'
+                  : 'default'
             }>
             {row.original.type}
           </Badge>
