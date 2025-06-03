@@ -191,10 +191,10 @@ function getColumns<Data extends TransactionWithRelations>() {
               aria-label="Category"
               placeholder="Select Category"
               type={row.original.type}
-              defaultValue={row.original.category?.id}
+              defaultValue={row.original.categoryId ?? undefined}
               onValueChange={(value) => {
                 // do not update if the value is not different
-                if (value === row.original.category?.id) return
+                if (value === row.original.categoryId) return
                 table.options.meta?.updateCellData?.(
                   row.index,
                   'categoryId',
