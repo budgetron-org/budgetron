@@ -11,4 +11,21 @@ const GetCategorySpendIncomeInputSchema = DateRangeSchema.extend({
   limit: z.number().min(1),
 })
 
-export { GetCategorySpendIncomeInputSchema, GetMonthlySummaryInputSchema }
+const CashFlowReportRangeSchema = z.enum([
+  'this_month',
+  'last_3_months',
+  'ytd',
+  '1_year',
+  'all',
+])
+
+const GetCashFlowReportInputSchema = z.object({
+  range: CashFlowReportRangeSchema,
+})
+
+export {
+  CashFlowReportRangeSchema,
+  GetCashFlowReportInputSchema,
+  GetCategorySpendIncomeInputSchema,
+  GetMonthlySummaryInputSchema,
+}

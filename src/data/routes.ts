@@ -8,12 +8,17 @@ const PATHS = {
   TRANSACTIONS_UPLOAD: '/dashboard/transactions/upload',
   ACCOUNT: '/dashboard/account',
   REPORTS: '/dashboard/reports',
+  REPORTS_CATEGORIES: '/dashboard/reports/categories',
+  REPORTS_CASH_FLOW: '/dashboard/reports/cash-flow',
 } as const
 
 const PATH_TITLE_MAP = {
   dashboard: ['Dashboard'],
   'dashboard/transactions': ['Transactions'],
   'dashboard/transactions/upload': ['Transactions', 'Upload'],
+  'dashboard/reports': ['Reports'],
+  'dashboard/reports/categories': ['Reports', 'Categories'],
+  'dashboard/reports/cash-flow': ['Reports', 'Cash Flow'],
 } as const
 
 export { PATH_TITLE_MAP, PATHS }

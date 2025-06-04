@@ -10,17 +10,17 @@ import { CategoryReportCard } from '~/components/widgets/category-report-card'
 import { CategoryTransactionsTable } from '~/components/widgets/category-transactions-table'
 import { api } from '~/rpc/client'
 
-interface AnalyticsReportProps {
+interface CategoriesReportProps {
   title: string
   description?: string
   reportFor: 'income' | 'spending'
 }
 
-function AnalyticsReport({
+function CategoriesReport({
   description,
   title,
   reportFor,
-}: AnalyticsReportProps) {
+}: CategoriesReportProps) {
   const [reportRange, setReportRange] = useState({
     from: startOfYear(Date.now()),
     to: endOfToday(),
@@ -65,4 +65,4 @@ function AnalyticsReport({
   )
 }
 
-export { AnalyticsReport }
+export { CategoriesReport }
