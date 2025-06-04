@@ -133,6 +133,7 @@ VALUES
 
   -- Insert Other Expense subcategories
   (gen_random_uuid(), 'Miscellaneous', 'icon:dots', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Other Expense'), NULL, NULL, now(), now()),
+  (gen_random_uuid(), 'Taxes', 'icon:dots', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Other Expense'), NULL, NULL, now(), now()),
   (gen_random_uuid(), 'To Be Categorized', 'icon:dots', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Other Expense'), NULL, NULL, now(), now()),
   (gen_random_uuid(), 'Other', 'icon:dots', 'EXPENSE', (SELECT id FROM parent_categories WHERE name = 'Other Expense'), NULL, NULL, now(), now()),
 
