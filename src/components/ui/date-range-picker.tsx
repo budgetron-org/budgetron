@@ -125,7 +125,6 @@ interface DateRangePickerProps
 
 function DateRangePicker({
   align = 'end',
-  className,
   defaultValue,
   onChange,
   ...props
@@ -177,10 +176,7 @@ function DateRangePicker({
         setIsOpen(open)
       }}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn('w-[250px]', className)}
-          {...props}>
+        <Button variant="outline" {...props}>
           <IconCalendar className="mr-2 h-4 w-4" />
           {range ? (
             <>

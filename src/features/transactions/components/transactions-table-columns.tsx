@@ -225,9 +225,9 @@ function getColumns<Data extends TransactionWithRelations>() {
       ),
       cell: ({ row }) =>
         row.original.bankAccount && (
-          <Badge>
+          <>
             {row.original.bankAccount.name} - {row.original.bankAccount.type}
-          </Badge>
+          </>
         ),
     },
     {

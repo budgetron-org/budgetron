@@ -26,8 +26,9 @@ function TransactionsExplorer() {
 
   return (
     <>
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-col justify-end gap-2 md:flex-row">
         <DateRangePicker
+          className="w-full md:w-[250px]"
           defaultValue={transactionRange}
           onChange={setTransactionRange}
         />

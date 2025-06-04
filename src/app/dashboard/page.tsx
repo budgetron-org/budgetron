@@ -20,12 +20,12 @@ async function DashboardPageImpl() {
   ])
 
   return (
-    <div className="grid h-full grid-cols-[minmax(30vw,max-content)_minmax(0,1fr)] gap-2">
-      <div className="row-span-full h-full">
+    <div className="grid h-full grid-cols-1 gap-2 overflow-y-auto md:grid-cols-[minmax(30vw,max-content)_minmax(0,1fr)]">
+      <div className="h-full md:row-span-full">
         <BankAccountsCard className="h-full" />
       </div>
 
-      <div className="col-span-1 grid h-full auto-rows-min grid-cols-1 gap-2 overflow-y-auto">
+      <div className="col-span-1 grid h-full auto-rows-min grid-cols-1 gap-2 md:overflow-y-auto">
         <SummaryCard
           title="Income"
           description="Last 6 months"
@@ -33,9 +33,9 @@ async function DashboardPageImpl() {
           data={monthlySummary}
         />
         <SummaryCard
-          title="Spending"
+          title="Expenses"
           description="Last 6 months"
-          type="spending"
+          type="expense"
           data={monthlySummary}
         />
       </div>

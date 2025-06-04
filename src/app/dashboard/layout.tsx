@@ -8,7 +8,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider
       defaultOpen={false}
-      className="max-h-screen overflow-auto"
+      className="max-h-screen max-w-screen overflow-hidden"
       style={
         {
           '--sidebar-width': 'calc(var(--spacing) * 72)',
@@ -16,7 +16,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         } as CSSProperties
       }>
       <AppSidebar variant="inset" />
-      <SidebarInset>
+      <SidebarInset className="min-w-0">
         <AppHeader />
         <div className="max-h-[calc(100%-var(--header-height))] flex-1 p-4">
           {children}

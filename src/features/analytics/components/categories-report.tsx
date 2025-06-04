@@ -43,7 +43,11 @@ function CategoriesReport({
       <div>
         <h2 className="text-lg font-semibold">Filters</h2>
         <div className="flex gap-4">
-          <DateRangePicker defaultValue="thisYear" onChange={setReportRange} />
+          <DateRangePicker
+            className="w-full md:w-[250px]"
+            defaultValue="thisYear"
+            onChange={setReportRange}
+          />
         </div>
       </div>
       <SkeletonWrapper isLoading={isPending}>

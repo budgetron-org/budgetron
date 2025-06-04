@@ -38,8 +38,8 @@ async function getMonthlySummary({
       SELECT
         (EXTRACT(MONTH FROM ${TransactionTable.date})::int - 1) AS month,
         EXTRACT(YEAR FROM ${TransactionTable.date})::int AS year,
-        SUM(CASE WHEN ${TransactionTable.type} = 'INCOME' THEN ${TransactionTable.amount} ELSE 0 END) AS income,
-        SUM(CASE WHEN ${TransactionTable.type} = 'EXPENSE' THEN ${TransactionTable.amount} ELSE 0 END) AS expense
+        SUM(CASE WHEN ${TransactionTable.type} = 'INCOME' THEN ${TransactionTable.amount} ELSE 0 END)::float AS income,
+        SUM(CASE WHEN ${TransactionTable.type} = 'EXPENSE' THEN ${TransactionTable.amount} ELSE 0 END)::float AS expense
       FROM ${TransactionTable}
       WHERE ${TransactionTable.userId} = ${userId}
         AND ${TransactionTable.date} BETWEEN ${from} AND ${to}

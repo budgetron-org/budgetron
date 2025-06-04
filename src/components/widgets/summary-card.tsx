@@ -1,7 +1,7 @@
 'use client'
 import { format } from 'date-fns'
 import { useMemo, type ComponentPropsWithoutRef } from 'react'
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 
 import {
   Card,
@@ -17,15 +17,14 @@ import {
   type ChartConfig,
 } from '~/components/ui/chart'
 import type { MonthlySummary } from '~/features/analytics/types'
-import { getCurrencyFormatter } from '~/lib/format'
 
 const chartConfig = {
   income: {
     label: 'Income',
     color: 'var(--chart-2)',
   },
-  spending: {
-    label: 'Spending',
+  expense: {
+    label: 'Expense',
     color: 'var(--chart-1)',
   },
 } satisfies ChartConfig
@@ -34,7 +33,7 @@ interface SummaryCardProps extends ComponentPropsWithoutRef<typeof Card> {
   data: MonthlySummary[]
   title: string
   description: string
-  type: 'income' | 'spending'
+  type: 'income' | 'expense'
 }
 
 function SummaryCard({
@@ -44,13 +43,11 @@ function SummaryCard({
   type,
   ...props
 }: SummaryCardProps) {
-  // TODO: Get from preferences
-  const formatter = getCurrencyFormatter('USD')
   const chartData = useMemo(
     () =>
       data.map((i) => ({
         label: `${format(new Date(i.year, i.month), 'MMM yyyy')}`,
-        spending: Math.abs(i.expense),
+        expense: Math.abs(i.expense),
         income: i.income,
       })),
     [data],
@@ -67,18 +64,12 @@ function SummaryCard({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="h-[50vh]">
         {hasData && (
-          <ChartContainer config={chartConfig}>
+          <ChartContainer config={chartConfig} className="aspect-auto h-full">
             <BarChart accessibilityLayer data={chartData}>
-              <CartesianGrid vertical={true} />
+              <CartesianGrid vertical={false} />
               <XAxis dataKey="label" tickLine={false} axisLine={false} />
-              <YAxis
-                dataKey={type}
-                tickLine={false}
-                axisLine={false}
-                tickFormatter={(value: number) => formatter.format(value)}
-              />
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent indicator="dashed" />}
@@ -88,7 +79,7 @@ function SummaryCard({
           </ChartContainer>
         )}
         {!hasData && (
-          <div className="flex h-[50vh] w-full items-center justify-center">
+          <div className="flex aspect-auto h-full items-center justify-center">
             No data available
           </div>
         )}
