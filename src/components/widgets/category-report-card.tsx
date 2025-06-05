@@ -47,7 +47,7 @@ type ChartItem = {
 
 function useChartDataAndConfig(
   data: CategoryReport[],
-  selectedCategory?: string,
+  selectedCategory: string,
 ) {
   return useMemo(() => {
     const chartData: ChartItem[] = []
@@ -69,8 +69,7 @@ function useChartDataAndConfig(
         category: key,
         total: safeParseNumber(item.total),
         fill: `var(--color-${key})`,
-        opacity:
-          selectedCategory === undefined || selectedCategory === key ? 1 : 0.3,
+        opacity: selectedCategory === '' || selectedCategory === key ? 1 : 0.3,
       })
 
       chartConfig[key] = {
@@ -114,7 +113,7 @@ interface CategoryReportCardProps
   data: CategoryReport[]
   title: string
   description?: string
-  onCategorySelect?: (categoryId: string) => void
+  onCategorySelect?: (categoryId: string | undefined) => void
 }
 function CategoryReportCard({
   data,
@@ -123,7 +122,7 @@ function CategoryReportCard({
   onCategorySelect,
   ...props
 }: CategoryReportCardProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>()
+  const [selectedCategory, setSelectedCategory] = useState('')
   const { chartConfig, chartData } = useChartDataAndConfig(
     data,
     selectedCategory,
@@ -204,7 +203,10 @@ function CategoryReportCard({
               <Button
                 className="h-7 rounded-lg"
                 variant="outline"
-                onClick={() => setSelectedCategory(undefined)}>
+                onClick={() => {
+                  onCategorySelect?.(undefined)
+                  setSelectedCategory('')
+                }}>
                 Clear
               </Button>
             )}
@@ -213,11 +215,11 @@ function CategoryReportCard({
       </CardHeader>
       <CardContent>
         {chartData.length > 0 && (
-          <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col items-start gap-4 md:flex-row">
             <ChartContainer
               id={chartId}
               config={chartConfig}
-              className="flex-1">
+              className="aspect-auto h-[450px] flex-1 md:aspect-square">
               <PieChart>
                 <ChartTooltip
                   cursor={false}
@@ -235,8 +237,8 @@ function CategoryReportCard({
                   data={chartData}
                   dataKey="total"
                   nameKey="category"
-                  innerRadius={70}
-                  outerRadius={150}
+                  innerRadius="30%"
+                  outerRadius="65%"
                   activeIndex={activeIndex}
                   activeShape={({
                     outerRadius = 0,
@@ -262,14 +264,18 @@ function CategoryReportCard({
                             dominantBaseline="middle">
                             <tspan
                               x={viewBox.cx}
-                              y={(viewBox.cy ?? 0) - 200}
-                              className="fill-foreground text-xl font-semibold">
+                              y={
+                                (viewBox.cy ?? 0) -
+                                (viewBox.outerRadius ?? 0) -
+                                45
+                              }
+                              className="fill-foreground invisible text-xl font-semibold md:visible">
                               {centerContent.title}
                             </tspan>
                             <tspan
                               x={viewBox.cx}
                               y={viewBox.cy}
-                              className="fill-foreground text-xl font-semibold">
+                              className="fill-foreground text-sm font-semibold md:text-xl">
                               {centerContent.value}
                             </tspan>
                           </text>
