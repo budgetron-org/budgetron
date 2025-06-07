@@ -1,7 +1,7 @@
 {
   "name": "budgetron",
   "description": "Personal budgeting app built with Next.js and Tailwind CSS.",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "keywords": [
     "budgeting",
     "personal finance",
