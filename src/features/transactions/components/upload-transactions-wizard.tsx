@@ -133,6 +133,7 @@ function UploadTransactionsWizard({
                   }}
                   onDataUpdate={setTransactionsToUpload}
                   hasEditAction={false}
+                  showFilters={false}
                 />
               ),
             })}

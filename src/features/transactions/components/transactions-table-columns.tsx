@@ -177,6 +177,7 @@ function getColumns<Data extends TransactionWithRelations>() {
           </Badge>
         )
       },
+      filterFn: 'arrIncludesSome',
     },
     {
       id: 'category' as const,
@@ -216,6 +217,13 @@ function getColumns<Data extends TransactionWithRelations>() {
           )
         )
       },
+      filterFn: (row, _, filterValue) => {
+        if (Array.isArray(filterValue) && filterValue.length > 0) {
+          return filterValue.includes(row.original.categoryId)
+        }
+        // Unsupported filter or no filter, return unfiltered
+        return true
+      },
     },
     {
       id: 'account' as const,
@@ -229,6 +237,13 @@ function getColumns<Data extends TransactionWithRelations>() {
             {row.original.bankAccount.name} - {row.original.bankAccount.type}
           </>
         ),
+      filterFn: (row, _, filterValue) => {
+        if (Array.isArray(filterValue) && filterValue.length > 0) {
+          return filterValue.includes(row.original.bankAccountId)
+        }
+        // Unsupported filter or no filter, return unfiltered
+        return true
+      },
     },
     {
       id: 'notes' as const,
@@ -299,6 +314,7 @@ function getColumns<Data extends TransactionWithRelations>() {
           )
         )
       },
+      filterFn: 'arrIncludesSome',
     },
     {
       id: 'actions' as const,

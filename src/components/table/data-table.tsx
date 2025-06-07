@@ -1,19 +1,6 @@
 'use client'
 
-import {
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  type ColumnDef,
-  type ColumnFiltersState,
-  type RowSelectionState,
-  type SortingState,
-  type TableOptions,
-  type VisibilityState,
-} from '@tanstack/react-table'
-import { useState } from 'react'
+import { flexRender, type Table as ReactTable } from '@tanstack/react-table'
 
 import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
 import {
@@ -27,63 +14,17 @@ import {
 import { cn } from '~/lib/utils'
 import { DataTablePagination } from './pagination'
 
-interface DataTableProps<Data, Value>
-  extends Pick<TableOptions<Data>, 'data' | 'getRowId' | 'meta'> {
+interface DataTableProps<Data> {
   className?: string
-  columns: ColumnDef<Data, Value>[]
-  defaultColumnVisibility?: VisibilityState
   isLoading?: boolean
+  table: ReactTable<Data>
 }
 
-function DataTable<Data, Value>({
+function DataTable<Data>({
   className,
-  columns,
-  data,
-  defaultColumnVisibility,
-  getRowId,
   isLoading,
-  meta,
-}: DataTableProps<Data, Value>) {
-  // Sorting
-  const [sorting, setSorting] = useState<SortingState>([])
-  // Column filtering
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  // Column visibility
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    defaultColumnVisibility ?? {},
-  )
-  // Selection
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
-  const table = useReactTable({
-    autoResetPageIndex: false,
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getRowId,
-    getSortedRowModel: getSortedRowModel(),
-    meta,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: (args) => {
-      setSorting(args)
-      table.resetPageIndex()
-    },
-    state: {
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageIndex: 0,
-        pageSize: 50,
-      },
-    },
-  })
-
+  table,
+}: DataTableProps<Data>) {
   return (
     <div
       className={cn(
