@@ -16,4 +16,8 @@ export default defineConfig({
   schema: './src/server/db/schema.ts',
   casing: 'snake_case',
   strict: true,
+  migrations: {
+    schema: 'public',
+    table: 'drizzle_migrations',
+  },
 })
