@@ -25,7 +25,9 @@ export const BankAccountTable = pgTable(
 export const BankAccountRelations = relations(
   BankAccountTable,
   ({ one, many }) => ({
-    transactions: many(TransactionTable),
+    transactions: many(TransactionTable, {
+      relationName: 'bankAccount',
+    }),
     user: one(UserTable, {
       fields: [BankAccountTable.userId],
       references: [UserTable.id],

@@ -25,6 +25,14 @@ export const TransactionTable = pgTable(
     bankAccountId: uuid().references(() => BankAccountTable.id, {
       onDelete: 'set null',
     }),
+    // Applicable only for transfer transactions
+    fromBankAccountId: uuid().references(() => BankAccountTable.id, {
+      onDelete: 'set null',
+    }),
+    // Applicable only for transfer transactions
+    toBankAccountId: uuid().references(() => BankAccountTable.id, {
+      onDelete: 'set null',
+    }),
     categoryId: uuid().references(() => CategoryTable.id, {
       onDelete: 'set null',
     }),
@@ -42,6 +50,17 @@ export const TransactionRelations = relations(TransactionTable, ({ one }) => ({
   bankAccount: one(BankAccountTable, {
     fields: [TransactionTable.bankAccountId],
     references: [BankAccountTable.id],
+    relationName: 'bankAccount',
+  }),
+  fromBankAccount: one(BankAccountTable, {
+    fields: [TransactionTable.fromBankAccountId],
+    references: [BankAccountTable.id],
+    relationName: 'fromBankAccount',
+  }),
+  toBankAccount: one(BankAccountTable, {
+    fields: [TransactionTable.toBankAccountId],
+    references: [BankAccountTable.id],
+    relationName: 'toBankAccount',
   }),
   category: one(CategoryTable, {
     fields: [TransactionTable.categoryId],
