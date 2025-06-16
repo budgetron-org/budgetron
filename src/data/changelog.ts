@@ -20,6 +20,16 @@ type Changelog = {
   }[]
 }
 
-const CHANGELOGS: Changelog[] = []
+const CHANGELOGS: Changelog[] = [
+  {
+    version: '0.1.0',
+    date: '2025-06-16',
+    description: 'Initial release',
+    changes: [],
+    features: [],
+    fixes: [],
+    breakingChanges: [],
+  },
+]
 
 export { CHANGELOGS }
