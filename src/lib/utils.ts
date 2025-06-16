@@ -10,7 +10,7 @@ function safeParseNumber(mayBeNumber: unknown, fallback: number = 0) {
   if (typeof mayBeNumber === 'number') return mayBeNumber
   if (mayBeNumber == null || typeof mayBeNumber !== 'string') return fallback
 
-  const numberOrNaN = Number.parseInt(mayBeNumber)
+  const numberOrNaN = Number.parseFloat(mayBeNumber)
   return Number.isNaN(numberOrNaN) ? fallback : numberOrNaN
 }
 

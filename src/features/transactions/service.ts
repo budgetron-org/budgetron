@@ -104,7 +104,8 @@ async function selectTransactions(filters: SelectTransactionFilters) {
       cashFlow: sql<TransactionCashFlow>`
         CASE
           WHEN ${TransactionTable.type} = 'INCOME' THEN 'IN'
-          WHEN ${TransactionTable.type} = 'EXPENSE' THEN 'OUT'
+          WHEN ${TransactionTable.type} = 'EXPENSE' AND ${TransactionTable.amount} > 0 THEN 'OUT'
+          WHEN ${TransactionTable.type} = 'EXPENSE' AND ${TransactionTable.amount} < 0 THEN 'IN'
           WHEN ${TransactionTable.type} = 'TRANSFER' AND ${TransactionTable.bankAccountId} = ${TransactionTable.toBankAccountId} THEN 'IN'
           WHEN ${TransactionTable.type} = 'TRANSFER' AND ${TransactionTable.bankAccountId} = ${TransactionTable.fromBankAccountId} THEN 'OUT'
           ELSE 'OUT'

@@ -52,6 +52,20 @@ function getFormattedAmount<Data>(table: Table<Data>, value: string) {
   )
 }
 
+function isRefundTransaction(tx: TransactionWithRelations) {
+  return tx.type === 'EXPENSE' && tx.cashFlow === 'IN'
+}
+
+function negateAmount(amount: string) {
+  const result = Math.abs(safeParseNumber(amount)) * -1
+  return result.toString()
+}
+
+function unNegateAmount(amount: string) {
+  const result = Math.abs(safeParseNumber(amount))
+  return result.toString()
+}
+
 function getColumns<Data extends TransactionWithRelations>() {
   return [
     {
@@ -120,7 +134,14 @@ function getColumns<Data extends TransactionWithRelations>() {
             />
           )
         }
-        return <div className="capitalize">{row.original.description}</div>
+        return (
+          <div className="flex gap-2">
+            {isRefundTransaction(row.original) && (
+              <Badge variant="success">Refund</Badge>
+            )}
+            <span className="capitalize">{row.original.description}</span>
+          </div>
+        )
       },
     },
     {
@@ -134,7 +155,10 @@ function getColumns<Data extends TransactionWithRelations>() {
           <div
             className={cn(
               row.original.type === 'INCOME' && 'text-success',
-              row.original.type === 'EXPENSE' && 'text-destructive',
+              row.original.type === 'EXPENSE' &&
+                (isRefundTransaction(row.original)
+                  ? 'text-success'
+                  : 'text-destructive'),
             )}>
             {getFormattedAmount(table, row.original.amount)}
           </div>
@@ -153,25 +177,50 @@ function getColumns<Data extends TransactionWithRelations>() {
             <TransactionTypePicker
               aria-label="Transaction Type"
               defaultValue={row.original.type}
+              disabledOptions={[
+                row.original.cashFlow === 'OUT' && 'INCOME', // Income cannot be cash flow out
+              ].filter(Boolean)}
               onValueChange={(value) => {
                 // do not update if the value is not different
                 if (value === row.original.type) return
+
                 // when changing to TRANSFER, set fromBankAccountId and toBankAccountId based on the
                 // cash flow direction.
                 // 1. IN -> fromBankAccountId = null, toBankAccountId = bankAccountId
                 // 2. OUT -> fromBankAccountId = bankAccountId, toBankAccountId = null
-                // when changing from TRANSFER, set fromBankAccountId and toBankAccountId to null
+                if (value === 'TRANSFER') {
+                  table.options.meta?.updateRowData?.(row.index, {
+                    ...row.original,
+                    type: value,
+                    fromBankAccountId:
+                      row.original.cashFlow === 'OUT'
+                        ? row.original.bankAccountId
+                        : null,
+                    toBankAccountId:
+                      row.original.cashFlow === 'IN'
+                        ? row.original.bankAccountId
+                        : null,
+                  })
+                  return
+                }
+
+                // when changing to expense/income, set fromBankAccountId and toBankAccountId to null
+                // also, update the amount based on the cash flow direction and type - refunds are represented by negative expenses
+                // 1. IN & INCOME -> amount = amount
+                // 2. IN & EXPENSE (refund) -> amount = negate(amount)
+                // 3. OUT & EXPENSE -> amount = amount
                 table.options.meta?.updateRowData?.(row.index, {
                   ...row.original,
                   type: value,
-                  fromBankAccountId:
-                    value === 'TRANSFER' && row.original.cashFlow === 'OUT'
-                      ? row.original.bankAccountId
-                      : null,
-                  toBankAccountId:
-                    value === 'TRANSFER' && row.original.cashFlow === 'IN'
-                      ? row.original.bankAccountId
-                      : null,
+                  fromBankAccountId: null,
+                  toBankAccountId: null,
+                  // use the new value to figure out if this will be a refund transaction
+                  amount: isRefundTransaction({
+                    ...row.original,
+                    type: value,
+                  })
+                    ? negateAmount(row.original.amount)
+                    : unNegateAmount(row.original.amount),
                 })
               }}
             />

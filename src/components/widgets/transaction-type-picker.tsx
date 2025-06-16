@@ -15,11 +15,14 @@ interface TransactionTypePickerProps
       'value' | 'defaultValue' | 'onValueChange'
     >,
     Pick<ComponentProps<typeof SelectValue>, 'placeholder'>,
-    Pick<ComponentProps<typeof SelectTrigger>, 'aria-label'> {}
+    Pick<ComponentProps<typeof SelectTrigger>, 'aria-label'> {
+  disabledOptions?: (typeof TransactionTypes)[number][]
+}
 
 function TransactionTypePicker({
   'aria-label': ariaLabel,
   defaultValue,
+  disabledOptions,
   onValueChange,
   placeholder,
   value,
@@ -34,7 +37,10 @@ function TransactionTypePicker({
       </SelectTrigger>
       <SelectContent>
         {TransactionTypes?.map((item) => (
-          <SelectItem key={item} value={item}>
+          <SelectItem
+            key={item}
+            value={item}
+            disabled={disabledOptions?.includes(item)}>
             {item}
           </SelectItem>
         ))}
