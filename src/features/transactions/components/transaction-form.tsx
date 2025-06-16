@@ -27,10 +27,10 @@ const DEFAULT_VALUES = {
   currency: 'USD',
   date: new Date(),
   description: '',
-  bankAccountId: '',
-  categoryId: '',
+  bankAccountId: null,
+  categoryId: null,
   type: 'EXPENSE',
-} as z.infer<typeof TransactionFormSchema>
+} as const satisfies z.infer<typeof TransactionFormSchema>
 
 function TransactionForm({
   className,
@@ -81,19 +81,30 @@ function TransactionForm({
         {(field) => <field.DateField label="Date" />}
       </form.AppField>
 
-      <form.AppField name="type">
+      <form.AppField
+        name="type"
+        listeners={{
+          onChange({ fieldApi }) {
+            // clear category value on type change
+            fieldApi.form.setFieldValue('categoryId', null)
+          },
+        }}>
         {(field) => <field.TransactionTypeField label="Type" />}
       </form.AppField>
 
-      <form.AppField name="categoryId">
-        {(field) => (
-          <field.CategoryField
-            label="Category"
-            placeholder="Select a category"
-            type={field.form.state.values.type}
-          />
+      <form.Subscribe selector={(state) => state.values.type}>
+        {(type) => (
+          <form.AppField name="categoryId">
+            {(field) => (
+              <field.CategoryField
+                label="Category"
+                placeholder="Select a category"
+                type={type}
+              />
+            )}
+          </form.AppField>
         )}
-      </form.AppField>
+      </form.Subscribe>
 
       <form.AppField name="bankAccountId">
         {(field) => (
