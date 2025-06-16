@@ -32,7 +32,15 @@ export default function LandingPage() {
             © {new Date().getFullYear()} {capitalize(APP_NAME)}. All rights
             reserved.
           </p>
-          <p>Version: {APP_VERSION}</p>
+          <p>
+            Version: {APP_VERSION} (See{' '}
+            <Link
+              className="underline underline-offset-4"
+              href={PATHS.CHANGELOG}>
+              Changelog
+            </Link>
+            )
+          </p>
         </div>
       </div>
     </div>
