@@ -97,8 +97,7 @@ function TransactionsTable({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getRowId: ({ externalId, date }) =>
-      externalId ?? `transaction-${date.getTime()}`,
+    getRowId: ({ externalId, id }) => externalId ?? `transaction-${id}`,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     meta,
