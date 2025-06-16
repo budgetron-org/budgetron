@@ -1,6 +1,5 @@
 'use client'
 
-import { SelectLabel } from '@radix-ui/react-select'
 import {
   Fragment,
   useId,
@@ -31,6 +30,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select'
