@@ -1,7 +1,7 @@
 'use client'
 
-import * as SheetPrimitive from '@radix-ui/react-dialog'
 import { IconX } from '@tabler/icons-react'
+import { Dialog as SheetPrimitive } from 'radix-ui'
 import type { ComponentProps } from 'react'
 
 import { cn } from '~/lib/utils'

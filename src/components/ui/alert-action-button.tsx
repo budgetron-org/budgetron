@@ -1,6 +1,6 @@
 'use client'
 
-import { Slot } from '@radix-ui/react-slot'
+import { Slot as SlotPrimitive } from 'radix-ui'
 import type { ComponentProps } from 'react'
 
 import {
@@ -30,7 +30,7 @@ function AlertActionButton({
   onConfirm,
   ...props
 }: AlertActionButtonProps) {
-  const Comp = asChild ? Slot : ProgressButton
+  const Comp = asChild ? SlotPrimitive.Slot : ProgressButton
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
