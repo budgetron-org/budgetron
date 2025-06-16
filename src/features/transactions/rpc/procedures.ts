@@ -1,5 +1,3 @@
-import { ORPCError } from '@orpc/server'
-
 import { createRPCErrorFromUnknownError } from '~/rpc/utils'
 import { protectedProcedure } from '~/server/api/rpc'
 import {
@@ -11,7 +9,6 @@ import {
   updateTransaction,
 } from '../service'
 import {
-  AddTransactionInputSchema,
   CreateManyTransactionsInputSchema,
   CreateTransactionSchema,
   DeleteTransactionInputSchema,
@@ -22,13 +19,15 @@ import {
 } from '../validators'
 
 const create = protectedProcedure
-  .input(AddTransactionInputSchema)
+  .input(CreateTransactionSchema)
   .handler(async ({ context, input }) => {
     const session = context.session
 
     try {
       const transaction = await insertTransaction({
         bankAccountId: input.bankAccountId,
+        fromBankAccountId: input.fromBankAccountId,
+        toBankAccountId: input.toBankAccountId,
         amount: input.amount,
         categoryId: input.categoryId,
         currency: 'USD',
@@ -49,16 +48,11 @@ const createMany = protectedProcedure
   .input(CreateManyTransactionsInputSchema)
   .handler(async ({ context, input }) => {
     const { user } = context.session
-    const { error, data } = CreateTransactionSchema.extend({
-      userId: CreateTransactionSchema.shape.userId.default(user.id),
-    })
-      .array()
-      .nonempty()
-      .safeParse(input)
-    if (error) throw new ORPCError('BAD_REQUEST', { message: error.message })
 
     try {
-      const transactions = await insertManyTransactions(data)
+      const transactions = await insertManyTransactions(
+        input.map((t) => ({ ...t, userId: user.id })),
+      )
       return transactions
     } catch (error) {
       throw createRPCErrorFromUnknownError(error)

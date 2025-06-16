@@ -12,12 +12,12 @@ import type { Category, Transaction } from './types'
 import { chunkTransactions } from './utils'
 
 const schema = z.object({
-  result: z
-    .object({
+  result: z.array(
+    z.object({
       index: z.number(),
       category: z.string(),
-    })
-    .array(),
+    }),
+  ),
 })
 
 /**

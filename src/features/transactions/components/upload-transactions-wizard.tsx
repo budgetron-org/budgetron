@@ -122,13 +122,15 @@ function UploadTransactionsWizard({
                   className="max-h-full"
                   data={transactionsToUpload}
                   defaultColumnVisibility={{
-                    account: false,
+                    bankAccount: false,
                     select: false,
                   }}
                   defaultEditable={{
                     category: true,
+                    fromBankAccount: true,
                     notes: true,
                     tags: true,
+                    toBankAccount: true,
                     type: true,
                   }}
                   onDataUpdate={setTransactionsToUpload}

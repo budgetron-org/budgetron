@@ -1,6 +1,8 @@
 'use client'
 
 import { IconDots, IconNotes, IconPencil, IconTrash } from '@tabler/icons-react'
+import type { TableMeta } from '@tanstack/react-table'
+import { isEqual } from 'lodash'
 
 import {
   DataTableColumnHeader,
@@ -18,16 +20,15 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
+import { TagsInput } from '~/components/ui/tags-input'
+import { Textarea } from '~/components/ui/textarea'
+import { BankAccountPicker } from '~/components/widgets/bank-account-picker'
 import { CategoryPicker } from '~/components/widgets/category-picker'
 import { TransactionTypePicker } from '~/components/widgets/transaction-type-picker'
 import type { TransactionWithRelations } from '~/features/transactions/types'
 import { cn, safeParseNumber } from '~/lib/utils'
 import { DeleteTransactionDialog } from './delete-transaction-dialog'
 import { UpdateTransactionDialog } from './update-transaction-dialog'
-import type { TableMeta } from '@tanstack/react-table'
-import { Textarea } from '~/components/ui/textarea'
-import { TagsInput } from '~/components/ui/tags-input'
-import { isEqual } from 'lodash'
 
 function isEditableColumn<Data>(table: Table<Data>, accessor: keyof Data) {
   const editable = table.options.meta?.editable
@@ -155,11 +156,23 @@ function getColumns<Data extends TransactionWithRelations>() {
               onValueChange={(value) => {
                 // do not update if the value is not different
                 if (value === row.original.type) return
-                table.options.meta?.updateCellData?.(
-                  row.index,
-                  'type',
-                  value as Data['type'],
-                )
+                // when changing to TRANSFER, set fromBankAccountId and toBankAccountId based on the
+                // cash flow direction.
+                // 1. IN -> fromBankAccountId = null, toBankAccountId = bankAccountId
+                // 2. OUT -> fromBankAccountId = bankAccountId, toBankAccountId = null
+                // when changing from TRANSFER, set fromBankAccountId and toBankAccountId to null
+                table.options.meta?.updateRowData?.(row.index, {
+                  ...row.original,
+                  type: value,
+                  fromBankAccountId:
+                    value === 'TRANSFER' && row.original.cashFlow === 'OUT'
+                      ? row.original.bankAccountId
+                      : null,
+                  toBankAccountId:
+                    value === 'TRANSFER' && row.original.cashFlow === 'IN'
+                      ? row.original.bankAccountId
+                      : null,
+                })
               }}
             />
           )
@@ -226,8 +239,8 @@ function getColumns<Data extends TransactionWithRelations>() {
       },
     },
     {
-      id: 'account' as const,
-      accessorKey: 'account',
+      id: 'bankAccount' as const,
+      accessorKey: 'bankAccount',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Account" />
       ),
@@ -240,6 +253,107 @@ function getColumns<Data extends TransactionWithRelations>() {
       filterFn: (row, _, filterValue) => {
         if (Array.isArray(filterValue) && filterValue.length > 0) {
           return filterValue.includes(row.original.bankAccountId)
+        }
+        // Unsupported filter or no filter, return unfiltered
+        return true
+      },
+    },
+    {
+      id: 'fromAccount' as const,
+      accessorKey: 'fromAccount',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="From Account" />
+      ),
+      cell: ({ row, table }) => {
+        // From Account should only be editable if:
+        // 1. It is configured to be editable
+        // 2. The row represents a transfer transaction
+        if (
+          isEditableColumn(table, 'fromBankAccount') &&
+          row.original.type === 'TRANSFER'
+        ) {
+          return (
+            <BankAccountPicker
+              // disable changing if the money is moving out of this account
+              disabled={row.original.cashFlow === 'OUT'}
+              aria-label="From Account"
+              placeholder="Select From Account"
+              defaultValue={row.original.fromBankAccountId ?? undefined}
+              onValueChange={(value) => {
+                // do not update if the value is not different
+                if (value === row.original.fromBankAccountId) return
+                table.options.meta?.updateCellData?.(
+                  row.index,
+                  'fromBankAccountId',
+                  value as Data['fromBankAccountId'],
+                )
+              }}
+            />
+          )
+        }
+        return (
+          row.original.fromBankAccount && (
+            <>
+              {row.original.fromBankAccount.name} -{' '}
+              {row.original.fromBankAccount.type}
+            </>
+          )
+        )
+      },
+      filterFn: (row, _, filterValue) => {
+        if (Array.isArray(filterValue) && filterValue.length > 0) {
+          return filterValue.includes(row.original.fromBankAccountId)
+        }
+        // Unsupported filter or no filter, return unfiltered
+        return true
+      },
+    },
+    {
+      id: 'toAccount' as const,
+      accessorKey: 'toAccount',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="To Account" />
+      ),
+      cell: ({ row, table }) => {
+        // From Account should only be editable if:
+        // 1. It is configured to be editable
+        // 2. The row represents a transfer transaction
+        if (
+          isEditableColumn(table, 'toBankAccount') &&
+          row.original.type === 'TRANSFER'
+        ) {
+          return (
+            <BankAccountPicker
+              // disable changing if the money is moving into this account
+              disabled={row.original.cashFlow === 'IN'}
+              aria-label="To Account"
+              placeholder="Select To Account"
+              defaultValue={row.original.toBankAccountId ?? undefined}
+              onValueChange={(value) => {
+                // do not update if the value is not different
+                if (value === row.original.toBankAccountId) return
+                table.options.meta?.updateCellData?.(
+                  row.index,
+                  'toBankAccountId',
+                  value as Data['toBankAccountId'],
+                )
+              }}
+            />
+          )
+        }
+
+        return (
+          row.original.toBankAccount && (
+            <>
+              {row.original.toBankAccount.name} -{' '}
+              {row.original.toBankAccount.type}
+            </>
+          )
+        )
+      },
+      filterFn: (row, _, filterValue) => {
+        if (Array.isArray(filterValue) && filterValue.length > 0) {
+          return filterValue.includes(row.original.toBankAccountId)
         }
         // Unsupported filter or no filter, return unfiltered
         return true

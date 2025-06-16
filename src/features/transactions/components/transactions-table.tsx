@@ -69,6 +69,14 @@ function TransactionsTable({
           }),
         )
       },
+      updateRowData(rowIndex, value) {
+        onDataUpdate?.(
+          data.map((row, index) => {
+            if (index === rowIndex) return value
+            return row
+          }),
+        )
+      },
     }),
     [hasEditAction, hasDeleteAction, editable, onDataUpdate, data],
   )
@@ -221,10 +229,11 @@ function TransactionsTable({
               placeholder="Filter by account"
               options={accounts}
               value={
-                (table.getColumn('account')?.getFilterValue() ?? []) as string[]
+                (table.getColumn('bankAccount')?.getFilterValue() ??
+                  []) as string[]
               }
               onValueChange={(value) => {
-                table.getColumn('account')?.setFilterValue(value)
+                table.getColumn('bankAccount')?.setFilterValue(value)
               }}
             />
           </div>

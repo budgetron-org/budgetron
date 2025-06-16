@@ -8,6 +8,7 @@ import {
   GroupTable,
   TransactionTable,
 } from '~/server/db/schema'
+import type { TransactionCashFlow } from './types'
 import { parseTransactions } from './utils'
 
 async function insertTransaction(data: typeof TransactionTable.$inferInsert) {
@@ -37,6 +38,12 @@ async function insertManyTransactions(
         ),
         bankAccountId: sql.raw(
           `excluded.${toSnakeCase(TransactionTable.bankAccountId.name)}`,
+        ),
+        fromBankAccountId: sql.raw(
+          `excluded.${toSnakeCase(TransactionTable.fromBankAccountId.name)}`,
+        ),
+        toBankAccountId: sql.raw(
+          `excluded.${toSnakeCase(TransactionTable.toBankAccountId.name)}`,
         ),
         categoryId: sql.raw(
           `excluded.${toSnakeCase(TransactionTable.categoryId.name)}`,
@@ -84,12 +91,25 @@ async function selectTransactions(filters: SelectTransactionFilters) {
   return db.query.TransactionTable.findMany({
     with: {
       bankAccount: true,
+      fromBankAccount: true,
+      toBankAccount: true,
       category: {
         with: {
           parent: true,
         },
       },
       group: true,
+    },
+    extras: {
+      cashFlow: sql<TransactionCashFlow>`
+        CASE
+          WHEN ${TransactionTable.type} = 'INCOME' THEN 'IN'
+          WHEN ${TransactionTable.type} = 'EXPENSE' THEN 'OUT'
+          WHEN ${TransactionTable.type} = 'TRANSFER' AND ${TransactionTable.bankAccountId} = ${TransactionTable.toBankAccountId} THEN 'IN'
+          WHEN ${TransactionTable.type} = 'TRANSFER' AND ${TransactionTable.bankAccountId} = ${TransactionTable.fromBankAccountId} THEN 'OUT'
+          ELSE 'OUT'
+        END
+      `.as('cash_flow'),
     },
     where: and(...conditions),
     orderBy: [desc(TransactionTable.date)],

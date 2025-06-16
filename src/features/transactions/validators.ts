@@ -4,9 +4,41 @@ import { z } from 'zod/v4'
 import { TransactionTable } from '~/server/db/schema'
 
 const CreateTransactionSchema = createInsertSchema(TransactionTable)
-const AddTransactionInputSchema = CreateTransactionSchema.omit({
-  userId: true,
-})
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    userId: true,
+  })
+  .check((ctx) => {
+    console.log('VALIDATING')
+    if (
+      ctx.value.type === 'TRANSFER' &&
+      (ctx.value.fromBankAccountId == null || ctx.value.toBankAccountId == null)
+    ) {
+      ctx.issues.push({
+        code: 'custom',
+        input: ctx.value,
+        message:
+          'From and to bank accounts are required for transfer transactions',
+        path: ['fromBankAccountId', 'toBankAccountId'],
+      })
+    }
+
+    if (
+      ctx.value.type !== 'TRANSFER' &&
+      (ctx.value.fromBankAccountId != null || ctx.value.toBankAccountId != null)
+    ) {
+      ctx.issues.push({
+        code: 'custom',
+        input: ctx.value,
+        message:
+          'From and to bank accounts are not allowed for non expense/income transactions',
+        path: ['fromBankAccountId', 'toBankAccountId'],
+      })
+    }
+  })
+
 const TransactionFormSchema = CreateTransactionSchema.pick({
   amount: true,
   bankAccountId: true,
@@ -17,7 +49,7 @@ const TransactionFormSchema = CreateTransactionSchema.pick({
   type: true,
 })
   .extend({
-    amount: CreateTransactionSchema.shape.amount.min(0),
+    amount: CreateTransactionSchema.shape.amount.nonempty(),
   })
   .required()
 
@@ -25,8 +57,7 @@ const ParseOFXInputSchema = z.object({
   bankAccountId: z.string(),
   groupId: z.string().optional(),
   files: z
-    .instanceof(File)
-    .array()
+    .array(z.instanceof(File))
     .nonempty()
     .refine(
       (files) => files.every((file) => /.*\.(qfx|ofx)$/.test(file.name)),
@@ -43,13 +74,8 @@ const UploadOFXFormSchema = ParseOFXInputSchema.pick({
   shouldAutoCategorize: true,
 })
 
-const CreateManyTransactionsInputSchema = CreateTransactionSchema.omit({
-  createdAt: true,
-  id: true,
-  updatedAt: true,
-  userId: true,
-})
-  .array()
+const CreateManyTransactionsInputSchema = z
+  .array(CreateTransactionSchema)
   .nonempty()
 
 const GetByDateRangeInputSchema = z.object({
@@ -76,7 +102,6 @@ const DeleteTransactionInputSchema = UpdateTransactionSchema.pick({
 }).required()
 
 export {
-  AddTransactionInputSchema,
   CreateManyTransactionsInputSchema,
   CreateTransactionSchema,
   DeleteTransactionInputSchema,
