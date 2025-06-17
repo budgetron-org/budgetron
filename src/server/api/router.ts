@@ -1,6 +1,7 @@
 import { analyticsRouter } from '~/features/analytics/rpc/router'
 import { authRouter } from '~/features/auth/rpc/router'
 import { bankAccountsRouter } from '~/features/bank-accounts/rpc/router'
+import { budgetsRouter } from '~/features/budgets/rpc/router'
 import { categoriesRouter } from '~/features/categories/rpc/router'
 import { transactionsRouter } from '~/features/transactions/rpc/router'
 import { userRouter } from '~/features/user/rpc/router'
@@ -15,6 +16,7 @@ const appRouter = base.router({
   analytics: analyticsRouter,
   auth: authRouter,
   bankAccounts: bankAccountsRouter,
+  budgets: budgetsRouter,
   categories: categoriesRouter,
   transactions: transactionsRouter,
   user: userRouter,

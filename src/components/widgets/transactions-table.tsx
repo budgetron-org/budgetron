@@ -190,7 +190,7 @@ function TransactionsTable({
   return (
     <div className="flex h-full flex-col gap-2">
       {showFilters && (
-        <div className="flex items-start gap-2">
+        <div className="flex flex-wrap items-start gap-2">
           <div className="grid gap-2">
             <Label htmlFor={`${baseId}-description-filter`}>Description</Label>
             <Input

@@ -27,6 +27,16 @@ function useBreadcrumbs() {
       return PATH_TITLE_MAP[pathname as keyof typeof PATH_TITLE_MAP]
     }
 
+    // handle special cases
+    // path is /dashboard/budget/:budgetId
+    if (
+      /^dashboard\/budgets\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(
+        pathname,
+      )
+    ) {
+      return PATH_TITLE_MAP['dashboard/budgets/:budgetId']
+    }
+
     // If no title is specified, then return path bits as
     // crumbs
     return pathname.split('/').map(startCase)

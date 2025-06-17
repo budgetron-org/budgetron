@@ -4,6 +4,7 @@ import {
   Bar,
   CartesianGrid,
   BarChart as RechartsBarChart,
+  ReferenceLine,
   XAxis,
   YAxis,
 } from 'recharts'
@@ -21,6 +22,8 @@ interface BarChartProps<Data extends object> {
   barKeys: (keyof Data)[]
   xAxisFormatter?: (value: unknown) => string
   yAxisFormatter?: (value: unknown) => string
+  xReferenceLineValue?: number | string
+  yReferenceLineValue?: number | string
 }
 
 function BarChart<Data extends object>({
@@ -30,6 +33,8 @@ function BarChart<Data extends object>({
   barKeys,
   xAxisFormatter,
   yAxisFormatter,
+  xReferenceLineValue,
+  yReferenceLineValue,
 }: BarChartProps<Data>) {
   if (data.length === 0)
     return (
@@ -65,6 +70,37 @@ function BarChart<Data extends object>({
             />
           }
         />
+        {xReferenceLineValue && (
+          <ReferenceLine
+            x={xReferenceLineValue}
+            stroke="red"
+            label={{
+              value: xReferenceLineValue,
+              formatter: xAxisFormatter,
+            }}
+            ifOverflow="extendDomain"
+            strokeDasharray="5 5"
+            strokeOpacity={0.5}
+          />
+        )}
+        {yReferenceLineValue && (
+          <ReferenceLine
+            y={yReferenceLineValue}
+            // extendDomain not working in React 19
+            // Workaround: set yAxisId to 0
+            // See: https://github.com/recharts/recharts/issues/5500
+            yAxisId={0}
+            stroke="red"
+            label={{
+              value: yReferenceLineValue,
+              formatter: yAxisFormatter,
+              position: 'insideTopLeft',
+            }}
+            ifOverflow="extendDomain"
+            strokeDasharray="5 5"
+            strokeOpacity={0.5}
+          />
+        )}
         {barKeys.map((key) => (
           <Bar
             key={String(key)}
