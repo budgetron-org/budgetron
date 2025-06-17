@@ -1,4 +1,5 @@
 import { and, eq } from 'drizzle-orm'
+
 import { db } from '~/server/db'
 import { BankAccountTable } from '~/server/db/schema'
 
@@ -42,12 +43,10 @@ async function deleteBankAccount(
 }
 
 async function updateBankAccount(
-  data: Required<
-    Pick<
-      typeof BankAccountTable.$inferInsert,
-      'balance' | 'name' | 'type' | 'id' | 'userId'
-    >
-  >,
+  data: Partial<
+    Pick<typeof BankAccountTable.$inferInsert, 'balance' | 'name' | 'type'>
+  > &
+    Required<Pick<typeof BankAccountTable.$inferInsert, 'id' | 'userId'>>,
 ) {
   const [bankAccount] = await db
     .update(BankAccountTable)

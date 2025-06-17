@@ -16,11 +16,11 @@ const UpdateBankAccountSchema = createUpdateSchema(BankAccountTable)
 const UpdateBankAccountInputSchema = UpdateBankAccountSchema.omit({
   id: true,
   userId: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  id: UpdateBankAccountSchema.required().shape.id,
 })
-  .extend({
-    id: UpdateBankAccountSchema.required().shape.id,
-  })
-  .required()
 
 const DeleteBankAccountInputSchema = UpdateBankAccountSchema.pick({
   id: true,
