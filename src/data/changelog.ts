@@ -22,6 +22,21 @@ type Changelog = {
 
 const CHANGELOGS: Changelog[] = [
   {
+    version: '0.2.1',
+    date: '2025-06-17',
+    description: 'Minor UI improvements',
+    changes: [],
+    features: [],
+    fixes: [
+      {
+        title: 'Fixed overflow issues',
+        description:
+          'Before this fix, the bank accounts and budgets pages would overflow when there were too many items. Now it does not.',
+      },
+    ],
+    breakingChanges: [],
+  },
+  {
     version: '0.2.0',
     date: '2025-06-17',
     description: 'New budget feature and other minor improvements',
