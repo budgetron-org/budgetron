@@ -35,7 +35,7 @@ function BudgetItem({ budget }: { budget: BudgetSummary }) {
               </Button>
             </Link>
           </div>
-          <BudgetItemOptions budget={budget} className="flex-1" />
+          <BudgetItemOptions budget={budget} />
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">

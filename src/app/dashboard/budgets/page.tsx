@@ -57,10 +57,12 @@ async function BudgetsPageImpl() {
           refreshOnSuccess
         />
       </div>
-      <div className="min-h-0 flex-1">
-        {budgets.map((budget) => (
-          <BudgetItem key={budget.id} budget={budget} />
-        ))}
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="flex flex-wrap gap-4">
+          {budgets.map((budget) => (
+            <BudgetItem key={budget.id} budget={budget} />
+          ))}
+        </div>
       </div>
     </div>
   )

@@ -68,10 +68,12 @@ async function BankAccountsPageImpl() {
       <h2 className="text-2xl">
         Net Worth: {currencyFormatter.format(netWorth)}
       </h2>
-      <div className="flex min-h-0 flex-1 flex-wrap gap-4">
-        {bankAccounts.map((bankAccount) => (
-          <BankAccountItem key={bankAccount.id} bankAccount={bankAccount} />
-        ))}
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="flex flex-wrap gap-4">
+          {bankAccounts.map((bankAccount) => (
+            <BankAccountItem key={bankAccount.id} bankAccount={bankAccount} />
+          ))}
+        </div>
       </div>
     </div>
   )
