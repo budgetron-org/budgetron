@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  IconBuildingBank,
   IconCalendarDollar,
   IconLayoutDashboard,
   IconReportAnalytics,
@@ -15,6 +16,11 @@ const items = [
     title: 'Dashboard',
     url: PATHS.DASHBOARD,
     icon: IconLayoutDashboard,
+  },
+  {
+    title: 'Bank Accounts',
+    url: PATHS.BANK_ACCOUNTS,
+    icon: IconBuildingBank,
   },
   {
     title: 'Transactions',

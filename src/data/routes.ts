@@ -5,6 +5,7 @@ const PATHS = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
   DASHBOARD: '/dashboard',
+  BANK_ACCOUNTS: '/dashboard/bank-accounts',
   TRANSACTIONS: '/dashboard/transactions',
   TRANSACTIONS_UPLOAD: '/dashboard/transactions/upload',
   BUDGETS: '/dashboard/budgets',
@@ -16,6 +17,7 @@ const PATHS = {
 
 const PATH_TITLE_MAP = {
   dashboard: ['Dashboard'],
+  'dashboard/bank-accounts': ['Bank Accounts'],
   'dashboard/transactions': ['Transactions'],
   'dashboard/transactions/upload': ['Transactions', 'Upload'],
   'dashboard/budgets': ['Budgets'],

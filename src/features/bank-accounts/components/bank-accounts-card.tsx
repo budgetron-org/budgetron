@@ -1,12 +1,7 @@
-import {
-  IconCaretUpDownFilled,
-  IconDots,
-  IconPencil,
-  IconPlus,
-  IconTrash,
-} from '@tabler/icons-react'
+import { IconArrowRight, IconCaretUpDownFilled } from '@tabler/icons-react'
 import type { ComponentPropsWithoutRef, ReactNode } from 'react'
 
+import Link from 'next/link'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
@@ -15,20 +10,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '~/components/ui/collapsible'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
+import { PATHS } from '~/data/routes'
 import { getCurrencyFormatter } from '~/lib/format'
 import { safeParseNumber } from '~/lib/utils'
 import { api } from '~/rpc/server'
 import type { BankAccount } from '../types'
-import { CreateBankAccountDialog } from './create-bank-account-dialog'
-import { DeleteBankAccountDialog } from './delete-bank-account-dialog'
-import { UpdateBankAccountDialog } from './update-bank-account-dialog'
 
 function BankAccountDetailSection(props: {
   title: string
@@ -61,37 +47,6 @@ function BankAccountDetailItem({ bankAccount }: { bankAccount: BankAccount }) {
       <Badge className="ml-2">{bankAccount.type}</Badge>
       <div className="ml-auto flex items-center justify-center gap-2">
         {formatter.format(safeParseNumber(bankAccount.balance))}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">More options</span>
-              <IconDots className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <UpdateBankAccountDialog
-              bankAccount={bankAccount}
-              trigger={
-                <DropdownMenuItem preventClosing>
-                  <IconPencil />
-                  Edit
-                </DropdownMenuItem>
-              }
-              refreshOnSuccess
-            />
-            <DeleteBankAccountDialog
-              bankAccount={bankAccount}
-              trigger={
-                <DropdownMenuItem preventClosing>
-                  <IconTrash className="text-destructive" />
-                  Delete
-                </DropdownMenuItem>
-              }
-              refreshOnSuccess
-            />
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
     </div>
   )
@@ -118,15 +73,12 @@ async function BankAccountsCard(props: ComponentPropsWithoutRef<typeof Card>) {
       <CardHeader className="pb-6">
         <CardTitle className="flex items-center gap-2 text-2xl">
           Accounts
-          <CreateBankAccountDialog
-            trigger={
-              <Button className="ml-auto" variant="success">
-                <IconPlus />
-                New
-              </Button>
-            }
-            refreshOnSuccess
-          />
+          <Link href={PATHS.BANK_ACCOUNTS} className="ml-auto">
+            <Button variant="ghost">
+              Manage
+              <IconArrowRight />
+            </Button>
+          </Link>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
