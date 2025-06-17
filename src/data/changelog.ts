@@ -22,6 +22,33 @@ type Changelog = {
 
 const CHANGELOGS: Changelog[] = [
   {
+    version: '0.2.0',
+    date: '2025-06-17',
+    description: 'New budget feature and other minor improvements',
+    changes: [
+      {
+        title: 'Bank accounts page is now available',
+        description:
+          'You can now create and manage bank accounts from this page. Previously, this was done in the dashboard.',
+      },
+    ],
+    features: [
+      {
+        title: 'Budget feature is now available',
+        description:
+          'You can now create and manage budgets to track your expenses.',
+      },
+    ],
+    fixes: [
+      {
+        title: 'Minor UI improvements',
+        description:
+          'Minor UI improvements including chart and table improvements.',
+      },
+    ],
+    breakingChanges: [],
+  },
+  {
     version: '0.1.1',
     date: '2025-06-16',
     description: 'Fixes to the transaction form and table',
