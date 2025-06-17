@@ -2,7 +2,7 @@ import { endOfToday, subMonths } from 'date-fns'
 import { connection } from 'next/server'
 
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
-import { SummaryCard } from '~/components/widgets/summary-card'
+import { SummaryCard } from '~/features/analytics/components/summary-card'
 import { redirectUnauthenticated } from '~/features/auth/server'
 import { BankAccountsCard } from '~/features/bank-accounts/components/bank-accounts-card'
 import { api } from '~/rpc/server'

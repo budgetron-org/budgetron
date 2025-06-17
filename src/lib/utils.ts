@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from 'clsx'
+import { format, parse } from 'date-fns'
 import { twMerge } from 'tailwind-merge'
 import { Currencies, type Currency } from '~/server/db/enums'
 
@@ -20,4 +21,15 @@ function safeParseCurrency(mayBeCurrency: unknown, fallback: Currency = 'USD') {
   return fallback
 }
 
-export { cn, safeParseCurrency, safeParseNumber }
+/**
+ * Formats a month string to a human-readable label.
+ *
+ * @param monthString - Format: "YYYY-MM"
+ * @returns Format: "MMMM yyyy"
+ */
+function formatMonthLabel(monthString: string) {
+  const parsed = parse(monthString, 'yyyy-MM', new Date())
+  return format(parsed, 'MMMM yyyy')
+}
+
+export { cn, formatMonthLabel, safeParseCurrency, safeParseNumber }

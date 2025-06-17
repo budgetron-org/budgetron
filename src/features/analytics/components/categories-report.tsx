@@ -6,9 +6,9 @@ import { useState } from 'react'
 
 import { DateRangePicker } from '~/components/ui/date-range-picker'
 import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
-import { CategoryReportCard } from '~/components/widgets/category-report-card'
-import { CategoryTransactionsTable } from '~/components/widgets/category-transactions-table'
 import { api } from '~/rpc/client'
+import { CategoryReportCard } from './category-report-card'
+import { CategoryTransactionsTable } from './category-transactions-table'
 
 interface CategoriesReportProps {
   title: string

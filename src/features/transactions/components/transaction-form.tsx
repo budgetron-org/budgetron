@@ -7,9 +7,9 @@ import {
 } from 'react'
 import type { z } from 'zod/v4'
 
+import { TransactionFormSchema } from '~/features/transactions/validators'
 import { useAppForm } from '~/hooks/use-app-form'
 import { cn } from '~/lib/utils'
-import { TransactionFormSchema } from '../validators'
 
 interface TransactionFormHandle {
   reset: () => void

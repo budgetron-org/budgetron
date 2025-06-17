@@ -8,9 +8,9 @@ type CategoryReport = {
   categoryName: string
   categoryIcon: string
   categoryType: TransactionType
-  parentCategoryId: string
-  parentCategoryName: string
-  parentCategoryIcon: string
+  parentCategoryId: string | null
+  parentCategoryName: string | null
+  parentCategoryIcon: string | null
   total: string
 }
 
@@ -47,8 +47,7 @@ type CashFlowReport = {
 }
 
 type MonthlySummary = {
-  month: number
-  year: number
+  month: string
   income: number
   expense: number
 }

@@ -25,10 +25,10 @@ import { Textarea } from '~/components/ui/textarea'
 import { BankAccountPicker } from '~/components/widgets/bank-account-picker'
 import { CategoryPicker } from '~/components/widgets/category-picker'
 import { TransactionTypePicker } from '~/components/widgets/transaction-type-picker'
+import { DeleteTransactionDialog } from '~/features/transactions/components/delete-transaction-dialog'
+import { UpdateTransactionDialog } from '~/features/transactions/components/update-transaction-dialog'
 import type { TransactionWithRelations } from '~/features/transactions/types'
 import { cn, safeParseNumber } from '~/lib/utils'
-import { DeleteTransactionDialog } from './delete-transaction-dialog'
-import { UpdateTransactionDialog } from './update-transaction-dialog'
 
 function isEditableColumn<Data>(table: Table<Data>, accessor: keyof Data) {
   const editable = table.options.meta?.editable

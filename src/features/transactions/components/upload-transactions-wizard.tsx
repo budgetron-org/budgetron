@@ -10,12 +10,12 @@ import { toast } from 'sonner'
 import { Button } from '~/components/ui/button'
 import { ProgressButton } from '~/components/ui/progress-button'
 import { defineStepper } from '~/components/ui/stepper'
+import { TransactionsTable } from '~/components/widgets/transactions-table'
 import { PATHS } from '~/data/routes'
-import { TransactionsTable } from '~/features/transactions/components/transactions-table'
-import { UploadOFXForm } from '~/features/transactions/components/upload-ofx-form'
-import type { TransactionWithRelations } from '~/features/transactions/types'
 import { cn } from '~/lib/utils'
 import { api } from '~/rpc/client'
+import type { TransactionWithRelations } from '../types'
+import { UploadOFXForm } from './upload-ofx-form'
 
 const Stepper = defineStepper(
   {

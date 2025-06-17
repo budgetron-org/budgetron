@@ -20,9 +20,9 @@ import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { MultiSelect } from '~/components/ui/multi-select'
+import type { TransactionWithRelations } from '~/features/transactions/types'
 import { getCurrencyFormatter } from '~/lib/format'
 import { cn } from '~/lib/utils'
-import type { TransactionWithRelations } from '../types'
 import { getColumns, type ColumnId } from './transactions-table-columns'
 
 interface TransactionsTableProps {

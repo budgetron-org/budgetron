@@ -3,6 +3,7 @@ import {
   addMonths,
   addQuarters,
   addWeeks,
+  eachMonthOfInterval,
   format,
   isBefore,
   startOfMonth,
@@ -17,27 +18,22 @@ import type {
   MonthlySummary,
 } from './types'
 
-function fillMissingMonthsSummary(raw: MonthlySummary[], from: Date, to: Date) {
-  const filled: MonthlySummary[] = []
+function fillMissingMonthsSummary(
+  raw: MonthlySummary[],
+  start: Date,
+  end: Date,
+) {
+  const allMonths = eachMonthOfInterval({ start, end }).map((date) =>
+    format(date, 'yyyy-MM'),
+  )
 
-  const current = new Date(from.getFullYear(), from.getMonth(), 1)
-  const end = new Date(to.getFullYear(), to.getMonth(), 1)
+  const dataMap = new Map(raw.map((entry) => [entry.month, entry]))
 
-  const lookup = new Map(raw.map((r) => [`${r.year}-${r.month}`, r]))
-
-  while (current <= end) {
-    const month = current.getMonth() + 1
-    const year = current.getFullYear()
-    const key = `${year}-${month}`
-
-    const existing = lookup.get(key)
-
-    filled.push(existing ?? { year, month, income: 0, expense: 0 })
-
-    current.setMonth(current.getMonth() + 1)
-  }
-
-  return filled
+  return allMonths.map<MonthlySummary>((month) => ({
+    month,
+    income: dataMap.get(month)?.income ?? 0,
+    expense: dataMap.get(month)?.expense ?? 0,
+  }))
 }
 
 function getNextDate(date: Date, granularity: CashFlowReportGranularity): Date {

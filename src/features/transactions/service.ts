@@ -8,7 +8,7 @@ import {
   GroupTable,
   TransactionTable,
 } from '~/server/db/schema'
-import type { TransactionCashFlow } from './types'
+import type { TransactionCashFlow, TransactionWithRelations } from './types'
 import { parseTransactions } from './utils'
 
 async function insertTransaction(data: typeof TransactionTable.$inferInsert) {
@@ -80,7 +80,9 @@ type SelectTransactionFilters = {
   userId: string
   categoryId?: string
 }
-async function selectTransactions(filters: SelectTransactionFilters) {
+async function selectTransactions(
+  filters: SelectTransactionFilters,
+): Promise<TransactionWithRelations[]> {
   const conditions = [
     eq(TransactionTable.userId, filters.userId),
     filters.fromDate && gte(TransactionTable.date, filters.fromDate),
@@ -88,7 +90,7 @@ async function selectTransactions(filters: SelectTransactionFilters) {
     filters.categoryId && eq(TransactionTable.categoryId, filters.categoryId),
   ].filter(Boolean)
 
-  return db.query.TransactionTable.findMany({
+  const transactions = (await db.query.TransactionTable.findMany({
     with: {
       bankAccount: true,
       fromBankAccount: true,
@@ -114,7 +116,8 @@ async function selectTransactions(filters: SelectTransactionFilters) {
     },
     where: and(...conditions),
     orderBy: [desc(TransactionTable.date)],
-  })
+  })) satisfies TransactionWithRelations[]
+  return transactions
 }
 
 type ParseOFXFileParams = {

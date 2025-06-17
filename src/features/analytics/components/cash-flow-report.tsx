@@ -5,10 +5,10 @@ import { useState } from 'react'
 
 import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
 import { ToggleGroup, ToggleGroupItem } from '~/components/ui/toggle-group'
-import { CashFlowChart } from '~/components/widgets/cash-flow-chart'
-import { CashFlowSummaryCard } from '~/components/widgets/cash-flow-summary-card'
 import { api } from '~/rpc/client'
 import type { CashFlowReportRange } from '../types'
+import { CashFlowChart } from './cash-flow-chart'
+import { CashFlowSummaryCard } from './cash-flow-summary-card'
 
 const RANGE_DESCRIPTIONS = {
   this_month: 'This Month',

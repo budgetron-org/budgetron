@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card'
-import { TransactionsTable } from '~/features/transactions/components/transactions-table'
+import { TransactionsTable } from '~/components/widgets/transactions-table'
 import { api } from '~/rpc/client'
 
 interface CategoryTransactionsTableProps {

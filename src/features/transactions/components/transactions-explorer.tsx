@@ -8,10 +8,10 @@ import { useState } from 'react'
 
 import { Button } from '~/components/ui/button'
 import { DateRangePicker } from '~/components/ui/date-range-picker'
+import { TransactionsTable } from '~/components/widgets/transactions-table'
 import { PATHS } from '~/data/routes'
 import { api } from '~/rpc/client'
 import { CreateTransactionDialog } from './create-transaction-dialog'
-import { TransactionsTable } from './transactions-table'
 
 function TransactionsExplorer() {
   const [transactionRange, setTransactionRange] = useState({
@@ -25,7 +25,7 @@ function TransactionsExplorer() {
   )
 
   return (
-    <>
+    <div className="flex h-full w-full flex-col gap-4">
       <div className="flex flex-col justify-end gap-2 md:flex-row">
         <DateRangePicker
           className="w-full md:w-[250px]"
@@ -54,7 +54,7 @@ function TransactionsExplorer() {
           data={transactions.data}
         />
       </div>
-    </>
+    </div>
   )
 }
 

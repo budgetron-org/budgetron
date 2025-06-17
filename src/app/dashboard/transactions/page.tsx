@@ -5,11 +5,7 @@ import { TransactionsExplorer } from '~/features/transactions/components/transac
 async function TransactionsPageImpl() {
   await redirectUnauthenticated()
 
-  return (
-    <div className="flex h-full w-full flex-col gap-4">
-      <TransactionsExplorer />
-    </div>
-  )
+  return <TransactionsExplorer />
 }
 
 export default async function TransactionsPage() {

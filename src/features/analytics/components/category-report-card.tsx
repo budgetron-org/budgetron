@@ -90,6 +90,12 @@ function useGroupedCategories(data: CategoryReport[]) {
     >()
 
     for (const category of data) {
+      if (!category.parentCategoryId || !category.parentCategoryName) {
+        // We should never get the top level categories here
+        // if we do get them, we should ignore them
+        continue
+      }
+
       if (!map.has(category.parentCategoryId)) {
         map.set(category.parentCategoryId, {
           id: category.parentCategoryId,

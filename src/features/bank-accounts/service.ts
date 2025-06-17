@@ -42,8 +42,12 @@ async function deleteBankAccount(
 }
 
 async function updateBankAccount(
-  data: Partial<Omit<typeof BankAccountTable.$inferInsert, 'id' | 'userId'>> &
-    Pick<typeof BankAccountTable.$inferSelect, 'id' | 'userId'>,
+  data: Required<
+    Pick<
+      typeof BankAccountTable.$inferInsert,
+      'balance' | 'name' | 'type' | 'id' | 'userId'
+    >
+  >,
 ) {
   const [bankAccount] = await db
     .update(BankAccountTable)
