@@ -1,6 +1,6 @@
 type Changelog = {
-  version: `${number}.${number}.${number}` // MAJOR.MINOR.PATCH
-  date: `${number}-${number}-${number}` // YYYY-MM-DD
+  version: `${number}.${number}.${number}` | 'NEXT' // MAJOR.MINOR.PATCH
+  date: `${number}-${number}-${number}` | 'TBD' // YYYY-MM-DD
   description: string
   breakingChanges: {
     title: string
@@ -21,6 +21,29 @@ type Changelog = {
 }
 
 const CHANGELOGS: Changelog[] = [
+  {
+    version: 'NEXT',
+    date: 'TBD',
+    description: 'Introducing OAuth support, Gravatar avatars, and more',
+    changes: [
+      {
+        title: 'Google Sign In is now optional',
+        description: 'You can now choose to not enable Google Sign In.',
+      },
+    ],
+    features: [
+      {
+        title: 'OAuth support',
+        description: 'You can now sign in using custom OAuth providers.',
+      },
+      {
+        title: 'Gravatar avatars',
+        description: 'Avatars are now fetched from Gravatar.',
+      },
+    ],
+    fixes: [],
+    breakingChanges: [],
+  },
   {
     version: '0.2.1',
     date: '2025-06-17',

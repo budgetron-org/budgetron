@@ -11,8 +11,13 @@ const env = createEnv({
     AUTH_SECRET: z.string().nonempty(),
     AUTH_URL: z.url(),
 
-    GOOGLE_CLIENT_ID: z.string().nonempty(),
-    GOOGLE_CLIENT_SECRET: z.string().nonempty(),
+    GOOGLE_CLIENT_ID: z.string().nonempty().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().nonempty().optional(),
+
+    OAUTH_CLIENT_ID: z.string().nonempty().optional(),
+    OAUTH_CLIENT_SECRET: z.string().nonempty().optional(),
+    OAUTH_PROVIDER_NAME: z.string().nonempty().optional(),
+    OPENID_CONFIGURATION_URL: z.url().optional(),
 
     DB_URL: z.url(),
 

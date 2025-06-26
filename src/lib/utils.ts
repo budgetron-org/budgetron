@@ -32,4 +32,33 @@ function formatMonthLabel(monthString: string) {
   return format(parsed, 'MMMM yyyy')
 }
 
-export { cn, formatMonthLabel, safeParseCurrency, safeParseNumber }
+type Env = typeof import('~/env/server').env
+function isGoogleAuthEnabled(env: Env): env is Env & {
+  readonly GOOGLE_CLIENT_ID: string
+  readonly GOOGLE_CLIENT_SECRET: string
+} {
+  return env.GOOGLE_CLIENT_ID != null && env.GOOGLE_CLIENT_SECRET != null
+}
+
+function isOAuthAuthEnabled(env: Env): env is Env & {
+  readonly OAUTH_CLIENT_ID: string
+  readonly OAUTH_CLIENT_SECRET: string
+  readonly OAUTH_PROVIDER_NAME: string
+  readonly OPENID_CONFIGURATION_URL: string
+} {
+  return (
+    env.OAUTH_CLIENT_ID != null &&
+    env.OAUTH_CLIENT_SECRET != null &&
+    env.OAUTH_PROVIDER_NAME != null &&
+    env.OPENID_CONFIGURATION_URL != null
+  )
+}
+
+export {
+  cn,
+  formatMonthLabel,
+  isGoogleAuthEnabled,
+  isOAuthAuthEnabled,
+  safeParseCurrency,
+  safeParseNumber,
+}

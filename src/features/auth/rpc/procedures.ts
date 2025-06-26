@@ -13,6 +13,7 @@ import {
   ForgotPasswordSchema,
   ResetPasswordSchema,
   SignInSchema,
+  SignInWithOauthSchema,
   SignInWithSocialSchema,
   SignUpSchema,
 } from '../validators'
@@ -49,6 +50,35 @@ const signInWithSocial = publicProcedure
       const { url } = await getAuth().api.signInSocial({
         body: {
           provider: input.provider,
+          callbackURL,
+          requestSignUp,
+        },
+        headers: context.headers,
+      })
+      return { success: true, redirectUrl: url }
+    } catch (error) {
+      if (error instanceof APIError) {
+        if (typeof error.status === 'string') {
+          throw new ORPCError(error.status, {
+            message: error.message,
+            cause: error.cause,
+          })
+        }
+        throw createRPCErrorFromStatus(error.status, error.message, error.cause)
+      }
+      throw createRPCErrorFromUnknownError(error)
+    }
+  })
+
+const signInWithOAuth = publicProcedure
+  .input(SignInWithOauthSchema)
+  .handler(async ({ context, input }) => {
+    try {
+      const callbackURL = PATHS.DASHBOARD
+      const requestSignUp = await signupFeatureFlag()
+      const { url } = await getAuth().api.signInWithOAuth2({
+        body: {
+          providerId: input.providerId,
           callbackURL,
           requestSignUp,
         },
@@ -177,6 +207,7 @@ export {
   resetPassword,
   session,
   signIn,
+  signInWithOAuth,
   signInWithSocial,
   signOut,
   signUp,

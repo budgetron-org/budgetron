@@ -12,6 +12,11 @@ const SignInWithSocialSchema = z.object({
   callbackURL: z.url().optional(),
 })
 
+const SignInWithOauthSchema = z.object({
+  providerId: z.enum(['oidc']),
+  callbackURL: z.url().optional(),
+})
+
 const SignUpSchema = z
   .object({
     firstName: z.string().min(1, { error: 'First Name is required.' }),
@@ -44,6 +49,7 @@ export {
   ForgotPasswordSchema,
   ResetPasswordSchema,
   SignInSchema,
+  SignInWithOauthSchema,
   SignInWithSocialSchema,
   SignUpSchema,
 }

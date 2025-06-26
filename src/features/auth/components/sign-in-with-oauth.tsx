@@ -1,17 +1,21 @@
 'use client'
 
+import { IconKey } from '@tabler/icons-react'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
-import { GoogleIcon } from '~/components/icons'
 import { ProgressButton } from '~/components/ui/progress-button'
 import { api } from '~/rpc/client'
 
-function SignInWithGoogle() {
+interface SignInWithOAuthProps {
+  providerName?: string
+}
+
+function SignInWithOAuth({ providerName = 'OAuth' }: SignInWithOAuthProps) {
   const router = useRouter()
-  const signInWithSocial = useMutation(
-    api.auth.signInWithSocial.mutationOptions({
+  const signInWithOAuth = useMutation(
+    api.auth.signInWithOAuth.mutationOptions({
       onSuccess(data) {
         if (data.redirectUrl) {
           router.push(data.redirectUrl)
@@ -19,12 +23,12 @@ function SignInWithGoogle() {
         }
 
         // If this is not a redirect, then something went wrong
-        toast.error('Error signing in with Google', {
+        toast.error(`Error signing in with ${providerName}`, {
           description: 'Something went wrong. Please try again later.',
         })
       },
       onError(error) {
-        toast.error('Error signing in with Google', {
+        toast.error(`Error signing in with ${providerName}`, {
           description: error.message,
         })
       },
@@ -35,12 +39,12 @@ function SignInWithGoogle() {
     <ProgressButton
       variant="outline"
       className="w-full"
-      isLoading={signInWithSocial.isPending}
-      onClick={() => signInWithSocial.mutate({ provider: 'google' })}>
-      <GoogleIcon />
-      Sign in with Google
+      isLoading={signInWithOAuth.isPending}
+      onClick={() => signInWithOAuth.mutate({ providerId: 'oidc' })}>
+      <IconKey />
+      Sign in with {providerName}
     </ProgressButton>
   )
 }
 
-export { SignInWithGoogle }
+export { SignInWithOAuth }
