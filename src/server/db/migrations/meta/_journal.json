@@ -15,6 +15,13 @@
       "when": 1749593429029,
       "tag": "0001_complete_maddog",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1750981133553,
+      "tag": "0002_dusty_robbie_robertson",
+      "breakpoints": true
     }
   ]
 }
