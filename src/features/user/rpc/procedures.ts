@@ -121,14 +121,23 @@ const linkAccount = protectedProcedure
     const callbackURL = PATHS.ACCOUNT + '?view=security'
     try {
       if (input.providerId === 'google') {
-        const { url } = await getAuth().api.linkSocialAccount({
+        const response = await getAuth().api.linkSocialAccount({
           body: {
             provider: 'google',
             callbackURL,
           },
           headers: context.headers,
         })
-        return { success: true, redirectUrl: url }
+        if (response.redirect) {
+          // url is available but a type issue is preventing it from being used
+          // See https://github.com/better-auth/better-auth/issues/3198
+          return {
+            success: true,
+            redirectUrl: (response as { url: string }).url,
+          }
+        }
+
+        return { success: true, redirectUrl: undefined }
       }
 
       if (input.providerId === 'custom-oauth-provider') {
