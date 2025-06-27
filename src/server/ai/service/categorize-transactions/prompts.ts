@@ -36,7 +36,7 @@ function generateUserPrompt(
     
     Reply in JSON format:
     [
-      { index: 0, transaction: '${transactions[0]?.description}' category: '${categories[0]?.parent?.name}/${categories[0]?.name}' },
+      { index: 0, transaction: '${transactions[0]?.description}', category: '${categories[0]?.parent?.name}/${categories[0]?.name}' },
       ...
     ]
   `

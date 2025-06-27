@@ -79,6 +79,7 @@ async function parseTransactions({
   const result = processedTransactions.map((t) => ({
     ...t,
     category: categorizedTransactions[t.externalId] ?? null,
+    categoryId: categorizedTransactions[t.externalId]?.id ?? null,
   }))
 
   return result

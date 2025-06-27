@@ -51,4 +51,4 @@ type BudgetDetails = {
   })[]
 }
 
-export type { Budget, BudgetDetails, BudgetSummary, BudgetWithRelations }
+export type { Budget, BudgetDetails, BudgetSummary }

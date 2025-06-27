@@ -7,11 +7,17 @@ import type { FieldApi } from './types'
 
 interface CheckboxFieldProps {
   className?: string
+  disabled?: boolean
   field: FieldApi<boolean>
   label: string
 }
 
-function CheckboxField({ className, field, label }: CheckboxFieldProps) {
+function CheckboxField({
+  className,
+  disabled,
+  field,
+  label,
+}: CheckboxFieldProps) {
   const id = useId()
   const hasError = field.state.meta.errors.length > 0
   return (
@@ -21,6 +27,7 @@ function CheckboxField({ className, field, label }: CheckboxFieldProps) {
         aria-invalid={hasError}
         className={hasError ? 'border-destructive' : ''}
         checked={field.state.value}
+        disabled={disabled}
         onBlur={() => field.handleBlur()}
         onCheckedChange={(checked) => field.handleChange(Boolean(checked))}
       />

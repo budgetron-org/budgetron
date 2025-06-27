@@ -6,6 +6,10 @@ import type { z } from 'zod/v4'
 import { useAppForm } from '~/hooks/use-app-form'
 import { cn } from '~/lib/utils'
 import { UploadOFXFormSchema } from '../validators'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '~/rpc/client'
+import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
+import { Badge } from '~/components/ui/badge'
 
 interface UploadOFXFormProps extends Omit<ComponentProps<'form'>, 'onSubmit'> {
   onSubmit?: (value: z.infer<typeof UploadOFXFormSchema>) => void
@@ -20,9 +24,16 @@ function UploadOFXForm({ className, onSubmit, ...props }: UploadOFXFormProps) {
       onSubmit: UploadOFXFormSchema,
     },
     onSubmit({ value }) {
-      onSubmit?.(value)
+      onSubmit?.({
+        ...value,
+        // only allow categorization if AI is healthy
+        shouldAutoCategorize:
+          aiHealth.data === true ? value.shouldAutoCategorize : false,
+      })
     },
   })
+
+  const aiHealth = useQuery(api.ai.health.queryOptions())
 
   return (
     <form
@@ -49,7 +60,17 @@ function UploadOFXForm({ className, onSubmit, ...props }: UploadOFXFormProps) {
 
       <form.AppField name="shouldAutoCategorize">
         {(field) => (
-          <field.CheckboxField label="Auto-categorize transactions" />
+          <SkeletonWrapper isLoading={aiHealth.isPending}>
+            <div className="flex items-center gap-2">
+              <field.CheckboxField
+                label="Auto-categorize transactions"
+                disabled={aiHealth.data === false}
+              />
+              {aiHealth.data === false && (
+                <Badge variant="destructive">SERVICE DOWN</Badge>
+              )}
+            </div>
+          </SkeletonWrapper>
         )}
       </form.AppField>
     </form>

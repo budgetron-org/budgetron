@@ -1,3 +1,4 @@
+import { aiRouter } from '~/features/ai/rpc/router'
 import { analyticsRouter } from '~/features/analytics/rpc/router'
 import { authRouter } from '~/features/auth/rpc/router'
 import { bankAccountsRouter } from '~/features/bank-accounts/rpc/router'
@@ -13,6 +14,7 @@ import { base } from './rpc'
  * All routers added in /features should be manually added here.
  */
 const appRouter = base.router({
+  ai: aiRouter,
   analytics: analyticsRouter,
   auth: authRouter,
   bankAccounts: bankAccountsRouter,

@@ -64,6 +64,7 @@ async function categorizeTransactions(
         schema,
         prompt,
         system: SYSTEM_PROMPT,
+        mode: 'json',
       })
 
       // run through the result and map the transactions to category

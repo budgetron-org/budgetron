@@ -37,6 +37,11 @@ const CHANGELOGS: Changelog[] = [
         description: 'You can now sign in using custom OAuth providers.',
       },
       {
+        title: 'OpenAI compatible AI for categorization',
+        description:
+          'You can now use AI (any OpenAI compatible provider) to automatically categorize your transactions.',
+      },
+      {
         title: 'Gravatar avatars',
         description:
           'Avatars are now fetched from Gravatar. Or you can choose your initials as avatar.',
@@ -53,7 +58,13 @@ const CHANGELOGS: Changelog[] = [
           'Adding, deleting, and updating transactions are now reflected in the UI correctly without having to refresh the page.',
       },
     ],
-    breakingChanges: [],
+    breakingChanges: [
+      {
+        title: 'AI categorization is not done by OpenAI compatible API',
+        description:
+          'Previously this was done by Ollama. Now it is done by any OpenAI compatible API. Need to update the environment variables.',
+      },
+    ],
   },
   {
     version: '0.2.1',

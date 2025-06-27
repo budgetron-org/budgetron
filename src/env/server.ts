@@ -21,8 +21,10 @@ const env = createEnv({
 
     DB_URL: z.url(),
 
-    OLLAMA_URL: z.url(),
-    OLLAMA_MODEL: z.string().nonempty(), // TODO: Add enum with supported models?
+    OPENAI_COMPATIBLE_PROVIDER: z.string().nonempty(),
+    OPENAI_COMPATIBLE_BASE_URL: z.url(),
+    OPENAI_COMPATIBLE_API_KEY: z.string().nonempty(),
+    OPENAI_COMPATIBLE_MODEL: z.string().nonempty(),
 
     EMAIL_PROVIDER_API_KEY: z.string().nonempty(),
     EMAIL_PROVIDER_FROM_EMAIL: z.string().nonempty(),
