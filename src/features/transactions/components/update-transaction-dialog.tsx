@@ -50,16 +50,21 @@ export function UpdateTransactionDialog({
 
   const updateTransaction = useMutation(
     api.transactions.update.mutationOptions({
-      onSuccess({ description }) {
+      async onSuccess({ description }) {
+        // invalidate transaction & analytics queries
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: api.transactions.key(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: api.analytics.key(),
+          }),
+        ])
+        formRef.current?.reset()
+        setOpen(false)
         toast.success(
           `Updated Transaction - ${transaction.description}${transaction.description !== description ? ` to ${description}` : ''}`,
         )
-        formRef.current?.reset()
-        setOpen(false)
-        // invalidate transaction & analytics queries
-        queryClient.invalidateQueries({
-          queryKey: [...api.transactions.key(), ...api.analytics.key()],
-        })
         // refresh page if needed
         if (refreshOnSuccess) router.refresh()
       },

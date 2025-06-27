@@ -26,12 +26,17 @@ function DeleteTransactionDialog({
   const router = useRouter()
   const deleteTransaction = useMutation(
     api.transactions.delete.mutationOptions({
-      onSuccess() {
-        toast.success(`Deleted Transaction - ${transaction.description}`)
+      async onSuccess() {
         // invalidate transaction and analytics queries
-        queryClient.invalidateQueries({
-          queryKey: [...api.transactions.key(), ...api.analytics.key()],
-        })
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: api.transactions.key(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: api.analytics.key(),
+          }),
+        ])
+        toast.success(`Deleted Transaction - ${transaction.description}`)
         // refresh page if needed
         if (refreshOnSuccess) router.refresh()
       },

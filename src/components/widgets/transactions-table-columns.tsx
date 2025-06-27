@@ -1,6 +1,6 @@
 'use client'
 
-import { IconDots, IconNotes, IconPencil, IconTrash } from '@tabler/icons-react'
+import { IconNotes, IconPencil, IconTrash } from '@tabler/icons-react'
 import type { TableMeta } from '@tanstack/react-table'
 import { isEqual } from 'lodash'
 
@@ -12,13 +12,6 @@ import {
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
 import { TagsInput } from '~/components/ui/tags-input'
 import { Textarea } from '~/components/ui/textarea'
@@ -481,42 +474,36 @@ function getColumns<Data extends TransactionWithRelations>() {
     },
     {
       id: 'actions' as const,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Actions" />
+      ),
       cell: ({ row, table }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">More options</span>
-              <IconDots className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            {isActionEnabled(table, 'edit') && (
-              <UpdateTransactionDialog
-                transaction={row.original}
-                trigger={
-                  <DropdownMenuItem preventClosing>
-                    <IconPencil />
-                    Edit
-                  </DropdownMenuItem>
-                }
-                refreshOnSuccess
-              />
-            )}
-            {isActionEnabled(table, 'delete') && (
-              <DeleteTransactionDialog
-                transaction={row.original}
-                trigger={
-                  <DropdownMenuItem preventClosing>
-                    <IconTrash className="text-destructive" />
-                    Delete
-                  </DropdownMenuItem>
-                }
-                refreshOnSuccess
-              />
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div>
+          {isActionEnabled(table, 'edit') && (
+            <UpdateTransactionDialog
+              transaction={row.original}
+              trigger={
+                <Button variant="ghost" size="icon" title="Edit">
+                  <IconPencil />
+                  <span className="sr-only">Edit Transaction</span>
+                </Button>
+              }
+              refreshOnSuccess
+            />
+          )}
+          {isActionEnabled(table, 'delete') && (
+            <DeleteTransactionDialog
+              transaction={row.original}
+              trigger={
+                <Button variant="ghost" size="icon" title="Delete">
+                  <IconTrash className="text-destructive" />
+                  <span className="sr-only">Delete Transaction</span>
+                </Button>
+              }
+              refreshOnSuccess
+            />
+          )}
+        </div>
       ),
     },
   ] satisfies ColumnDef<Data>[]

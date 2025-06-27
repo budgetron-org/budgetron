@@ -47,14 +47,14 @@ export function CreateBudgetDialog({
 
   const createBudget = useMutation(
     api.budgets.create.mutationOptions({
-      onSuccess() {
-        toast.success(`Created new budget.`)
-        if (!willCreateAnother) setOpen(false)
-        formRef.current?.reset()
+      async onSuccess() {
         // invalidate account queries
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: api.budgets.key(),
         })
+        if (!willCreateAnother) setOpen(false)
+        formRef.current?.reset()
+        toast.success(`Created new budget.`)
         // refresh page if needed
         if (refreshOnSuccess) router.refresh()
       },

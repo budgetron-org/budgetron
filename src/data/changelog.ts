@@ -46,7 +46,13 @@ const CHANGELOGS: Changelog[] = [
         description: 'You can now delete, link, and unlink accounts.',
       },
     ],
-    fixes: [],
+    fixes: [
+      {
+        title: 'Fixed query invalidations',
+        description:
+          'Adding, deleting, and updating transactions are now reflected in the UI correctly without having to refresh the page.',
+      },
+    ],
     breakingChanges: [],
   },
   {

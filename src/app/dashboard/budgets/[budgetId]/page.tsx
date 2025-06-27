@@ -22,8 +22,8 @@ async function BudgetPageImpl({ budgetId }: { budgetId: string }) {
     <div className="flex h-full w-full flex-col gap-6">
       <div className="flex items-center gap-2">
         <Link href={PATHS.BUDGETS}>
-          <Button variant="ghost" size="icon">
-            <IconArrowLeft />
+          <Button variant="ghost">
+            <IconArrowLeft /> Back
           </Button>
         </Link>
         <h1 className="text-2xl">{title}</h1>

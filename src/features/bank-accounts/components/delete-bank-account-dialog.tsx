@@ -26,12 +26,12 @@ function DeleteBankAccountDialog({
   const router = useRouter()
   const deleteBankAccount = useMutation(
     api.bankAccounts.delete.mutationOptions({
-      onSuccess() {
-        toast.success(`Deleted Bank Account - ${bankAccount.name}`)
+      async onSuccess() {
         // invalidate account queries
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: api.bankAccounts.getAll.key(),
         })
+        toast.success(`Deleted Bank Account - ${bankAccount.name}`)
         // refresh page if needed
         if (refreshOnSuccess) router.refresh()
       },

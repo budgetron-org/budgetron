@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   useCallback,
   useId,
@@ -42,13 +42,23 @@ export function CreateTransactionDialog({
   const checkboxId = useId()
   const [open, setOpen] = useState(false)
   const [willCreateAnother, setWillCreateAnother] = useState(false)
+  const queryClient = useQueryClient()
 
   const createTransaction = useMutation(
     api.transactions.create.mutationOptions({
-      onSuccess(_, { description }) {
-        toast.success(`Created transaction - ${description}`)
+      async onSuccess(_, { description }) {
+        // invalidate transaction & analytics queries
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: api.transactions.key(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: api.analytics.key(),
+          }),
+        ])
         if (!willCreateAnother) setOpen(false)
         formRef.current?.reset()
+        toast.success(`Created transaction - ${description}`)
       },
       onError(error, { description }) {
         toast.error(`Error creating transaction - ${description}`, {

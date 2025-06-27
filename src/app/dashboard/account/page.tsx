@@ -38,8 +38,7 @@ async function AccountPageImpl({
       <CardHeader>
         <Link href={PATHS.DASHBOARD}>
           <Button variant="outline">
-            <IconArrowLeft />
-            Back
+            <IconArrowLeft /> Back
           </Button>
         </Link>
         <CardTitle className="text-2xl">

@@ -50,16 +50,16 @@ export function UpdateBankAccountDialog({
 
   const updateBankAccount = useMutation(
     api.bankAccounts.update.mutationOptions({
-      onSuccess({ name }) {
+      async onSuccess({ name }) {
+        // invalidate account queries
+        await queryClient.invalidateQueries({
+          queryKey: api.bankAccounts.getAll.key(),
+        })
+        formRef.current?.reset()
+        setOpen(false)
         toast.success(
           `Updated Bank Account - ${bankAccount.name}${bankAccount.name !== name ? ` to ${name}` : ''}`,
         )
-        formRef.current?.reset()
-        setOpen(false)
-        // invalidate account queries
-        queryClient.invalidateQueries({
-          queryKey: api.bankAccounts.getAll.key(),
-        })
         // refresh page if needed
         if (refreshOnSuccess) router.refresh()
       },

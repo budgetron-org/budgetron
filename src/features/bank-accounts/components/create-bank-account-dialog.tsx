@@ -50,14 +50,16 @@ export function CreateBankAccountDialog({
 
   const createBankAccount = useMutation(
     api.bankAccounts.create.mutationOptions({
-      onSuccess(_, { name }) {
-        toast.success(`Created Bank Account - ${name}`)
-        if (!willCreateAnother) setOpen(false)
-        formRef.current?.reset()
+      async onSuccess(_, { name }) {
         // invalidate account queries
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: api.bankAccounts.getAll.key(),
         })
+
+        if (!willCreateAnother) setOpen(false)
+        formRef.current?.reset()
+
+        toast.success(`Created Bank Account - ${name}`)
         // refresh page if needed
         if (refreshOnSuccess) router.refresh()
       },

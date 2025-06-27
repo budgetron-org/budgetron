@@ -60,13 +60,17 @@ function UploadTransactionsWizard({
 
   const uploadTransactions = useMutation(
     api.transactions.createMany.mutationOptions({
-      onSuccess(_, input) {
+      async onSuccess(_, input) {
+        // invalidate transaction & analytics queries
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: api.transactions.getByDateRange.key(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: api.analytics.key(),
+          }),
+        ])
         toast.success(`Uploaded ${input.length} transactions successfully.`)
-
-        // invalidate caches
-        queryClient.invalidateQueries({
-          queryKey: api.transactions.getByDateRange.key(),
-        })
         router.push(PATHS.TRANSACTIONS)
       },
       onError(error, input) {

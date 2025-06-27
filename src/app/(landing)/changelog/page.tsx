@@ -18,8 +18,8 @@ export default function Changelog() {
           {CHANGELOGS.length > 0 && (
             <div className="sticky top-0 hidden h-fit w-52 flex-col gap-4 md:flex">
               <Link href="/">
-                <Button variant="outline" size="icon">
-                  <IconArrowLeft />
+                <Button variant="outline">
+                  <IconArrowLeft /> Back
                 </Button>
               </Link>
               <h2 className="text-md font-semibold">On this page</h2>
@@ -39,8 +39,8 @@ export default function Changelog() {
           <div className="flex-1">
             <div className="flex flex-col gap-1">
               <Link href="/" className="mb-4 md:hidden">
-                <Button variant="outline" size="icon">
-                  <IconArrowLeft />
+                <Button variant="outline">
+                  <IconArrowLeft /> Back
                 </Button>
               </Link>
               <h1 className="text-3xl font-bold">Changelog</h1>
@@ -57,7 +57,7 @@ export default function Changelog() {
                   </p>
                   <Link href="/">
                     <Button variant="outline">
-                      <IconArrowLeft /> Back to Home
+                      <IconArrowLeft /> Back
                     </Button>
                   </Link>
                 </li>
@@ -69,7 +69,11 @@ export default function Changelog() {
                     id={kebabCase(change.version)}>
                     v{change.version}
                     <span className="text-muted-foreground ml-2">
-                      ({format(change.date, 'MMMM dd, yyyy')})
+                      (
+                      {change.date === 'TBD'
+                        ? 'TBD'
+                        : format(change.date, 'MMMM dd, yyyy')}
+                      )
                     </span>
                   </h2>
                   <div className="border-muted-foreground/30 ml-2 flex flex-col gap-2 border-l pl-4">

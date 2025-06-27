@@ -47,14 +47,14 @@ export function UpdateBudgetDialog({
 
   const updateBudget = useMutation(
     api.budgets.update.mutationOptions({
-      onSuccess() {
-        toast.success(`Updated Budget`)
-        formRef.current?.reset()
-        setOpen(false)
+      async onSuccess() {
         // invalidate account queries
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: api.budgets.key(),
         })
+        formRef.current?.reset()
+        setOpen(false)
+        toast.success(`Updated Budget`)
         // refresh page if needed
         if (refreshOnSuccess) router.refresh()
       },

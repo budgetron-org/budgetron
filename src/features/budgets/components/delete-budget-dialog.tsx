@@ -26,12 +26,12 @@ function DeleteBudgetDialog({
   const router = useRouter()
   const deleteBudget = useMutation(
     api.budgets.delete.mutationOptions({
-      onSuccess() {
-        toast.success(`Deleted Budget`)
+      async onSuccess() {
         // invalidate account queries
-        queryClient.invalidateQueries({
+        await queryClient.invalidateQueries({
           queryKey: api.budgets.key(),
         })
+        toast.success(`Deleted Budget`)
         // refresh page if needed
         if (refreshOnSuccess) router.refresh()
       },
