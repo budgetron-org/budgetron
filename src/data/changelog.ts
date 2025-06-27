@@ -38,7 +38,12 @@ const CHANGELOGS: Changelog[] = [
       },
       {
         title: 'Gravatar avatars',
-        description: 'Avatars are now fetched from Gravatar.',
+        description:
+          'Avatars are now fetched from Gravatar. Or you can choose your initials as avatar.',
+      },
+      {
+        title: 'New account features',
+        description: 'You can now delete, link, and unlink accounts.',
       },
     ],
     fixes: [],

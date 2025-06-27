@@ -4,9 +4,14 @@ import { nextCookies } from 'better-auth/next-js'
 import { genericOAuth } from 'better-auth/plugins'
 import crypto from 'node:crypto'
 
+import { DeleteAccountEmail } from '~/emails/delete-account-email'
 import { ResetPasswordEmail } from '~/emails/reset-password-email'
 import { env } from '~/env/server'
-import { isGoogleAuthEnabled, isOAuthAuthEnabled } from '~/lib/utils'
+import {
+  getGravatarUrl,
+  isGoogleAuthEnabled,
+  isOAuthAuthEnabled,
+} from '~/lib/utils'
 import { db } from '~/server/db'
 import * as schema from '~/server/db/schema'
 import { sendEmail } from '~/server/email/service'
@@ -15,6 +20,11 @@ import { sendEmail } from '~/server/email/service'
  * The validity of the password reset token will expire in 15 minutes.
  */
 const PASSWORD_RESET_TOKEN_VALIDITY_IN_SECONDS = 15 * 60
+
+/**
+ * The validity of the delete account token will expire in 15 minutes.
+ */
+const DELETE_ACCOUNT_TOKEN_VALIDITY_IN_SECONDS = 15 * 60
 
 /**
  * Options for configuring Better Auth
@@ -38,6 +48,9 @@ export const authConfig = {
   // Use our own schema
   account: {
     modelName: 'accounts',
+    accountLinking: {
+      enabled: true,
+    },
   },
   session: { modelName: 'sessions' },
   user: {
@@ -54,6 +67,20 @@ export const authConfig = {
         required: false,
         defaultValue: schema.UserRoleEnum.enumValues[0],
         input: false,
+      },
+    },
+    deleteUser: {
+      enabled: true,
+      async sendDeleteAccountVerification(data) {
+        await sendEmail({
+          to: data.user.email,
+          subject: 'Your delete account link',
+          body: DeleteAccountEmail({
+            name: data.user.name,
+            deleteAccountUrl: data.url,
+            deleteAccountUrlExpiresIn: DELETE_ACCOUNT_TOKEN_VALIDITY_IN_SECONDS,
+          }),
+        })
       },
     },
   },
@@ -110,7 +137,7 @@ export const authConfig = {
       genericOAuth({
         config: [
           {
-            providerId: 'oidc',
+            providerId: 'custom-oauth-provider',
             clientId: env.OAUTH_CLIENT_ID,
             clientSecret: env.OAUTH_CLIENT_SECRET,
             discoveryUrl: env.OPENID_CONFIGURATION_URL,
@@ -149,7 +176,7 @@ export const authConfig = {
                   .createHash('sha256')
                   .update(profile.email)
                   .digest('hex')
-                image = `https://gravatar.com/avatar/${hash}?d=wavatar`
+                image = getGravatarUrl(hash)
               }
 
               return {

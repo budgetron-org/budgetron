@@ -1,14 +1,11 @@
 'use client'
 
 import { useMutation } from '@tanstack/react-query'
-import Link from 'next/link'
 import { toast } from 'sonner'
 import type { z } from 'zod/v4'
 
 import { Badge } from '~/components/ui/badge'
-import { Button } from '~/components/ui/button'
 import { AvatarPicker } from '~/components/widgets/avatar-picker'
-import { PATHS } from '~/data/routes'
 import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
 import type { User } from '~/server/auth'
@@ -60,10 +57,11 @@ function ProfilePage({ user }: ProfilePageProps) {
           {(field) => (
             <AvatarPicker
               className="md:col-span-2"
+              email={user.email}
+              userDisplayName={user.name}
               name="image"
               currentImage={user.image ?? undefined}
-              // userName={user.name}
-              onFileChange={field.handleChange}
+              onImageChange={field.handleChange}
             />
           )}
         </form.AppField>
@@ -95,9 +93,6 @@ function ProfilePage({ user }: ProfilePageProps) {
         </form.AppField>
 
         <div className="flex flex-col gap-2 md:col-span-2 md:flex-row">
-          <Link href={PATHS.DASHBOARD}>
-            <Button variant="outline">Cancel</Button>
-          </Link>
           <form.Subscribe
             selector={(formState) => [formState.canSubmit, formState.isDirty]}>
             {([canSubmit, isDirty]) => (

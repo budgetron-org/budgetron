@@ -1,5 +1,7 @@
-import { IconAlertTriangleFilled } from '@tabler/icons-react'
-import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
+import { IconArrowLeft } from '@tabler/icons-react'
+import Link from 'next/link'
+
+import { Button } from '~/components/ui/button'
 import {
   Card,
   CardContent,
@@ -9,22 +11,37 @@ import {
 } from '~/components/ui/card'
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
+import { PATHS } from '~/data/routes'
+import { env } from '~/env/server'
 import { redirectToSignIn } from '~/features/auth/server'
 import { ProfilePage } from '~/features/user/components/profile-page'
 import { SecurityPage } from '~/features/user/components/security-page'
+import { getSupportedProviders } from '~/lib/utils'
 import { api } from '~/rpc/server'
+import type { NextServerPageProps } from '~/types/shared'
 
-async function AccountPageImpl() {
+async function AccountPageImpl({
+  searchParams,
+}: Pick<NextServerPageProps, 'searchParams'>) {
   const session = await api.auth.session()
   if (!session?.user) redirectToSignIn()
   const accounts = await api.user.listAccounts()
-  const isEmailPasswordAccount = accounts.some(
-    (account) => account.provider === 'credential',
-  )
+  const searchParamsValue = await searchParams
+  const view =
+    typeof searchParamsValue['view'] === 'string' &&
+    ['profile', 'security'].includes(searchParamsValue['view'])
+      ? searchParamsValue['view']
+      : 'profile'
 
   return (
     <Card className="flex h-full flex-col">
       <CardHeader>
+        <Link href={PATHS.DASHBOARD}>
+          <Button variant="outline">
+            <IconArrowLeft />
+            Back
+          </Button>
+        </Link>
         <CardTitle className="text-2xl">
           Hello, {session.user.firstName}!
         </CardTitle>
@@ -33,7 +50,7 @@ async function AccountPageImpl() {
         </CardDescription>
       </CardHeader>
       <CardContent className="min-h-0 flex-1">
-        <Tabs defaultValue="profile" className="h-full">
+        <Tabs defaultValue={view} className="h-full">
           <TabsList>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
@@ -42,17 +59,10 @@ async function AccountPageImpl() {
             <ProfilePage user={session.user} />
           </TabsContent>
           <TabsContent value="security" className="min-h-0 overflow-y-auto">
-            {!isEmailPasswordAccount && (
-              <Alert>
-                <IconAlertTriangleFilled />
-                <AlertTitle>Security settings are not available</AlertTitle>
-                <AlertDescription>
-                  Security settings are only available for email-password
-                  accounts.
-                </AlertDescription>
-              </Alert>
-            )}
-            {isEmailPasswordAccount && <SecurityPage />}
+            <SecurityPage
+              userAccounts={accounts}
+              availableOAuthProviders={getSupportedProviders(env)}
+            />
           </TabsContent>
         </Tabs>
       </CardContent>
@@ -60,10 +70,12 @@ async function AccountPageImpl() {
   )
 }
 
-export default async function AccountPage() {
+export default async function AccountPage({
+  searchParams,
+}: NextServerPageProps) {
   return (
     <SuspenseBoundary>
-      <AccountPageImpl />
+      <AccountPageImpl searchParams={searchParams} />
     </SuspenseBoundary>
   )
 }

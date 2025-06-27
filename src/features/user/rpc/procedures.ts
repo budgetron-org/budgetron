@@ -1,6 +1,7 @@
 import { ORPCError } from '@orpc/client'
 import { APIError } from 'better-auth/api'
 
+import { PATHS } from '~/data/routes'
 import {
   createRPCErrorFromStatus,
   createRPCErrorFromUnknownError,
@@ -8,7 +9,13 @@ import {
 import { protectedProcedure } from '~/server/api/rpc'
 import { getAuth } from '~/server/auth'
 import { upload } from '~/server/blob/service'
-import { UpdateInfoInputSchema, UpdatePasswordInputSchema } from '../validators'
+import {
+  DeleteAccountInputSchema,
+  LinkAccountInputSchema,
+  UnlinkAccountInputSchema,
+  UpdateInfoInputSchema,
+  UpdatePasswordInputSchema,
+} from '../validators'
 
 const listAccounts = protectedProcedure.handler(async ({ context }) => {
   return getAuth().api.listUserAccounts({ headers: context.headers })
@@ -45,15 +52,18 @@ const updateInfo = protectedProcedure
   .input(UpdateInfoInputSchema)
   .handler(async ({ context, input }) => {
     try {
-      let imageUrl: string | undefined
-      if (input.image) {
-        const { url } = await upload({
-          path: `avatars/${context.session.user.id}`,
-          fileName: `profile-picture.${input.image.name.split('.').pop()}`,
-          file: input.image,
-        })
-        imageUrl = url
-      }
+      const imageUrl =
+        typeof input.image === 'string'
+          ? input.image
+          : input.image instanceof File
+            ? (
+                await upload({
+                  path: `avatars/${context.session.user.id}`,
+                  fileName: `profile-picture.${input.image.name.split('.').pop()}`,
+                  file: input.image,
+                })
+              ).url
+            : undefined
       await getAuth().api.updateUser({
         body: {
           firstName: input.firstName,
@@ -79,4 +89,104 @@ const updateInfo = protectedProcedure
     }
   })
 
-export { listAccounts, updateInfo, updatePassword }
+const deleteAccount = protectedProcedure
+  .input(DeleteAccountInputSchema)
+  .handler(async ({ context, input }) => {
+    try {
+      await getAuth().api.deleteUser({
+        body: {
+          password: input.password,
+        },
+        headers: context.headers,
+      })
+      return { success: true }
+    } catch (error) {
+      if (error instanceof APIError) {
+        if (typeof error.status === 'string') {
+          throw new ORPCError(error.status, {
+            status: error.statusCode,
+            message: error.message,
+            cause: error.cause,
+          })
+        }
+        throw createRPCErrorFromStatus(error.status, error.message, error.cause)
+      }
+      throw createRPCErrorFromUnknownError(error)
+    }
+  })
+
+const linkAccount = protectedProcedure
+  .input(LinkAccountInputSchema)
+  .handler(async ({ context, input }) => {
+    const callbackURL = PATHS.ACCOUNT + '?view=security'
+    try {
+      if (input.providerId === 'google') {
+        const { url } = await getAuth().api.linkSocialAccount({
+          body: {
+            provider: 'google',
+            callbackURL,
+          },
+          headers: context.headers,
+        })
+        return { success: true, redirectUrl: url }
+      }
+
+      if (input.providerId === 'custom-oauth-provider') {
+        const { url } = await getAuth().api.oAuth2LinkAccount({
+          body: {
+            providerId: 'custom-oauth-provider',
+            callbackURL,
+          },
+          headers: context.headers,
+        })
+        return { success: true, redirectUrl: url }
+      }
+    } catch (error) {
+      if (error instanceof APIError) {
+        if (typeof error.status === 'string') {
+          throw new ORPCError(error.status, {
+            status: error.statusCode,
+            message: error.message,
+            cause: error.cause,
+          })
+        }
+        throw createRPCErrorFromStatus(error.status, error.message, error.cause)
+      }
+      throw createRPCErrorFromUnknownError(error)
+    }
+  })
+
+const unlinkAccount = protectedProcedure
+  .input(UnlinkAccountInputSchema)
+  .handler(async ({ context, input }) => {
+    try {
+      const { status } = await getAuth().api.unlinkAccount({
+        body: {
+          providerId: input.providerId,
+        },
+        headers: context.headers,
+      })
+      return { success: status }
+    } catch (error) {
+      if (error instanceof APIError) {
+        if (typeof error.status === 'string') {
+          throw new ORPCError(error.status, {
+            status: error.statusCode,
+            message: error.message,
+            cause: error.cause,
+          })
+        }
+        throw createRPCErrorFromStatus(error.status, error.message, error.cause)
+      }
+      throw createRPCErrorFromUnknownError(error)
+    }
+  })
+
+export {
+  deleteAccount,
+  linkAccount,
+  listAccounts,
+  unlinkAccount,
+  updateInfo,
+  updatePassword,
+}

@@ -13,7 +13,7 @@ const SignInWithSocialSchema = z.object({
 })
 
 const SignInWithOauthSchema = z.object({
-  providerId: z.enum(['oidc']),
+  providerId: z.enum(['custom-oauth-provider']),
   callbackURL: z.url().optional(),
 })
 

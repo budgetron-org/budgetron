@@ -1,8 +1,8 @@
 import { Button, Heading, Link, Section, Text } from '@react-email/components'
+import { capitalize } from 'lodash'
 
 import { APP_NAME } from '~/lib/app-metadata'
 import { EmailLayout } from './shared/email-layout'
-import { capitalize } from 'lodash'
 
 interface ResetPasswordEmailProps {
   name: string

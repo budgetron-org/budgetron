@@ -1,9 +1,19 @@
-import { listAccounts, updateInfo, updatePassword } from './procedures'
+import {
+  deleteAccount,
+  linkAccount,
+  listAccounts,
+  unlinkAccount,
+  updateInfo,
+  updatePassword,
+} from './procedures'
 
 const userRouter = {
+  deleteAccount,
+  linkAccount,
   listAccounts,
-  updatePassword,
+  unlinkAccount,
   updateInfo,
+  updatePassword,
 }
 
 export { userRouter }

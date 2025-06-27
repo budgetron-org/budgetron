@@ -40,7 +40,9 @@ function SignInWithOAuth({ providerName = 'OAuth' }: SignInWithOAuthProps) {
       variant="outline"
       className="w-full"
       isLoading={signInWithOAuth.isPending}
-      onClick={() => signInWithOAuth.mutate({ providerId: 'oidc' })}>
+      onClick={() =>
+        signInWithOAuth.mutate({ providerId: 'custom-oauth-provider' })
+      }>
       <IconKey />
       Sign in with {providerName}
     </ProgressButton>

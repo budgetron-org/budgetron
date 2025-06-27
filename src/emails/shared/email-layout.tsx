@@ -56,7 +56,8 @@ function EmailLayout({ previewText, children }: EmailLayoutProps) {
             <Hr />
             <Section>
               <Text className="text-muted-foreground">
-                © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
+                © {new Date().getFullYear()} {capitalize(APP_NAME)}. All rights
+                reserved.
               </Text>
             </Section>
           </Container>
