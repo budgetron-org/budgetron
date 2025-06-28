@@ -2,7 +2,13 @@ import { IconArrowRight } from '@tabler/icons-react'
 import Link from 'next/link'
 
 import { Button } from '~/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '~/components/ui/card'
 import {
   Tooltip,
   TooltipContent,
@@ -28,15 +34,17 @@ function BudgetItem({ budget }: { budget: BudgetSummary }) {
               </TooltipTrigger>
               <TooltipContent>{title}</TooltipContent>
             </Tooltip>
-            <Link href={PATHS.BUDGETS + `/${budget.id}`}>
-              <Button variant="outline">
-                Show details
-                <IconArrowRight />
-              </Button>
-            </Link>
           </div>
-          <BudgetItemOptions budget={budget} />
         </CardTitle>
+        <CardDescription className="flex items-center justify-between gap-2">
+          <Link href={PATHS.BUDGETS + `/${budget.id}`}>
+            <Button variant="outline">
+              Show details
+              <IconArrowRight />
+            </Button>
+          </Link>
+          <BudgetItemOptions budget={budget} />
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
         <BudgetItemSummary budget={budget} />

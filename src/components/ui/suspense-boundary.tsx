@@ -19,7 +19,7 @@ function SuspenseBoundary({
         <div
           className={cn(
             'flex items-center justify-center',
-            fullScreenFallback && 'h-screen w-screen',
+            fullScreenFallback && 'h-dvh w-screen',
             !fullScreenFallback && 'h-full w-full',
           )}>
           {fallback ?? <IconLoader2 className="animate-spin" />}

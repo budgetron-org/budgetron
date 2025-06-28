@@ -34,10 +34,10 @@ function BankAccountItem({ bankAccount }: { bankAccount: BankAccount }) {
               <TooltipContent>{bankAccount.name}</TooltipContent>
             </Tooltip>
           </div>
-          <BankAccountItemOptions bankAccount={bankAccount} />
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="flex items-center justify-between gap-2">
           <Badge>{bankAccount.type}</Badge>
+          <BankAccountItemOptions bankAccount={bankAccount} />
         </CardDescription>
       </CardHeader>
       <CardContent>

@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '~/components/ui/sidebar'
 
 function isCurrentPath(item: Item, pathname: string) {
@@ -30,6 +31,7 @@ type Item = {
 }
 function NavMenu({ className, items }: { className?: string; items: Item[] }) {
   const pathname = usePathname()
+  const { setOpenMobile } = useSidebar()
   return (
     <SidebarGroup className={className}>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -40,7 +42,7 @@ function NavMenu({ className, items }: { className?: string; items: Item[] }) {
                 tooltip={item.title}
                 isActive={isCurrentPath(item, pathname)}
                 asChild>
-                <Link href={item.url}>
+                <Link href={item.url} onClick={() => setOpenMobile(false)}>
                   <item.icon />
                   <span>{item.title}</span>
                 </Link>

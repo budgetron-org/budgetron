@@ -61,6 +61,10 @@ const CHANGELOGS: Changelog[] = [
         title: 'Fixed category report titles',
         description: 'Category report titles are now correct.',
       },
+      {
+        title: 'UI improvements',
+        description: 'Minor UI improvements.',
+      },
     ],
     breakingChanges: [
       {

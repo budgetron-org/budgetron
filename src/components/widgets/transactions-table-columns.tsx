@@ -478,12 +478,12 @@ function getColumns<Data extends TransactionWithRelations>() {
         <DataTableColumnHeader column={column} title="Actions" />
       ),
       cell: ({ row, table }) => (
-        <div>
+        <div className="opacity-100 group-hover:opacity-100 md:opacity-0">
           {isActionEnabled(table, 'edit') && (
             <UpdateTransactionDialog
               transaction={row.original}
               trigger={
-                <Button variant="ghost" size="icon" title="Edit">
+                <Button variant="ghost" size="icon">
                   <IconPencil />
                   <span className="sr-only">Edit Transaction</span>
                 </Button>
@@ -495,7 +495,7 @@ function getColumns<Data extends TransactionWithRelations>() {
             <DeleteTransactionDialog
               transaction={row.original}
               trigger={
-                <Button variant="ghost" size="icon" title="Delete">
+                <Button variant="ghost" size="icon">
                   <IconTrash className="text-destructive" />
                   <span className="sr-only">Delete Transaction</span>
                 </Button>

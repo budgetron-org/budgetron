@@ -8,7 +8,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider
       defaultOpen={false}
-      className="max-h-screen max-w-screen overflow-hidden"
+      className="max-h-dvh max-w-screen overflow-hidden"
       style={
         {
           '--sidebar-width': 'calc(var(--spacing) * 72)',
