@@ -57,6 +57,10 @@ const CHANGELOGS: Changelog[] = [
         description:
           'Adding, deleting, and updating transactions are now reflected in the UI correctly without having to refresh the page.',
       },
+      {
+        title: 'Fixed category report titles',
+        description: 'Category report titles are now correct.',
+      },
     ],
     breakingChanges: [
       {

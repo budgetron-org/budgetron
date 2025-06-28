@@ -23,10 +23,10 @@ async function CategoriesReportsPageImpl() {
         <TabsTrigger value="income">Income</TabsTrigger>
       </TabsList>
       <TabsContent value="spending" className="overflow-y-auto">
-        <CategoriesReport reportFor="spending" title="Spending by category" />
+        <CategoriesReport reportFor="spending" />
       </TabsContent>
       <TabsContent value="income" className="overflow-y-auto">
-        <CategoriesReport reportFor="income" title="Income by Category" />
+        <CategoriesReport reportFor="income" />
       </TabsContent>
     </Tabs>
   )

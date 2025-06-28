@@ -116,6 +116,7 @@ function useGroupedCategories(data: CategoryReport[]) {
 
 interface CategoryReportCardProps
   extends ComponentPropsWithoutRef<typeof Card> {
+  chartTitle: string
   data: CategoryReport[]
   title: string
   description?: string
@@ -123,6 +124,7 @@ interface CategoryReportCardProps
 }
 function CategoryReportCard({
   data,
+  chartTitle,
   title,
   description,
   onCategorySelect,
@@ -148,14 +150,21 @@ function CategoryReportCard({
   }, [selectedCategory, chartData])
   const centerContent = useMemo(() => {
     const item = chartData.find((item) => item.category === selectedCategory)
-    if (!item) return { title: 'Total Spending', value: totalAmount }
+    if (!item) return { title: chartTitle, value: totalAmount }
     return {
       title:
         chartConfig[selectedCategory as keyof typeof chartConfig]?.label ??
         'Category Total',
       value: formatter.format(item.total),
     }
-  }, [chartData, chartConfig, formatter, selectedCategory, totalAmount])
+  }, [
+    chartData,
+    chartConfig,
+    formatter,
+    chartTitle,
+    selectedCategory,
+    totalAmount,
+  ])
 
   return (
     <Card {...props} data-chart={chartId}>

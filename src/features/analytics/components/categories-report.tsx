@@ -9,18 +9,13 @@ import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
 import { api } from '~/rpc/client'
 import { CategoryReportCard } from './category-report-card'
 import { CategoryTransactionsTable } from './category-transactions-table'
+import { format } from 'date-fns'
 
 interface CategoriesReportProps {
-  title: string
-  description?: string
   reportFor: 'income' | 'spending'
 }
 
-function CategoriesReport({
-  description,
-  title,
-  reportFor,
-}: CategoriesReportProps) {
+function CategoriesReport({ reportFor }: CategoriesReportProps) {
   const [reportRange, setReportRange] = useState({
     from: startOfYear(Date.now()),
     to: endOfToday(),
@@ -53,8 +48,15 @@ function CategoriesReport({
       <SkeletonWrapper isLoading={isPending}>
         <CategoryReportCard
           data={data ?? []}
-          title={title}
-          description={description}
+          chartTitle={
+            reportFor === 'income' ? 'Total Income' : 'Total Spending'
+          }
+          title={
+            reportFor === 'income'
+              ? 'Income by Category'
+              : 'Spending by Category'
+          }
+          description={`Showing report for ${reportFor} from ${format(reportRange.from, 'MMMM d, yyyy')} to ${format(reportRange.to, 'MMMM d, yyyy')}`}
           onCategorySelect={setSelectedCategoryId}
         />
       </SkeletonWrapper>
