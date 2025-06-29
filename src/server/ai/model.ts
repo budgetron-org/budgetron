@@ -1,5 +1,7 @@
 import { createOpenAI } from '@ai-sdk/openai'
+
 import { env } from '~/env/server'
+import { isAIServiceEnabled } from '~/server/ai/utils'
 
 /**
  * Create OpenAI compatible provider.
@@ -15,8 +17,10 @@ const provider = createOpenAI({
 /**
  * Create OpenAI compatible model.
  */
-const model = provider(env.OPENAI_COMPATIBLE_MODEL, {
-  structuredOutputs: true,
-})
+const model = isAIServiceEnabled(env)
+  ? provider(env.OPENAI_COMPATIBLE_MODEL, {
+      structuredOutputs: true,
+    })
+  : null
 
 export { model }

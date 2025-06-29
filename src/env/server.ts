@@ -21,15 +21,15 @@ const env = createEnv({
 
     DB_URL: z.url(),
 
-    OPENAI_COMPATIBLE_PROVIDER: z.string().nonempty(),
-    OPENAI_COMPATIBLE_BASE_URL: z.url(),
-    OPENAI_COMPATIBLE_API_KEY: z.string().nonempty(),
-    OPENAI_COMPATIBLE_MODEL: z.string().nonempty(),
+    OPENAI_COMPATIBLE_PROVIDER: z.string().nonempty().optional(),
+    OPENAI_COMPATIBLE_BASE_URL: z.url().optional(),
+    OPENAI_COMPATIBLE_API_KEY: z.string().nonempty().optional(),
+    OPENAI_COMPATIBLE_MODEL: z.string().nonempty().optional(),
 
-    EMAIL_PROVIDER_API_KEY: z.string().nonempty(),
-    EMAIL_PROVIDER_FROM_EMAIL: z.string().nonempty(),
+    EMAIL_PROVIDER_API_KEY: z.string().nonempty().optional(),
+    EMAIL_PROVIDER_FROM_EMAIL: z.string().nonempty().optional(),
 
-    BLOB_READ_WRITE_TOKEN: z.string().nonempty(),
+    BLOB_READ_WRITE_TOKEN: z.string().nonempty().optional(),
   },
   experimental__runtimeEnv: process.env,
   // Skip build time validation when running on CI as the env variables are not available

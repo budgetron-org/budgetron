@@ -16,6 +16,7 @@ import {
   UpdateInfoInputSchema,
   UpdatePasswordInputSchema,
 } from '../validators'
+import { deleteAccountFeatureFlag } from '~/server/flags'
 
 const listAccounts = protectedProcedure.handler(async ({ context }) => {
   return getAuth().api.listUserAccounts({ headers: context.headers })
@@ -93,6 +94,13 @@ const deleteAccount = protectedProcedure
   .input(DeleteAccountInputSchema)
   .handler(async ({ context, input }) => {
     try {
+      if (!(await deleteAccountFeatureFlag())) {
+        throw new ORPCError('FORBIDDEN', {
+          message:
+            'Delete account feature is not enabled. Please contact support to delete your account.',
+        })
+      }
+
       await getAuth().api.deleteUser({
         body: {
           password: input.password,

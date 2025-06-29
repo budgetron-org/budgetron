@@ -1,7 +1,9 @@
 import 'server-only'
 
 import { put } from '@vercel/blob'
+
 import { env } from '~/env/server'
+import { isBlobStorageEnabled } from './util'
 
 type UploadOptions = {
   path: string
@@ -19,6 +21,12 @@ type UploadOptions = {
  * @returns The URL of the uploaded file.
  */
 async function upload({ path, fileName, file }: UploadOptions) {
+  if (!isBlobStorageEnabled(env)) {
+    throw new Error(
+      'Cannot upload file as blob storage is not enabled. Please contact support.',
+    )
+  }
+
   const blob = await put(`${path}/${fileName}`, file, {
     access: 'public',
     addRandomSuffix: true,

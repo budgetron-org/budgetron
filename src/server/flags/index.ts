@@ -3,7 +3,9 @@ import 'server-only'
 import type { Identify } from 'flags'
 import { dedupe, flag } from 'flags/next'
 
+import { env } from '~/env/server'
 import { db } from '~/server/db'
+import { isEmailServiceEnabled } from '~/server/email/utils'
 
 type SignUpEntity = {
   host: string | null
@@ -41,4 +43,24 @@ const signupFeatureFlag = flag<boolean, SignUpEntity>({
   },
 })
 
-export { signupFeatureFlag }
+const deleteAccountFeatureFlag = flag<boolean>({
+  key: 'delete-account',
+  defaultValue: false,
+  async decide() {
+    return isEmailServiceEnabled(env)
+  },
+})
+
+const forgotPasswordFeatureFlag = flag<boolean>({
+  key: 'forgot-password',
+  defaultValue: false,
+  async decide() {
+    return isEmailServiceEnabled(env)
+  },
+})
+
+export {
+  deleteAccountFeatureFlag,
+  forgotPasswordFeatureFlag,
+  signupFeatureFlag,
+}

@@ -7,6 +7,7 @@ import { z } from 'zod'
 
 import { env } from '~/env/server'
 import { model } from '~/server/ai/model'
+import { isAIServiceEnabled } from '~/server/ai/utils'
 import { generateUserPrompt, SYSTEM_PROMPT } from './prompts'
 import type { Category, Transaction } from './types'
 import { chunkTransactions } from './utils'
@@ -36,6 +37,12 @@ async function categorizeTransactions(
   transactions: Transaction[],
   categories: Category[],
 ) {
+  if (!isAIServiceEnabled(env) || model == null) {
+    throw new Error(
+      'AI service is not enabled. Please try without AI categorization.',
+    )
+  }
+
   const chunks = chunkTransactions(transactions)
   const result: Record<string, Category | null> = {}
   const categoriesFuse = new Fuse(categories, {

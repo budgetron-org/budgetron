@@ -1,7 +1,8 @@
 import { generateText } from 'ai'
 
-import { model } from '~/server/ai/model'
 import { env } from '~/env/server'
+import { model } from '~/server/ai/model'
+import { isAIServiceEnabled } from '~/server/ai/utils'
 
 let lastCheckTime: number | null = null
 let lastCheckResult: boolean = false
@@ -12,6 +13,12 @@ async function healthCheck() {
 
   if (lastCheckTime && now - lastCheckTime < RATE_LIMIT) {
     return lastCheckResult // return cached result
+  }
+
+  if (!isAIServiceEnabled(env) || model == null) {
+    lastCheckResult = false
+    lastCheckTime = now
+    return false
   }
 
   const abortController = new AbortController()

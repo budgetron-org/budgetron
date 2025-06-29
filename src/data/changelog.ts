@@ -30,6 +30,20 @@ const CHANGELOGS: Changelog[] = [
         title: 'Google Sign In is now optional',
         description: 'You can now choose to not enable Google Sign In.',
       },
+      {
+        title: 'Email service is now optional',
+        description:
+          'You can now choose to not enable email service. Email service is required for password reset and account deletion.',
+      },
+      {
+        title: 'Blob storage is now optional',
+        description:
+          'You can now choose to not enable blob storage. Blob storage is required for profile picture upload.',
+      },
+      {
+        title: 'AI categorization is now optional',
+        description: 'You can now choose to not enable AI categorization.',
+      },
     ],
     features: [
       {

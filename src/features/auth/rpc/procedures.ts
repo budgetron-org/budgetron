@@ -8,7 +8,7 @@ import {
 } from '~/rpc/utils'
 import { publicProcedure } from '~/server/api/rpc'
 import { getAuth } from '~/server/auth'
-import { signupFeatureFlag } from '~/server/flags'
+import { forgotPasswordFeatureFlag, signupFeatureFlag } from '~/server/flags'
 import {
   ForgotPasswordSchema,
   ResetPasswordSchema,
@@ -157,6 +157,13 @@ const forgotPassword = publicProcedure
   .input(ForgotPasswordSchema)
   .handler(async ({ context, input }) => {
     try {
+      if (!(await forgotPasswordFeatureFlag())) {
+        throw new ORPCError('FORBIDDEN', {
+          message:
+            'Password reset is not available. Please contact support if you need to reset your password.',
+        })
+      }
+
       const { status } = await getAuth().api.forgetPassword({
         body: { email: input.email, redirectTo: PATHS.RESET_PASSWORD },
         headers: context.headers,
