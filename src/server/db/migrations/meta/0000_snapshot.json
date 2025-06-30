@@ -1,5 +1,5 @@
 {
-  "id": "99ad48d5-368e-4cf4-b85c-8ad213242c72",
+  "id": "06b2b476-5ae8-4a3c-aa96-f5ea572d688c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -103,13 +103,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "accounts_userId_unique": {
-          "name": "accounts_userId_unique",
-          "nullsNotDistinct": false,
-          "columns": ["user_id"]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -713,6 +707,18 @@
           "primaryKey": false,
           "notNull": false
         },
+        "from_bank_account_id": {
+          "name": "from_bank_account_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "to_bank_account_id": {
+          "name": "to_bank_account_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
         "category_id": {
           "name": "category_id",
           "type": "uuid",
@@ -773,6 +779,24 @@
           "tableFrom": "transactions",
           "tableTo": "bank_accounts",
           "columnsFrom": ["bank_account_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "transactions_from_bank_account_id_bank_accounts_id_fk": {
+          "name": "transactions_from_bank_account_id_bank_accounts_id_fk",
+          "tableFrom": "transactions",
+          "tableTo": "bank_accounts",
+          "columnsFrom": ["from_bank_account_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "transactions_to_bank_account_id_bank_accounts_id_fk": {
+          "name": "transactions_to_bank_account_id_bank_accounts_id_fk",
+          "tableFrom": "transactions",
+          "tableTo": "bank_accounts",
+          "columnsFrom": ["to_bank_account_id"],
           "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"

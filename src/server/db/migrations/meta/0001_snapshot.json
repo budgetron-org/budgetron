@@ -1,6 +1,6 @@
 {
-  "id": "d882be68-00b5-43a8-b14b-2437bc714d3a",
-  "prevId": "99ad48d5-368e-4cf4-b85c-8ad213242c72",
+  "id": "303a9930-84c2-4978-b34f-daae23dc30b3",
+  "prevId": "06b2b476-5ae8-4a3c-aa96-f5ea572d688c",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -95,21 +95,15 @@
         "accounts_user_id_users_id_fk": {
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
-          "tableTo": "users",
           "columnsFrom": ["user_id"],
+          "tableTo": "users",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "accounts_userId_unique": {
-          "name": "accounts_userId_unique",
-          "nullsNotDistinct": false,
-          "columns": ["user_id"]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -171,19 +165,19 @@
         "bank_accounts_user_id_users_id_fk": {
           "name": "bank_accounts_user_id_users_id_fk",
           "tableFrom": "bank_accounts",
-          "tableTo": "users",
           "columnsFrom": ["user_id"],
+          "tableTo": "users",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "bank_accounts_name_type_userId_unique": {
           "name": "bank_accounts_name_type_userId_unique",
-          "nullsNotDistinct": false,
-          "columns": ["name", "type", "user_id"]
+          "columns": ["name", "type", "user_id"],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -239,28 +233,28 @@
         "budgets_category_id_categories_id_fk": {
           "name": "budgets_category_id_categories_id_fk",
           "tableFrom": "budgets",
-          "tableTo": "categories",
           "columnsFrom": ["category_id"],
+          "tableTo": "categories",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "budgets_user_id_users_id_fk": {
           "name": "budgets_user_id_users_id_fk",
           "tableFrom": "budgets",
-          "tableTo": "users",
           "columnsFrom": ["user_id"],
+          "tableTo": "users",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "budgets_categoryId_userId_unique": {
           "name": "budgets_categoryId_userId_unique",
-          "nullsNotDistinct": false,
-          "columns": ["category_id", "user_id"]
+          "columns": ["category_id", "user_id"],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -335,37 +329,37 @@
         "categories_parent_id_categories_id_fk": {
           "name": "categories_parent_id_categories_id_fk",
           "tableFrom": "categories",
-          "tableTo": "categories",
           "columnsFrom": ["parent_id"],
+          "tableTo": "categories",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "categories_group_id_groups_id_fk": {
           "name": "categories_group_id_groups_id_fk",
           "tableFrom": "categories",
-          "tableTo": "groups",
           "columnsFrom": ["group_id"],
+          "tableTo": "groups",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "categories_user_id_users_id_fk": {
           "name": "categories_user_id_users_id_fk",
           "tableFrom": "categories",
-          "tableTo": "users",
           "columnsFrom": ["user_id"],
+          "tableTo": "users",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "categories_groupId_name_type_userId_unique": {
           "name": "categories_groupId_name_type_userId_unique",
-          "nullsNotDistinct": false,
-          "columns": ["group_id", "name", "type", "user_id"]
+          "columns": ["group_id", "name", "type", "user_id"],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -475,11 +469,11 @@
         "groups_owner_id_users_id_fk": {
           "name": "groups_owner_id_users_id_fk",
           "tableFrom": "groups",
-          "tableTo": "users",
           "columnsFrom": ["owner_id"],
+          "tableTo": "users",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -524,20 +518,20 @@
         "groups_users_group_id_groups_id_fk": {
           "name": "groups_users_group_id_groups_id_fk",
           "tableFrom": "groups_users",
-          "tableTo": "groups",
           "columnsFrom": ["group_id"],
+          "tableTo": "groups",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "groups_users_user_id_users_id_fk": {
           "name": "groups_users_user_id_users_id_fk",
           "tableFrom": "groups_users",
-          "tableTo": "users",
           "columnsFrom": ["user_id"],
+          "tableTo": "users",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {
@@ -612,19 +606,19 @@
         "sessions_user_id_users_id_fk": {
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
-          "tableTo": "users",
           "columnsFrom": ["user_id"],
+          "tableTo": "users",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "sessions_token_unique": {
           "name": "sessions_token_unique",
-          "nullsNotDistinct": false,
-          "columns": ["token"]
+          "columns": ["token"],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -774,73 +768,73 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "transactions_bank_account_id_bank_accounts_id_fk": {
           "name": "transactions_bank_account_id_bank_accounts_id_fk",
           "tableFrom": "transactions",
-          "tableTo": "bank_accounts",
           "columnsFrom": ["bank_account_id"],
+          "tableTo": "bank_accounts",
           "columnsTo": ["id"],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "transactions_from_bank_account_id_bank_accounts_id_fk": {
           "name": "transactions_from_bank_account_id_bank_accounts_id_fk",
           "tableFrom": "transactions",
-          "tableTo": "bank_accounts",
           "columnsFrom": ["from_bank_account_id"],
+          "tableTo": "bank_accounts",
           "columnsTo": ["id"],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "transactions_to_bank_account_id_bank_accounts_id_fk": {
           "name": "transactions_to_bank_account_id_bank_accounts_id_fk",
           "tableFrom": "transactions",
-          "tableTo": "bank_accounts",
           "columnsFrom": ["to_bank_account_id"],
+          "tableTo": "bank_accounts",
           "columnsTo": ["id"],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "transactions_category_id_categories_id_fk": {
           "name": "transactions_category_id_categories_id_fk",
           "tableFrom": "transactions",
-          "tableTo": "categories",
           "columnsFrom": ["category_id"],
+          "tableTo": "categories",
           "columnsTo": ["id"],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "transactions_group_id_groups_id_fk": {
           "name": "transactions_group_id_groups_id_fk",
           "tableFrom": "transactions",
-          "tableTo": "groups",
           "columnsFrom": ["group_id"],
+          "tableTo": "groups",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "transactions_user_id_users_id_fk": {
           "name": "transactions_user_id_users_id_fk",
           "tableFrom": "transactions",
-          "tableTo": "users",
           "columnsFrom": ["user_id"],
+          "tableTo": "users",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "transactions_externalId_unique": {
           "name": "transactions_externalId_unique",
-          "nullsNotDistinct": false,
-          "columns": ["external_id"]
+          "columns": ["external_id"],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -924,8 +918,8 @@
       "uniqueConstraints": {
         "users_email_unique": {
           "name": "users_email_unique",
-          "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": ["email"],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -976,11 +970,11 @@
         "user_settings_user_id_users_id_fk": {
           "name": "user_settings_user_id_users_id_fk",
           "tableFrom": "user_settings",
-          "tableTo": "users",
           "columnsFrom": ["user_id"],
+          "tableTo": "users",
           "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -1065,10 +1059,10 @@
     }
   },
   "schemas": {},
+  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
-  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

@@ -1,31 +1,32 @@
+-- Custom SQL migration file, put your code below! --
 -- Insert parent categories and capture their IDs
 WITH parent_categories AS (
   INSERT INTO categories (id, name, icon, type, parent_id, group_id, user_id, created_at, updated_at)
   VALUES
     -- Expense categories
-    (gen_random_uuid(), 'Housing', 'icon:home', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Utilities', 'icon:plug', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Food', 'icon:salad', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Transportation', 'icon:car', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Health', 'icon:heart-rate-monitor', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Family & Childcare', 'icon:users', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Education', 'icon:school', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Entertainment', 'icon:confetti', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Personal & Lifestyle', 'icon:user', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Shopping', 'icon:shopping-bag', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Digital & Subscriptions', 'icon:device-desktop', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Banking & Fees', 'icon:building-bank', 'EXPENSE', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Other Expense', 'icon:circle-dashed', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Housing', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Utilities', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Food', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Transportation', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Health', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Family & Childcare', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Education', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Entertainment', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Personal & Lifestyle', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Shopping', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Digital & Subscriptions', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Banking & Fees', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Other Expense', 'icon:dots', 'EXPENSE', NULL, NULL, NULL, now(), now()),
 
     -- Income categories
-    (gen_random_uuid(), 'Salary & Wages', 'icon:currency-dollar', 'INCOME', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Business Income', 'icon:briefcase', 'INCOME', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Investment Income', 'icon:chart-bar', 'INCOME', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Gifts & Transfers', 'icon:gift', 'INCOME', NULL, NULL, NULL, now(), now()),
-    (gen_random_uuid(), 'Other Income', 'icon:circle-dashed', 'INCOME', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Salary & Wages', 'icon:dots', 'INCOME', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Business Income', 'icon:dots', 'INCOME', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Investment Income', 'icon:dots', 'INCOME', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Gifts & Transfers', 'icon:dots', 'INCOME', NULL, NULL, NULL, now(), now()),
+    (gen_random_uuid(), 'Other Income', 'icon:dots', 'INCOME', NULL, NULL, NULL, now(), now()),
 
     -- Transfer categories
-    (gen_random_uuid(), 'Transfers', 'icon:arrows-left-right', 'TRANSFER', NULL, NULL, NULL, now(), now())
+    (gen_random_uuid(), 'Transfers', 'icon:dots', 'TRANSFER', NULL, NULL, NULL, now(), now())
   RETURNING id, name
 )
 
@@ -174,8 +175,9 @@ VALUES
 
   -- Transfer categories
   -- Insert Transfers subcategories
-  (gen_random_uuid(), 'Between Checking & Savings', 'icon:arrows-left-right', 'TRANSFER', (SELECT id FROM parent_categories WHERE name = 'Transfers'), NULL, NULL, now(), now()),
-  (gen_random_uuid(), 'To Investment Accounts', 'icon:chart-line', 'TRANSFER', (SELECT id FROM parent_categories WHERE name = 'Transfers'), NULL, NULL, now(), now()),
-  (gen_random_uuid(), 'To Credit Card Payments', 'icon:credit-card', 'TRANSFER', (SELECT id FROM parent_categories WHERE name = 'Transfers'), NULL, NULL, now(), now()),
-  (gen_random_uuid(), 'From Credit Card Credits/Refunds', 'icon:arrow-left-right', 'TRANSFER', (SELECT id FROM parent_categories WHERE name = 'Transfers'), NULL, NULL, now(), now()),
+  (gen_random_uuid(), 'Between Checking Accounts', 'icon:dots', 'TRANSFER', (SELECT id FROM parent_categories WHERE name = 'Transfers'), NULL, NULL, now(), now()),
+  (gen_random_uuid(), 'To Savings Account', 'icon:dots', 'TRANSFER', (SELECT id FROM parent_categories WHERE name = 'Transfers'), NULL, NULL, now(), now()),
+  (gen_random_uuid(), 'To Investment Account', 'icon:dots', 'TRANSFER', (SELECT id FROM parent_categories WHERE name = 'Transfers'), NULL, NULL, now(), now()),
+  (gen_random_uuid(), 'To Credit Card Payment', 'icon:dots', 'TRANSFER', (SELECT id FROM parent_categories WHERE name = 'Transfers'), NULL, NULL, now(), now()),
+  (gen_random_uuid(), 'From Credit Card Credits/Refunds', 'icon:dots', 'TRANSFER', (SELECT id FROM parent_categories WHERE name = 'Transfers'), NULL, NULL, now(), now()),
   (gen_random_uuid(), 'Other Transfers', 'icon:dots', 'TRANSFER', (SELECT id FROM parent_categories WHERE name = 'Transfers'), NULL, NULL, now(), now());

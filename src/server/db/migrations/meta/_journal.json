@@ -5,22 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1749592557631,
+      "when": 1751312331906,
       "tag": "0000_init",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1749593429029,
-      "tag": "0001_complete_maddog",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1750981133553,
-      "tag": "0002_dusty_robbie_robertson",
+      "when": 1751312517746,
+      "tag": "0001_seed-categories",
       "breakpoints": true
     }
   ]

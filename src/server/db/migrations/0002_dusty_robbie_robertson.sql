@@ -1,1 +1,0 @@
-ALTER TABLE "accounts" DROP CONSTRAINT "accounts_userId_unique";
