@@ -29,7 +29,7 @@ FROM base AS builder
 # Build-time ARGs and ENVs
 ARG CI
 ENV CI=${CI}
-ENV DOCKER=true   # Used to bypass .env validation during build
+ENV DOCKER=true
 
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
