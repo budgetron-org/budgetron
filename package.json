@@ -25,7 +25,7 @@
     "format": "prettier --write --ignore-unknown ./src/**/*",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "node .husky/install.js"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

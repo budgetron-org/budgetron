@@ -18,7 +18,7 @@ A full-featured personal budgeting app built with [Next.js](https://nextjs.org/)
 
 - **Frontend**: Next.js 14 (App Router), TypeScript
 - **Backend**: Drizzle ORM, oRPC, PostgreSQL
-- **AI**: Local LLaMA 3 or OpenAI-compatible APIs (Ollama, Groq, OpenRouter)
+- **AI**: Local LLaMA 3 or OpenAI-compatible APIs (Ollama, OpenAI)
 - **UI**: shadcn/ui + Tailwind CSS
 - **Auth**: BetterAuth
 - **Infra**: Docker, Postgres

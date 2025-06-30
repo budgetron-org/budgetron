@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*' # Trigger on tag push like v1.0.0
 
+env:
+  HUSKY: 0 # Do not install git hooks in CI server
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
