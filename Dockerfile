@@ -19,6 +19,10 @@ FROM base AS builder
 ARG CI
 # Set CI environment variable
 ENV CI=${CI}
+# Set Docker environment variable to skip env validation during build
+# This is required to prevent the build from complaining about missing environment variables
+# which will be provided at runtime.
+ENV DOCKER=true
 # Disable Next telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules

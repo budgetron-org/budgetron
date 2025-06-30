@@ -32,9 +32,9 @@ const env = createEnv({
     BLOB_READ_WRITE_TOKEN: z.string().nonempty().optional(),
   },
   experimental__runtimeEnv: process.env,
-  // Skip build time validation when running on CI as the env variables are not available
+  // Skip build time validation when running on CI or docker build as the env variables are not available
   // during the build process.
-  skipValidation: process.env.CI === 'true',
+  skipValidation: process.env.CI === 'true' || process.env.DOCKER === 'true',
 })
 
 export { env }

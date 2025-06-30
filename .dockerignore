@@ -1,0 +1,22 @@
+# Node & build artifacts
+node_modules
+.next
+dist
+out
+
+# Env files
+.env
+.env.local
+.env.*.local
+.env.development
+
+# Git
+.git
+.gitignore
+
+# Editor configs
+.vscode
+
+# Docker
+Dockerfile
+.dockerignore
