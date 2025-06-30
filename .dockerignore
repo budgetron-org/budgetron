@@ -10,6 +10,9 @@ out
 .env.*.local
 .env.development
 
+# Custom scripts
+scripts
+
 # Git
 .git
 .gitignore
