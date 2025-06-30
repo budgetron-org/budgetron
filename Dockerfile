@@ -2,53 +2,93 @@
 ARG PORT=3000
 ARG CI=false
 
-# Stage 0: Base image
+# ----------------------------------------
+# Stage 0: Base image setup
+# ----------------------------------------
+# Start from a minimal Node Alpine image
+# Add gcompat for compatibility and postgresql-client for pg_isready
 FROM node:alpine AS base
-# See https://github.com/nodejs/docker-node?tab=readme-ov-file#nodealpine
-# Also add postgresql-client for db migrations
 RUN apk add --no-cache gcompat postgresql-client
 WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
 
+# ----------------------------------------
 # Stage 1: Install dependencies
+# ----------------------------------------
 FROM base AS deps
+# Copy package manager files
 COPY package.json pnpm-lock.yaml .npmrc ./
+# Enable corepack and install production + dev dependencies
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
+# ----------------------------------------
 # Stage 2: Build the application
+# ----------------------------------------
 FROM base AS builder
+
+# Build-time ARGs and ENVs
 ARG CI
-# Set CI environment variable
 ENV CI=${CI}
-# Set Docker environment variable to skip env validation during build
-# This is required to prevent the build from complaining about missing environment variables
-# which will be provided at runtime.
-ENV DOCKER=true
-# Disable Next telemetry
-ENV NEXT_TELEMETRY_DISABLED=1
+ENV DOCKER=true   # Used to bypass .env validation during build
+
+# Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copy the full app source
 COPY . .
+
+# Build the Next.js app and prune dev dependencies
 RUN corepack enable pnpm \
   && pnpm run build \
   && pnpm prune --prod
 
-# Stage 3: Production server
+# ----------------------------------------
+# Stage 3: Production runtime image
+# ----------------------------------------
 FROM base AS runner
+
+# Runtime environment variables
 ENV NODE_ENV=production
-# Disable Next telemetry
-ENV NEXT_TELEMETRY_DISABLED=1
-# Make sure to use 0.0.0.0 as host
 ENV HOSTNAME=0.0.0.0
-# Copy the production build
+ENV PORT=${PORT}
+
+# Set workdir again in final image
+WORKDIR /app
+
+# ----------------------------------------
+# Copy runtime assets from builder
+# ----------------------------------------
+
+# Static assets
 COPY --from=builder /app/public ./public
+
+# Next.js standalone server
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-# Copy the DB migration related files
+
+# ----------------------------------------
+# Copy DB migration tooling (for drizzle-kit CLI at runtime)
+# ----------------------------------------
+
+# Drizzle config and schema
 COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/src/server/db/schema.ts ./src/server/db/schema.ts
 COPY --from=builder /app/src/server/db/migrations ./src/server/db/migrations
 
-EXPOSE ${PORT}
+# Copy only the drizzle-kit CLI and binary
+COPY --from=builder /app/node_modules/drizzle-kit ./node_modules/drizzle-kit
+COPY --from=builder /app/node_modules/.bin/drizzle-kit ./node_modules/.bin/drizzle-kit
 
-# Copy and use entrypoint script (make sure it's executable)
+# ----------------------------------------
+# Entrypoint script
+# ----------------------------------------
+
+# Copy and ensure it's executable
 COPY --from=builder /app/entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
-CMD ["./entrypoint.sh"]
+
+# Default exposed port
+EXPOSE ${PORT}
+
+# Use the entrypoint script on container start
+CMD ["./entrypoint.sh"]  
