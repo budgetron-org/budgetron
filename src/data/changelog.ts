@@ -1,5 +1,8 @@
 type Changelog = {
-  version: `${number}.${number}.${number}` | 'NEXT' // MAJOR.MINOR.PATCH
+  version:
+    | `${number}.${number}.${number}`
+    | `${number}.${number}.${number}-beta.${number}`
+    | 'NEXT' // MAJOR.MINOR.PATCH
   date: `${number}-${number}-${number}` | 'TBD' // YYYY-MM-DD
   description: string
   breakingChanges: {
@@ -22,8 +25,8 @@ type Changelog = {
 
 const CHANGELOGS: Changelog[] = [
   {
-    version: 'NEXT',
-    date: 'TBD',
+    version: '0.3.0-beta.1',
+    date: '2025-06-29',
     description: 'Introducing OAuth support, Gravatar avatars, and more',
     changes: [
       {
