@@ -15,8 +15,7 @@ until pg_isready -d "$DB_URL"; do
   sleep 1
 done
 
-echo "📦 Running Drizzle migrations..."
-npx drizzle-kit migrate
+npx tsx ./drizzle/migrate.ts
 
 echo "🚀 Starting server..."
 exec node server.js

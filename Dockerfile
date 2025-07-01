@@ -50,7 +50,6 @@ FROM base AS runner
 # Runtime environment variables
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
-ENV PORT=${PORT}
 
 # Set workdir again in final image
 WORKDIR /app
@@ -70,14 +69,8 @@ COPY --from=builder /app/.next/static ./.next/static
 # Copy DB migration tooling (for drizzle-kit CLI at runtime)
 # ----------------------------------------
 
-# Drizzle config and schema
-COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
-COPY --from=builder /app/src/server/db/schema.ts ./src/server/db/schema.ts
-COPY --from=builder /app/src/server/db/migrations ./src/server/db/migrations
-
-# Copy only the drizzle-kit CLI and binary
-COPY --from=builder /app/node_modules/drizzle-kit ./node_modules/drizzle-kit
-COPY --from=builder /app/node_modules/.bin/drizzle-kit ./node_modules/.bin/drizzle-kit
+# Drizzle config and migrations
+COPY --from=builder /app/drizzle ./drizzle
 
 # ----------------------------------------
 # Entrypoint script
