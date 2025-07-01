@@ -12,7 +12,7 @@ export default defineConfig({
     url: process.env.DB_URL!,
     ssl: false,
   },
-  out: './src/server/db/migrations',
+  out: './drizzle/migrations',
   schema: './src/server/db/schema.ts',
   casing: 'snake_case',
   strict: true,
