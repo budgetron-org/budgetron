@@ -25,22 +25,7 @@ type Changelog = {
 
 const CHANGELOGS: Changelog[] = [
   {
-    version: '0.3.0-beta.2',
-    date: '2025-07-02',
-    description: 'Introducing Docker support',
-    changes: [],
-    features: [
-      {
-        title: 'Docker support',
-        description:
-          'You can now run the app using Docker. When starting the docker container, the app will automatically run migrations and seed the DB with initial data.',
-      },
-    ],
-    fixes: [],
-    breakingChanges: [],
-  },
-  {
-    version: '0.3.0-beta.1',
+    version: '0.3.0',
     date: '2025-07-02',
     description: 'Introducing OAuth support, Gravatar avatars, and more',
     changes: [
@@ -81,6 +66,11 @@ const CHANGELOGS: Changelog[] = [
       {
         title: 'New account features',
         description: 'You can now delete, link, and unlink accounts.',
+      },
+      {
+        title: 'Docker support',
+        description:
+          'You can now run the app using Docker. When starting the docker container, the app will automatically run migrations and seed the DB with initial data.',
       },
     ],
     fixes: [
