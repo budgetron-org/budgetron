@@ -43,7 +43,7 @@ COPY . .
 RUN corepack enable pnpm \
   && pnpm run build \
   && pnpm --filter drizzle-migrate build \
-  && pnpm prune --prod --force
+  && pnpm prune --prod
 
 # ----------------------------------------
 # Stage 3: Production runtime image
