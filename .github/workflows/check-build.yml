@@ -1,4 +1,4 @@
-name: Check Build
+name: Build
 on:
   push:
     branches:
@@ -16,10 +16,6 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Checkout Node version from .node-version
-        id: node-version
-        run: echo "NODE_VERSION=$(cat .node-version)" >> "$GITHUB_OUTPUT"
-
       - name: Get pnpm version from package.json
         id: pnpm-version
         run: echo "PNPM_VERSION=$(cat package.json | jq -r '.packageManager | select(. | startswith("pnpm")) | split("@")[1]')" >> "$GITHUB_OUTPUT"
@@ -27,8 +23,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ steps.node-version.outputs.NODE_VERSION }}
-          cache: 'pnpm'
+          node-version-file: .node-version
 
       - name: Install pnpm
         run: corepack enable && corepack prepare pnpm@${{ steps.pnpm-version.outputs.PNPM_VERSION }} --activate

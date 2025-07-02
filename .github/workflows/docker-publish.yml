@@ -1,5 +1,5 @@
 # Publish docker image to GitHub Container Registry
-name: Build and Push Docker Image
+name: Docker Image
 
 # This workflow is triggered on tag push like v1.0.0
 on:
