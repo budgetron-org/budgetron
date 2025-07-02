@@ -1,0 +1,40 @@
+name: Check Build
+on:
+  push:
+    branches:
+      - master
+      - dev
+  pull_request:
+
+env:
+  HUSKY: 0 # Do not install git hooks in CI server
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Checkout Node version from .node-version
+        id: node-version
+        run: echo "NODE_VERSION=$(cat .node-version)" >> "$GITHUB_OUTPUT"
+
+      - name: Get pnpm version from package.json
+        id: pnpm-version
+        run: echo "PNPM_VERSION=$(cat package.json | jq -r '.packageManager | select(. | startswith("pnpm")) | split("@")[1]')" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.node-version.outputs.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: corepack enable && corepack prepare pnpm@${{ steps.pnpm-version.outputs.PNPM_VERSION }} --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the project
+        run: pnpm build

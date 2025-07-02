@@ -1,6 +1,6 @@
 # Budgetron
 
-[![Docker Publish](https://github.com/raghavan-dev/budgetron/actions/workflows/docker-publish.yml/badge.svg?branch=master)](https://github.com/raghavan-dev/budgetron/actions/workflows/docker-publish.yml) ![version](https://img.shields.io/badge/version-v0.2.1-blue)
+[![Build](https://github.com/budgetron-org/budgetron/actions/workflows/check-build.yml/badge.svg?branch=master)](https://github.com/budgetron-org/budgetron/actions/workflows/check-build.yml) [![Docker](https://github.com/budgetron-org/budgetron/actions/workflows/docker-publish.yml/badge.svg?branch=master)](https://github.com/budgetron-org/budgetron/actions/workflows/docker-publish.yml) ![version](https://img.shields.io/badge/version-v0.2.1-blue)
 
 A full-featured personal budgeting app built with [Next.js](https://nextjs.org/), [Drizzle ORM](https://orm.drizzle.team/), and [PostgreSQL](https://www.postgresql.org/), with AI-powered transaction categorization using local LLMs or OpenAI-compatible APIs.
 
