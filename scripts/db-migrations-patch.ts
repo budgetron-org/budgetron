@@ -68,6 +68,10 @@ async function main() {
   console.log('~...............................................~')
   console.log('~.. Migration Hardsync Complete! ˶ᵔ ᵕ ᵔ˶........~')
   console.log('~...............................................~')
+  process.exit(0)
 }
 
-main().catch(console.error)
+main().catch((error) => {
+  console.error(error)
+  process.exit(1)
+})

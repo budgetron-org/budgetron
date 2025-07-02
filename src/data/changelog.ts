@@ -67,6 +67,11 @@ const CHANGELOGS: Changelog[] = [
         title: 'New account features',
         description: 'You can now delete, link, and unlink accounts.',
       },
+      {
+        title: 'Full Docker support',
+        description:
+          'You can now run the app using Docker. When starting the docker container, the app will automatically run migrations and seed the DB with initial data.',
+      },
     ],
     fixes: [
       {

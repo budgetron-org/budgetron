@@ -1,4 +1,5 @@
--- Custom SQL migration file, put your code below! --
+-- Seeds the DB with default categories --
+
 -- Insert parent categories and capture their IDs
 WITH parent_categories AS (
   INSERT INTO categories (id, name, icon, type, parent_id, group_id, user_id, created_at, updated_at)

@@ -16,6 +16,8 @@
     "db:generate:dev": "dotenv -c development -- pnpm db:generate",
     "db:migrate": "drizzle-kit migrate",
     "db:migrate:dev": "dotenv -c development -- pnpm db:migrate",
+    "db:patch-migrations": "dotenv -- pnpm dlx tsx scripts/db-migrations-patch.ts",
+    "db:patch-migrations:dev": "dotenv -c development -- pnpm db:patch-migrations",
     "db:push": "drizzle-kit push",
     "db:push:dev": "dotenv -c development -- pnpm db:push",
     "db:studio": "drizzle-kit studio",
@@ -23,9 +25,9 @@
     "dev": "next dev --turbopack",
     "email:dev": "email dev --dir src/emails --port 3001",
     "format": "prettier --write --ignore-unknown ./src/**/*",
-    "start": "next start",
     "lint": "next lint",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "start": "next start"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

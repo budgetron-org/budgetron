@@ -15,6 +15,13 @@
       "when": 1751312517746,
       "tag": "0001_seed-categories",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751486462561,
+      "tag": "0002_seed-feature-flags-allow-signup",
+      "breakpoints": true
     }
   ]
 }
