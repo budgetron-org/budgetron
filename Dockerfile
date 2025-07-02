@@ -17,7 +17,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # ----------------------------------------
 FROM base AS deps
 # Copy package manager files
-COPY package.json pnpm-lock.yaml .npmrc ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY drizzle/migrate/package.json ./drizzle/migrate/
 # Enable corepack and install production + dev dependencies
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
@@ -33,6 +34,7 @@ ENV DOCKER=true
 
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/drizzle/migrate/node_modules ./drizzle/migrate/node_modules
 
 # Copy the full app source
 COPY . .
@@ -41,7 +43,7 @@ COPY . .
 RUN corepack enable pnpm \
   && pnpm run build \
   && pnpm --filter drizzle-migrate build \
-  && pnpm prune --prod
+  && pnpm prune --prod --force
 
 # ----------------------------------------
 # Stage 3: Production runtime image

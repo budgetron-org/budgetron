@@ -1,24 +1,31 @@
-# Node & build artifacts
+# Node and package manager
 node_modules
-.next
+**/node_modules
+
+# Build artifacts
 dist
+**/dist
+.next
 out
 
 # Env files
 .env
-.env.local
-.env.*.local
-.env.development
+.env.*
 
 # Custom scripts
 scripts
 
 # Git
 .git
+.github
 .gitignore
+.husky
+README.md
 
 # Editor configs
 .vscode
+.prettierignore
+prettier.config.js
 
 # Docker
 Dockerfile
