@@ -17,7 +17,7 @@ until pg_isready -d "$DB_URL"; do
 done
 
 echo "📦 Running DB migration..."
-node drizzle/migrate/migrate.js \
+node drizzle/migrate/migrate.cjs \
   --db-url="$DB_URL" \
   --migrations-folder="drizzle/migrations" \
   --migrations-schema="public" \
