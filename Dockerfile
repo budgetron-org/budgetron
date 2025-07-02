@@ -22,7 +22,7 @@ COPY package.json pnpm-lock.yaml .npmrc ./
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
 # ----------------------------------------
-# Stage 2: Build the application
+# Stage 2: Build the application and DB migration tooling
 # ----------------------------------------
 FROM base AS builder
 
@@ -37,9 +37,10 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy the full app source
 COPY . .
 
-# Build the Next.js app and prune dev dependencies
+# Build the Next.js app & tooling and prune dev dependencies
 RUN corepack enable pnpm \
   && pnpm run build \
+  && pnpm --filter drizzle-migrate build \
   && pnpm prune --prod
 
 # ----------------------------------------
@@ -50,9 +51,6 @@ FROM base AS runner
 # Runtime environment variables
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
-
-# Set workdir again in final image
-WORKDIR /app
 
 # ----------------------------------------
 # Copy runtime assets from builder
@@ -66,11 +64,12 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
 # ----------------------------------------
-# Copy DB migration tooling (for drizzle-kit CLI at runtime)
+# Copy DB migration tooling
 # ----------------------------------------
 
-# Drizzle config and migrations
-COPY --from=builder /app/drizzle ./drizzle
+# Drizzle migrations and migration tooling
+COPY --from=builder /app/drizzle/migrate/dist ./drizzle/migrate
+COPY --from=builder /app/drizzle/migrations ./drizzle/migrations
 
 # ----------------------------------------
 # Entrypoint script
