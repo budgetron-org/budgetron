@@ -34,6 +34,11 @@ const CHANGELOGS: Changelog[] = [
         description:
           'Email verification is sent on sign up and can be sent again from the profile page if needed.',
       },
+      {
+        title: 'UI Changes',
+        description:
+          'UI changes to make the app more user-friendly and intuitive.',
+      },
     ],
     features: [
       {

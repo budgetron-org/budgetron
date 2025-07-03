@@ -11,7 +11,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -35,6 +34,7 @@ function DeleteAccountDialog({
   const form = useAppForm({
     defaultValues: {
       password: '',
+      deleteAccountConfirmation: '' as never,
     } as z.infer<typeof DeleteAccountFormSchema>,
     validators: {
       onSubmit: DeleteAccountFormSchema,
@@ -62,30 +62,48 @@ function DeleteAccountDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
+      <DialogContent className="px-0">
+        <DialogHeader className="px-6">
           <DialogTitle className="flex items-center gap-2">
             <IconAlertCircle />
-            Are you absolutely sure?
+            Delete Personal Account
           </DialogTitle>
-          <DialogDescription>
-            This will PERMANENTLY delete your account and remove your data from
-            our servers. This action cannot be undone!
-          </DialogDescription>
         </DialogHeader>
-        {hasEmailPasswordAccount && (
+        <div className="flex flex-col gap-2 px-6">
+          We will delete all your personal data, along with all the
+          transactions, budgets, and accounts associated with your account.
+          <div className="bg-destructive/20 rounded-md p-2 text-red-600">
+            This action is irreversible. Please proceed with caution.
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 border-y p-6">
+          {hasEmailPasswordAccount && (
+            <form.AppForm>
+              <form.AppField name="password">
+                {(field) => (
+                  <field.TextField
+                    label="Enter current password"
+                    type="password"
+                    autoComplete="current-password"
+                  />
+                )}
+              </form.AppField>
+            </form.AppForm>
+          )}
+
           <form.AppForm>
-            <form.AppField name="password">
+            <form.AppField name="deleteAccountConfirmation">
               {(field) => (
                 <field.TextField
-                  label="Enter current password"
-                  type="password"
+                  label="To verify, type 'delete my account' below"
+                  placeholder="delete my account"
+                  autoComplete="off"
                 />
               )}
             </form.AppField>
           </form.AppForm>
-        )}
-        <DialogFooter>
+        </div>
+        <DialogFooter className="px-6">
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>

@@ -1,17 +1,5 @@
-import { IconArrowLeft } from '@tabler/icons-react'
-import Link from 'next/link'
-
-import { Button } from '~/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '~/components/ui/card'
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
-import { PATHS } from '~/data/routes'
 import { env } from '~/env/server'
 import { redirectToSignIn } from '~/features/auth/server'
 import { ProfilePage } from '~/features/user/components/profile-page'
@@ -34,19 +22,14 @@ async function AccountPageImpl({
       : 'profile'
 
   return (
-    <Card className="flex h-full flex-col">
-      <CardHeader>
-        <Link href={PATHS.DASHBOARD}>
-          <Button variant="outline">
-            <IconArrowLeft /> Back
-          </Button>
-        </Link>
-        <CardTitle className="text-2xl">Hello, {session.user.name}!</CardTitle>
-        <CardDescription className="text-md">
+    <div className="flex h-full flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <h2 className="text-2xl font-semibold">Hello, {session.user.name}!</h2>
+        <p className="text-md text-muted-foreground">
           Manage your account settings and preferences.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="min-h-0 flex-1">
+        </p>
+      </div>
+      <div className="min-h-0 flex-1">
         <Tabs defaultValue={view} className="h-full">
           <TabsList>
             <TabsTrigger value="profile">Profile</TabsTrigger>
@@ -62,8 +45,8 @@ async function AccountPageImpl({
             />
           </TabsContent>
         </Tabs>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
 

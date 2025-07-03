@@ -5,24 +5,22 @@ import { Label } from '~/components/ui/label'
 import { cn } from '~/lib/utils'
 import type { FieldApi } from './types'
 
-interface TextFieldProps {
+interface TextFieldProps
+  extends Omit<
+    ComponentProps<typeof Input>,
+    'id' | 'name' | 'value' | 'onBlur' | 'onChange'
+  > {
   badge?: ReactNode
-  className?: string
-  disabled?: boolean
   field: FieldApi<string>
   label: string
-  placeholder?: ComponentProps<typeof Input>['placeholder']
-  type?: ComponentProps<'input'>['type']
 }
 
 function TextField({
   badge,
   className,
-  disabled,
   field,
   label,
-  placeholder,
-  type,
+  ...props
 }: TextFieldProps) {
   const id = useId()
   const hasError = field.state.meta.errors.length > 0
@@ -39,14 +37,12 @@ function TextField({
         <Label htmlFor={id}>{label}</Label>
       )}
       <Input
+        {...props}
         id={id}
         name={field.name}
-        type={type}
         aria-invalid={hasError}
         aria-describedby={badge ? `badge-${id}` : undefined}
         className={hasError ? 'border-destructive' : ''}
-        disabled={disabled}
-        placeholder={placeholder}
         value={field.state.value}
         onBlur={() => field.handleBlur()}
         onChange={(event) => field.handleChange(event.target.value)}

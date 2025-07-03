@@ -32,6 +32,9 @@ const DeleteAccountFormSchema = z.object({
   password: z.string().nonempty({
     error: 'Password is required.',
   }),
+  deleteAccountConfirmation: z.literal('delete account', {
+    error: 'You must confirm that you want to delete your account.',
+  }),
 })
 
 const LinkAccountInputSchema = z.object({
