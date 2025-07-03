@@ -36,8 +36,7 @@ function SignUpForm({ redirectAfterSignUp, providers = [] }: SignUpFormProps) {
   )
   const form = useAppForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -70,15 +69,9 @@ function SignUpForm({ redirectAfterSignUp, providers = [] }: SignUpFormProps) {
             form.handleSubmit()
           }}
           className="grid gap-6">
-          <div className="grid grid-cols-2 gap-4">
-            <form.AppField name="firstName">
-              {(field) => <field.TextField label="First Name" />}
-            </form.AppField>
-
-            <form.AppField name="lastName">
-              {(field) => <field.TextField label="Last Name" />}
-            </form.AppField>
-          </div>
+          <form.AppField name="name">
+            {(field) => <field.TextField label="Display Name" />}
+          </form.AppField>
 
           <form.AppField name="email">
             {(field) => <field.TextField label="Email" />}

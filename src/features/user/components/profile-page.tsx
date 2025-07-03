@@ -48,8 +48,7 @@ function ProfilePage({ user }: ProfilePageProps) {
 
   const form = useAppForm({
     defaultValues: {
-      firstName: user.firstName,
-      lastName: user.lastName,
+      name: user.name,
       email: user.email,
     } as z.infer<typeof ProfileFormSchema>,
     validators: {
@@ -80,12 +79,8 @@ function ProfilePage({ user }: ProfilePageProps) {
           )}
         </form.AppField>
 
-        <form.AppField name="firstName">
-          {(field) => <field.TextField label="First Name" />}
-        </form.AppField>
-
-        <form.AppField name="lastName">
-          {(field) => <field.TextField label="Last Name" />}
+        <form.AppField name="name">
+          {(field) => <field.TextField label="Display Name" />}
         </form.AppField>
 
         {/* Changing email is not allowed for now */}

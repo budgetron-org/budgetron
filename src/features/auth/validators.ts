@@ -19,8 +19,7 @@ const SignInWithOauthSchema = z.object({
 
 const SignUpSchema = z
   .object({
-    firstName: z.string().min(1, { error: 'First Name is required.' }),
-    lastName: z.string().min(1, { error: 'Last Name is required.' }),
+    name: z.string().min(1, { error: 'Name is required.' }),
     email: z.email({ error: 'Enter a valid email address' }),
     password: PasswordPolicy,
     confirmPassword: z.string(),

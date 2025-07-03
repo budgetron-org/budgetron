@@ -41,9 +41,7 @@ async function AccountPageImpl({
             <IconArrowLeft /> Back
           </Button>
         </Link>
-        <CardTitle className="text-2xl">
-          Hello, {session.user.firstName}!
-        </CardTitle>
+        <CardTitle className="text-2xl">Hello, {session.user.name}!</CardTitle>
         <CardDescription className="text-md">
           Manage your account settings and preferences.
         </CardDescription>

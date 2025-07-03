@@ -71,9 +71,7 @@ const updateInfo = protectedProcedure
             : undefined
       await getAuth().api.updateUser({
         body: {
-          firstName: input.firstName,
-          lastName: input.lastName,
-          name: `${input.firstName} ${input.lastName}`,
+          name: input.name,
           image: imageUrl,
         },
         headers: context.headers,

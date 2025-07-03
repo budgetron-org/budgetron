@@ -2,13 +2,11 @@ import { z } from 'zod/v4'
 import { PasswordPolicy } from '~/server/auth/policies'
 
 const UpdateInfoInputSchema = z.object({
-  firstName: z.string().nonempty(),
-  lastName: z.string().nonempty(),
+  name: z.string().nonempty(),
   image: z.union([z.instanceof(File), z.string()]).optional(),
 })
 const ProfileFormSchema = UpdateInfoInputSchema.pick({
-  firstName: true,
-  lastName: true,
+  name: true,
   image: true,
 }).extend({
   email: z.email(),

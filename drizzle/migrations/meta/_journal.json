@@ -22,6 +22,13 @@
       "when": 1751486462561,
       "tag": "0002_seed-feature-flags-allow-signup",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1751562905524,
+      "tag": "0003_use-single-display-name",
+      "breakpoints": true
     }
   ]
 }

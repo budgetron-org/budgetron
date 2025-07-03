@@ -13,9 +13,7 @@ import { UserSettingsTable } from './user-settings'
 
 export const UserTable = pgTable('users', {
   id,
-  firstName: text().notNull(),
-  lastName: text().notNull(),
-  fullName: text().notNull(),
+  name: text().notNull(),
   email: text().notNull().unique(),
   emailVerified: boolean().default(false),
   image: text(),

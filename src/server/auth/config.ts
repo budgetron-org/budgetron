@@ -63,13 +63,7 @@ export const authConfig = {
   session: { modelName: 'sessions' },
   user: {
     modelName: 'users',
-    fields: {
-      name: 'fullName',
-    },
     additionalFields: {
-      firstName: { type: 'string' },
-      lastName: { type: 'string' },
-      image: { type: 'string', required: false },
       role: {
         type: 'string',
         required: false,
@@ -145,8 +139,6 @@ export const authConfig = {
           prompt: 'select_account',
           mapProfileToUser(profile) {
             return {
-              firstName: profile.given_name,
-              lastName: profile.family_name,
               image: profile.picture,
               role: schema.UserRoleEnum.enumValues[0],
             }
@@ -187,34 +179,8 @@ export const authConfig = {
             disableImplicitSignUp: true,
             prompt: 'select_account',
             mapProfileToUser(profile) {
-              // check if there is given_name and family_name
-              // if they both exist, use them
-              // check if there is name and split it into first and last
-              // check if only given_name exists, and use it as first name
-              // check if only family_name exists, and use it as last name
-              // if none exist, use the email
-              let firstName = ''
-              let lastName = ''
-              if (profile.given_name && profile.family_name) {
-                firstName = profile.given_name
-                lastName = profile.family_name
-              } else if (profile.name) {
-                const nameParts = profile.name.split(' ')
-                firstName = nameParts[0]
-                lastName = nameParts.slice(1).join(' ')
-              } else if (profile.given_name) {
-                firstName = profile.given_name
-              } else if (profile.family_name) {
-                lastName = profile.family_name
-              } else {
-                firstName = profile.email
-              }
-
-              // check if profile has image, picture, or avatar
               let image = profile.image || profile.picture || profile.avatar
-              // if not, get one from gravatar
               if (!image && profile.email) {
-                // hash the email
                 const hash = crypto
                   .createHash('sha256')
                   .update(profile.email)
@@ -223,8 +189,6 @@ export const authConfig = {
               }
 
               return {
-                firstName,
-                lastName,
                 id: profile.id,
                 name: profile.name,
                 email: profile.email,

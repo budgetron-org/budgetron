@@ -102,14 +102,12 @@ const signInWithOAuth = publicProcedure
 const signUp = publicProcedure
   .input(SignUpSchema)
   .handler(async ({ context, input }) => {
-    const { email, firstName, lastName, password } = input
+    const { email, name, password } = input
     try {
       await getAuth().api.signUpEmail({
         body: {
           email,
-          firstName,
-          lastName,
-          name: `${firstName} ${lastName}`,
+          name,
           password,
         },
         headers: context.headers,
