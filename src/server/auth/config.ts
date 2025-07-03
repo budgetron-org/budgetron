@@ -7,6 +7,7 @@ import crypto from 'node:crypto'
 import { DeleteAccountEmail } from '~/emails/delete-account-email'
 import { EmailVerificationEmail } from '~/emails/email-verification-email'
 import { ResetPasswordEmail } from '~/emails/reset-password-email'
+import WelcomeEmail from '~/emails/welcome-email'
 import { env } from '~/env/server'
 import {
   getGravatarUrl,
@@ -151,6 +152,24 @@ export const authConfig = {
           },
         }
       : undefined,
+  },
+
+  databaseHooks: {
+    user: {
+      create: {
+        async after(user) {
+          // send welcome email after a user is created
+          await sendEmail({
+            to: user.email,
+            subject: 'Welcome to Budgetron!',
+            body: WelcomeEmail({
+              name: user.name,
+              appUrl: env.AUTH_URL,
+            }),
+          })
+        },
+      },
+    },
   },
 
   // Plugins
