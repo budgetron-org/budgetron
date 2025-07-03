@@ -56,6 +56,7 @@ export const authConfig = {
   account: {
     modelName: 'accounts',
     accountLinking: {
+      allowDifferentEmails: true,
       enabled: true,
     },
   },

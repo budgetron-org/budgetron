@@ -35,7 +35,13 @@ const CHANGELOGS: Changelog[] = [
           'Email verification is sent on sign up and can be sent again from the profile page if needed.',
       },
     ],
-    features: [],
+    features: [
+      {
+        title: 'Account linking',
+        description:
+          'You can now link multiple accounts to a single user even with different email addresses. This is useful if you have multiple email addresses.',
+      },
+    ],
     fixes: [],
     breakingChanges: [],
   },
