@@ -9,6 +9,7 @@ import {
 import { protectedProcedure } from '~/server/api/rpc'
 import { getAuth } from '~/server/auth'
 import { upload } from '~/server/blob/service'
+import { deleteAccountFeatureFlag } from '~/server/flags'
 import {
   DeleteAccountInputSchema,
   LinkAccountInputSchema,
@@ -16,7 +17,20 @@ import {
   UpdateInfoInputSchema,
   UpdatePasswordInputSchema,
 } from '../validators'
-import { deleteAccountFeatureFlag } from '~/server/flags'
+
+function throwRPCError(error: unknown) {
+  if (error instanceof APIError) {
+    if (typeof error.status === 'string') {
+      throw new ORPCError(error.status, {
+        status: error.statusCode,
+        message: error.message,
+        cause: error.cause,
+      })
+    }
+    throw createRPCErrorFromStatus(error.status, error.message, error.cause)
+  }
+  throw createRPCErrorFromUnknownError(error)
+}
 
 const listAccounts = protectedProcedure.handler(async ({ context }) => {
   return getAuth().api.listUserAccounts({ headers: context.headers })
@@ -35,17 +49,7 @@ const updatePassword = protectedProcedure
       })
       return { success: true }
     } catch (error) {
-      if (error instanceof APIError) {
-        if (typeof error.status === 'string') {
-          throw new ORPCError(error.status, {
-            status: error.statusCode,
-            message: error.message,
-            cause: error.cause,
-          })
-        }
-        throw createRPCErrorFromStatus(error.status, error.message, error.cause)
-      }
-      throw createRPCErrorFromUnknownError(error)
+      throwRPCError(error)
     }
   })
 
@@ -76,17 +80,7 @@ const updateInfo = protectedProcedure
       })
       return { success: true }
     } catch (error) {
-      if (error instanceof APIError) {
-        if (typeof error.status === 'string') {
-          throw new ORPCError(error.status, {
-            status: error.statusCode,
-            message: error.message,
-            cause: error.cause,
-          })
-        }
-        throw createRPCErrorFromStatus(error.status, error.message, error.cause)
-      }
-      throw createRPCErrorFromUnknownError(error)
+      throwRPCError(error)
     }
   })
 
@@ -109,17 +103,7 @@ const deleteAccount = protectedProcedure
       })
       return { success: true }
     } catch (error) {
-      if (error instanceof APIError) {
-        if (typeof error.status === 'string') {
-          throw new ORPCError(error.status, {
-            status: error.statusCode,
-            message: error.message,
-            cause: error.cause,
-          })
-        }
-        throw createRPCErrorFromStatus(error.status, error.message, error.cause)
-      }
-      throw createRPCErrorFromUnknownError(error)
+      throwRPCError(error)
     }
   })
 
@@ -159,17 +143,7 @@ const linkAccount = protectedProcedure
         return { success: true, redirectUrl: url }
       }
     } catch (error) {
-      if (error instanceof APIError) {
-        if (typeof error.status === 'string') {
-          throw new ORPCError(error.status, {
-            status: error.statusCode,
-            message: error.message,
-            cause: error.cause,
-          })
-        }
-        throw createRPCErrorFromStatus(error.status, error.message, error.cause)
-      }
-      throw createRPCErrorFromUnknownError(error)
+      throwRPCError(error)
     }
   })
 
@@ -185,19 +159,24 @@ const unlinkAccount = protectedProcedure
       })
       return { success: status }
     } catch (error) {
-      if (error instanceof APIError) {
-        if (typeof error.status === 'string') {
-          throw new ORPCError(error.status, {
-            status: error.statusCode,
-            message: error.message,
-            cause: error.cause,
-          })
-        }
-        throw createRPCErrorFromStatus(error.status, error.message, error.cause)
-      }
-      throw createRPCErrorFromUnknownError(error)
+      throwRPCError(error)
     }
   })
+
+const verifyEmail = protectedProcedure.handler(async ({ context }) => {
+  try {
+    await getAuth().api.sendVerificationEmail({
+      body: {
+        email: context.session.user.email,
+        callbackURL: PATHS.ACCOUNT,
+      },
+      headers: context.headers,
+    })
+    return { success: true }
+  } catch (error) {
+    throwRPCError(error)
+  }
+})
 
 export {
   deleteAccount,
@@ -206,4 +185,5 @@ export {
   unlinkAccount,
   updateInfo,
   updatePassword,
+  verifyEmail,
 }

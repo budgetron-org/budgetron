@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import type { z } from 'zod/v4'
 
 import { Badge } from '~/components/ui/badge'
+import { ProgressButton } from '~/components/ui/progress-button'
 import { AvatarPicker } from '~/components/widgets/avatar-picker'
 import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
@@ -28,6 +29,19 @@ function ProfilePage({ user }: ProfilePageProps) {
       },
       onSettled() {
         form.reset()
+      },
+    }),
+  )
+
+  const verifyEmail = useMutation(
+    api.user.verifyEmail.mutationOptions({
+      onSuccess() {
+        toast.success('Email verification sent. Please check your inbox.')
+      },
+      onError(error) {
+        toast.error('Failed to send email verification', {
+          description: error.message,
+        })
       },
     }),
   )
@@ -77,18 +91,30 @@ function ProfilePage({ user }: ProfilePageProps) {
         {/* Changing email is not allowed for now */}
         <form.AppField name="email">
           {(field) => (
-            <field.TextField
-              badge={
-                <Badge
-                  className="h-max w-max"
-                  variant={user.emailVerified ? 'default' : 'destructive'}>
-                  {user.emailVerified ? 'Verified' : 'Not Verified'}
-                </Badge>
-              }
-              className="flex-1"
-              label="Email"
-              disabled
-            />
+            <div className="flex items-center gap-2">
+              <field.TextField
+                badge={
+                  <Badge
+                    className="h-max w-max"
+                    variant={user.emailVerified ? 'default' : 'destructive'}>
+                    {user.emailVerified ? 'Verified' : 'Not Verified'}
+                  </Badge>
+                }
+                className="flex-1"
+                label="Email"
+                disabled
+              />
+              {!user.emailVerified && (
+                <ProgressButton
+                  type="button"
+                  className="mt-5"
+                  variant="outline"
+                  isLoading={verifyEmail.isPending}
+                  onClick={() => verifyEmail.mutate({})}>
+                  Verify
+                </ProgressButton>
+              )}
+            </div>
           )}
         </form.AppField>
 

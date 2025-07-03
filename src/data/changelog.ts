@@ -25,6 +25,21 @@ type Changelog = {
 
 const CHANGELOGS: Changelog[] = [
   {
+    version: 'NEXT',
+    date: 'TBD',
+    description: 'Added support for email verification',
+    changes: [
+      {
+        title: 'Support for email verification',
+        description:
+          'Email verification is sent on sign up and can be sent again from the profile page if needed.',
+      },
+    ],
+    features: [],
+    fixes: [],
+    breakingChanges: [],
+  },
+  {
     version: '0.3.0',
     date: '2025-07-02',
     description: 'Introducing OAuth support, Gravatar avatars, and more',
@@ -90,7 +105,7 @@ const CHANGELOGS: Changelog[] = [
     ],
     breakingChanges: [
       {
-        title: 'AI categorization is not done by OpenAI compatible API',
+        title: 'AI categorization is now done by OpenAI compatible API',
         description:
           'Previously this was done by Ollama. Now it is done by any OpenAI compatible API. Need to update the environment variables.',
       },

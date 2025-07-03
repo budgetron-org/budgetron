@@ -5,6 +5,7 @@ import { genericOAuth } from 'better-auth/plugins'
 import crypto from 'node:crypto'
 
 import { DeleteAccountEmail } from '~/emails/delete-account-email'
+import { EmailVerificationEmail } from '~/emails/email-verification-email'
 import { ResetPasswordEmail } from '~/emails/reset-password-email'
 import { env } from '~/env/server'
 import {
@@ -20,6 +21,11 @@ import { sendEmail } from '~/server/email/service'
  * The validity of the password reset token will expire in 15 minutes.
  */
 const PASSWORD_RESET_TOKEN_VALIDITY_IN_SECONDS = 15 * 60
+
+/**
+ * The validity of the email verification token will expire in 15 minutes.
+ */
+const EMAIL_VERIFICATION_TOKEN_VALIDITY_IN_SECONDS = 15 * 60
 
 /**
  * The validity of the delete account token will expire in 15 minutes.
@@ -109,6 +115,23 @@ export const authConfig = {
       })
     },
     resetPasswordTokenExpiresIn: PASSWORD_RESET_TOKEN_VALIDITY_IN_SECONDS,
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    async sendVerificationEmail(data) {
+      await sendEmail({
+        to: data.user.email,
+        subject: 'Your email verification link',
+        body: EmailVerificationEmail({
+          name: data.user.name,
+          emailVerificationUrl: data.url,
+          emailVerificationUrlExpiresIn:
+            EMAIL_VERIFICATION_TOKEN_VALIDITY_IN_SECONDS,
+        }),
+      })
+    },
+    expiresIn: EMAIL_VERIFICATION_TOKEN_VALIDITY_IN_SECONDS,
   },
   socialProviders: {
     google: isGoogleAuthEnabled(env)

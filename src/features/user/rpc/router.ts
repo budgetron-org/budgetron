@@ -5,6 +5,7 @@ import {
   unlinkAccount,
   updateInfo,
   updatePassword,
+  verifyEmail,
 } from './procedures'
 
 const userRouter = {
@@ -14,6 +15,7 @@ const userRouter = {
   unlinkAccount,
   updateInfo,
   updatePassword,
+  verifyEmail,
 }
 
 export { userRouter }
