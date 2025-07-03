@@ -67,12 +67,18 @@ function SignInForm({ redirectAfterSignIn, providers = [] }: SignInFormProps) {
           }}
           className="grid gap-6">
           <form.AppField name="email">
-            {(field) => <field.TextField label="Email" />}
+            {(field) => <field.TextField label="Email" autoComplete="email" />}
           </form.AppField>
 
           <div>
             <form.AppField name="password">
-              {(field) => <field.TextField label="Password" type="password" />}
+              {(field) => (
+                <field.TextField
+                  label="Password"
+                  type="password"
+                  autoComplete="current-password"
+                />
+              )}
             </form.AppField>
             <Link
               href={PATHS.FORGOT_PASSWORD}

@@ -70,20 +70,32 @@ function SignUpForm({ redirectAfterSignUp, providers = [] }: SignUpFormProps) {
           }}
           className="grid gap-6">
           <form.AppField name="name">
-            {(field) => <field.TextField label="Display Name" />}
+            {(field) => (
+              <field.TextField label="Display Name" autoComplete="name" />
+            )}
           </form.AppField>
 
           <form.AppField name="email">
-            {(field) => <field.TextField label="Email" />}
+            {(field) => <field.TextField label="Email" autoComplete="email" />}
           </form.AppField>
 
           <form.AppField name="password">
-            {(field) => <field.TextField label="Password" type="password" />}
+            {(field) => (
+              <field.TextField
+                label="Password"
+                type="password"
+                autoComplete="new-password"
+              />
+            )}
           </form.AppField>
 
           <form.AppField name="confirmPassword">
             {(field) => (
-              <field.TextField label="Confirm Password" type="password" />
+              <field.TextField
+                label="Confirm Password"
+                type="password"
+                autoComplete="new-password"
+              />
             )}
           </form.AppField>
 

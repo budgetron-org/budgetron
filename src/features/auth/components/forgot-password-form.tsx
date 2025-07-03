@@ -66,7 +66,9 @@ function ForgotPasswordForm() {
               }}
               className="grid gap-6">
               <form.AppField name="email">
-                {(field) => <field.TextField label="Email" />}
+                {(field) => (
+                  <field.TextField label="Email" autoComplete="email" />
+                )}
               </form.AppField>
 
               <form.Subscribe selector={(formState) => [formState.canSubmit]}>

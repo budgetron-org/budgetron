@@ -46,12 +46,22 @@ function ResetPasswordForm({ token }: ResetPasswordFormProps) {
             }}
             className="grid gap-6">
             <form.AppField name="password">
-              {(field) => <field.TextField label="Password" type="password" />}
+              {(field) => (
+                <field.TextField
+                  label="Password"
+                  type="password"
+                  autoComplete="new-password"
+                />
+              )}
             </form.AppField>
 
             <form.AppField name="confirmPassword">
               {(field) => (
-                <field.TextField label="Confirm Password" type="password" />
+                <field.TextField
+                  label="Confirm Password"
+                  type="password"
+                  autoComplete="new-password"
+                />
               )}
             </form.AppField>
 
