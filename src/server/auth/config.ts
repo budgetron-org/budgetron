@@ -7,7 +7,7 @@ import crypto from 'node:crypto'
 import { DeleteAccountEmail } from '~/emails/delete-account-email'
 import { EmailVerificationEmail } from '~/emails/email-verification-email'
 import { ResetPasswordEmail } from '~/emails/reset-password-email'
-import WelcomeEmail from '~/emails/welcome-email'
+import { WelcomeEmail } from '~/emails/welcome-email'
 import { env } from '~/env/server'
 import {
   getGravatarUrl,

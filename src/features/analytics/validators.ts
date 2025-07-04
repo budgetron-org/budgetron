@@ -5,8 +5,6 @@ const DateRangeSchema = z.object({
   to: z.coerce.date(),
 })
 
-const GetMonthlySummaryInputSchema = DateRangeSchema
-
 const GetCategorySpendIncomeInputSchema = DateRangeSchema.extend({
   limit: z.number().min(1),
 })
@@ -28,5 +26,4 @@ export {
   CashFlowReportRangeSchema,
   GetCashFlowReportInputSchema,
   GetCategorySpendIncomeInputSchema,
-  GetMonthlySummaryInputSchema,
 }
