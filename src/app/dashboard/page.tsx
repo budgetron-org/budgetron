@@ -1,43 +1,78 @@
-import { endOfToday, subMonths } from 'date-fns'
+import {
+  IconBriefcase,
+  IconCoin,
+  IconPigMoney,
+  IconTrendingUp,
+} from '@tabler/icons-react'
 import { connection } from 'next/server'
 
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
-import { SummaryCard } from '~/features/analytics/components/summary-card'
+import { DashboardCashFlowChart } from '~/features/analytics/components/dashboard-cash-flow-chart'
+import { DashboardSummaryCard } from '~/features/analytics/components/dashboard-summary-card'
 import { redirectUnauthenticated } from '~/features/auth/server'
-import { BankAccountsCard } from '~/features/bank-accounts/components/bank-accounts-card'
 import { api } from '~/rpc/server'
 
-async function DashboardPageImpl() {
+async function DashboardPageImplNew() {
   await redirectUnauthenticated()
   await connection()
 
-  const today = endOfToday()
-  const [monthlySummary] = await Promise.all([
-    api.analytics.getMonthlySummary({
-      from: subMonths(today, 6),
-      to: today,
-    }),
-  ])
+  const { cashFlowSummary, overviewSummary } =
+    await api.analytics.getDashboardSummary()
 
   return (
-    <div className="grid h-full grid-cols-1 gap-2 overflow-y-auto md:grid-cols-[minmax(30vw,max-content)_minmax(0,1fr)]">
-      <div className="h-full md:row-span-full">
-        <BankAccountsCard className="h-full" />
-      </div>
+    <div className="flex h-full flex-col gap-4 overflow-y-auto">
+      <div className="flex flex-col gap-2">
+        <h2 className="text-xl font-semibold">
+          Summary
+          <p className="text-muted-foreground text-sm">
+            Financial health at a glance
+          </p>
+        </h2>
 
-      <div className="col-span-1 grid h-full auto-rows-min grid-cols-1 gap-2 md:overflow-y-auto">
-        <SummaryCard
-          title="Income"
-          description="Last 6 months"
-          type="income"
-          data={monthlySummary}
-        />
-        <SummaryCard
-          title="Expenses"
-          description="Last 6 months"
-          type="expense"
-          data={monthlySummary}
-        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <DashboardSummaryCard
+            title="Income"
+            icon={<IconBriefcase />}
+            data={overviewSummary.INCOME}
+          />
+          <DashboardSummaryCard
+            title="Expenses"
+            icon={<IconCoin />}
+            data={overviewSummary.EXPENSE}
+          />
+          <DashboardSummaryCard
+            title="Savings"
+            icon={<IconPigMoney />}
+            data={overviewSummary.SAVINGS}
+          />
+          <DashboardSummaryCard
+            title="Investments"
+            icon={<IconTrendingUp />}
+            data={overviewSummary.INVESTMENT}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <h2 className="text-xl font-semibold">
+          Reports
+          <p className="text-muted-foreground text-sm">Cash flow at a glance</p>
+        </h2>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <DashboardCashFlowChart
+            title="Income"
+            description="Last 6 months"
+            xAxisKey="period"
+            yAxisKey="income"
+            data={cashFlowSummary.data}
+          />
+          <DashboardCashFlowChart
+            title="Expenses"
+            description="Last 6 months"
+            xAxisKey="period"
+            yAxisKey="expenses"
+            data={cashFlowSummary.data}
+          />
+        </div>
       </div>
     </div>
   )
@@ -46,7 +81,7 @@ async function DashboardPageImpl() {
 export default function DashboardPage() {
   return (
     <SuspenseBoundary>
-      <DashboardPageImpl />
+      <DashboardPageImplNew />
     </SuspenseBoundary>
   )
 }

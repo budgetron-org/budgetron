@@ -13,6 +13,7 @@ import { CashFlowSummaryCard } from './cash-flow-summary-card'
 const RANGE_DESCRIPTIONS = {
   this_month: 'This Month',
   last_3_months: 'Last 3 Months',
+  last_6_months: 'Last 6 Months',
   ytd: 'Year To Date',
   '1_year': 'Last Year',
   all: 'All Time',

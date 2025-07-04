@@ -2,7 +2,6 @@
 
 import {
   useCallback,
-  useMemo,
   type ComponentProps,
   type ComponentPropsWithoutRef,
 } from 'react'
@@ -17,16 +16,15 @@ import {
 } from '~/components/ui/card'
 import { type ChartConfig } from '~/components/ui/chart'
 import { getCurrencyFormatter } from '~/lib/format'
-import { formatMonthLabel, safeParseNumber } from '~/lib/utils'
-import type { MonthlySummary } from '../types'
+import { safeParseNumber } from '~/lib/utils'
 
 const chartConfig = {
   income: {
     label: 'Income',
     color: 'var(--chart-2)',
   },
-  expense: {
-    label: 'Expense',
+  expenses: {
+    label: 'Expenses',
     color: 'var(--chart-1)',
   },
 } satisfies ChartConfig
@@ -34,32 +32,26 @@ const chartConfig = {
 // TODO: get currency from user settings
 const currencyFormatter = getCurrencyFormatter('USD')
 
-interface SummaryCardProps extends ComponentPropsWithoutRef<typeof Card> {
-  data: MonthlySummary[]
+interface DashboardCashFlowChartProps<
+  Data extends { income: number; expenses: number },
+> extends ComponentPropsWithoutRef<typeof Card> {
+  data: Data[]
   title: string
   description: string
-  type: 'income' | 'expense'
+  xAxisKey: keyof Data
+  yAxisKey: keyof Data
 }
 
-function SummaryCard({
+function DashboardCashFlowChart<
+  Data extends { income: number; expenses: number },
+>({
   data,
   title,
   description,
-  type,
+  xAxisKey,
+  yAxisKey,
   ...props
-}: SummaryCardProps) {
-  const chartData = useMemo(
-    () =>
-      data.map((i) => ({
-        month: i.month,
-        expense: Math.abs(i.expense),
-        income: i.income,
-      })),
-    [data],
-  )
-  const xAxisFormatter = useCallback<
-    NonNullable<ComponentProps<typeof BarChart<typeof data>>['xAxisFormatter']>
-  >((value) => formatMonthLabel(String(value)), [])
+}: DashboardCashFlowChartProps<Data>) {
   const yAxisFormatter = useCallback<
     NonNullable<ComponentProps<typeof BarChart<typeof data>>['yAxisFormatter']>
   >((value) => currencyFormatter.format(safeParseNumber(value)), [])
@@ -74,10 +66,9 @@ function SummaryCard({
       <CardContent className="h-[50vh]">
         <BarChart
           config={chartConfig}
-          data={chartData}
-          xAxisKey="month"
-          barKeys={[type]}
-          xAxisFormatter={xAxisFormatter}
+          data={data}
+          xAxisKey={xAxisKey}
+          barKeys={[yAxisKey]}
           yAxisFormatter={yAxisFormatter}
         />
       </CardContent>
@@ -85,4 +76,4 @@ function SummaryCard({
   )
 }
 
-export { SummaryCard }
+export { DashboardCashFlowChart }

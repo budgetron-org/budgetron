@@ -2,14 +2,14 @@ import {
   getCashFlowReport,
   getCategoryIncome,
   getCategorySpend,
-  getMonthlySummary,
+  getDashboardSummary,
 } from './procedures'
 
 const analyticsRouter = {
   getCashFlowReport,
   getCategoryIncome,
   getCategorySpend,
-  getMonthlySummary,
+  getDashboardSummary,
 }
 
 export { analyticsRouter }

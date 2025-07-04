@@ -46,10 +46,14 @@ type CashFlowReport = {
   }
 }
 
-type MonthlySummary = {
-  month: string
-  income: number
-  expense: number
+type CashFlowType = 'INCOME' | 'EXPENSE' | 'SAVINGS' | 'INVESTMENT'
+type OverviewSummary = {
+  [key in CashFlowType]: {
+    ytd: number
+    thisMonth: number
+    lastMonth: number
+    sixMonthAvg: number
+  }
 }
 
 export type {
@@ -57,6 +61,7 @@ export type {
   CashFlowReportData,
   CashFlowReportGranularity,
   CashFlowReportRange,
+  CashFlowType,
   CategoryReport,
-  MonthlySummary,
+  OverviewSummary,
 }

@@ -3,7 +3,6 @@ import {
   addMonths,
   addQuarters,
   addWeeks,
-  eachMonthOfInterval,
   format,
   isBefore,
   startOfMonth,
@@ -15,26 +14,7 @@ import type {
   CashFlowReportData,
   CashFlowReportGranularity,
   CashFlowReportRange,
-  MonthlySummary,
 } from './types'
-
-function fillMissingMonthsSummary(
-  raw: MonthlySummary[],
-  start: Date,
-  end: Date,
-) {
-  const allMonths = eachMonthOfInterval({ start, end }).map((date) =>
-    format(date, 'yyyy-MM'),
-  )
-
-  const dataMap = new Map(raw.map((entry) => [entry.month, entry]))
-
-  return allMonths.map<MonthlySummary>((month) => ({
-    month,
-    income: dataMap.get(month)?.income ?? 0,
-    expense: dataMap.get(month)?.expense ?? 0,
-  }))
-}
 
 function getNextDate(date: Date, granularity: CashFlowReportGranularity): Date {
   switch (granularity) {
@@ -114,6 +94,12 @@ function getRangeMeta(range: CashFlowReportRange) {
         endDate: now,
         granularity: 'week' as const,
       }
+    case 'last_6_months':
+      return {
+        startDate: subMonths(startOfMonth(now), 5), // current month is included in the range
+        endDate: now,
+        granularity: 'month' as const,
+      }
     case 'ytd':
       return {
         startDate: startOfYear(now),
@@ -135,9 +121,4 @@ function getRangeMeta(range: CashFlowReportRange) {
   }
 }
 
-export {
-  fillMissingCashFlowReportData,
-  fillMissingMonthsSummary,
-  formatDateForKey,
-  getRangeMeta,
-}
+export { fillMissingCashFlowReportData, formatDateForKey, getRangeMeta }

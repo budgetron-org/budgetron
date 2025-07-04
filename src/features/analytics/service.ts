@@ -1,10 +1,10 @@
-import { addMonths, differenceInMonths } from 'date-fns'
-import { and, between, desc, eq, lte, sql, sum } from 'drizzle-orm'
+import { addMonths, differenceInMonths, endOfToday, subMonths } from 'date-fns'
+import { and, between, desc, eq, gte, lte, sql, sum } from 'drizzle-orm'
 import { alias } from 'drizzle-orm/pg-core'
 
-import { safeParseNumber } from '~/lib/utils'
 import { db } from '~/server/db'
 import {
+  BankAccountTable,
   CategoryTable,
   TransactionTable,
   type TransactionType,
@@ -13,8 +13,9 @@ import type {
   CashFlowReport,
   CashFlowReportData,
   CashFlowReportRange,
+  CashFlowType,
   CategoryReport,
-  MonthlySummary,
+  OverviewSummary,
 } from './types'
 import {
   fillMissingCashFlowReportData,
@@ -22,39 +23,68 @@ import {
   getRangeMeta,
 } from './utils'
 
-type GetMonthlySummaryFilters = {
+type GetOverviewSummaryFilters = {
   userId: string
-  from: Date
-  to: Date
 }
-async function getMonthlySummary({
-  from,
-  to,
-  userId,
-}: GetMonthlySummaryFilters) {
-  const result = (await db
+async function getOverviewSummary({ userId }: GetOverviewSummaryFilters) {
+  // write an SQL query to get the OverviewSummary
+  const result = await db
     .select({
-      month: sql<string>`TO_CHAR(DATE_TRUNC('month', ${TransactionTable.date}), 'YYYY-MM')`,
-      income: sum(
-        sql<number>`CASE WHEN ${TransactionTable.type} = 'INCOME' THEN ${TransactionTable.amount} ELSE 0 END`,
-      ).mapWith(safeParseNumber),
-      expense: sum(
-        sql<number>`CASE WHEN ${TransactionTable.type} = 'EXPENSE' THEN ${TransactionTable.amount} ELSE 0 END`,
-      ).mapWith(safeParseNumber),
+      cashFlowType: sql<CashFlowType>`case
+          when ${TransactionTable.type} = 'INCOME' then 'INCOME'
+          when ${TransactionTable.type} = 'EXPENSE' then 'EXPENSE'
+          when ${TransactionTable.type} = 'TRANSFER' and ${BankAccountTable.type} = 'SAVINGS' then 'SAVINGS'
+          when ${TransactionTable.type} = 'TRANSFER' and ${BankAccountTable.type} = 'INVESTMENT' then 'INVESTMENT'
+          else null
+        end`.as('cash_flow_type'),
+
+      ytd: sql<number>`
+        sum(case when ${TransactionTable.date} >= date_trunc('year', current_date)
+                 then ${TransactionTable.amount} else 0 end)
+      `.as('ytd'),
+
+      thisMonth: sql<number>`
+        sum(case when ${TransactionTable.date} >= date_trunc('month', current_date)
+                 then ${TransactionTable.amount} else 0 end)
+      `.as('this_month'),
+
+      lastMonth: sql<number>`
+        sum(case
+          when ${TransactionTable.date} >= date_trunc('month', current_date - interval '1 month')
+           and ${TransactionTable.date} < date_trunc('month', current_date)
+          then ${TransactionTable.amount}
+          else 0
+        end)
+      `.as('last_month'),
+
+      sixMonthAvg: sql<number>`
+        sum(${TransactionTable.amount}) / 6.0
+      `.as('six_month_avg'),
     })
     .from(TransactionTable)
+    .leftJoin(
+      BankAccountTable,
+      eq(TransactionTable.toBankAccountId, BankAccountTable.id),
+    )
     .where(
       and(
         eq(TransactionTable.userId, userId),
-        between(TransactionTable.date, from, to),
+        gte(TransactionTable.date, subMonths(endOfToday(), 6)),
       ),
     )
-    .groupBy(sql<string>`DATE_TRUNC('month', ${TransactionTable.date})`)
-    .orderBy(
-      sql<string>`DATE_TRUNC('month', ${TransactionTable.date})`,
-    )) satisfies MonthlySummary[]
+    .groupBy(sql<CashFlowType>`cash_flow_type`)
 
-  return result
+  return result.reduce((acc, curr) => {
+    // ignore null cash flow types
+    if (curr.cashFlowType === null) return acc
+    acc[curr.cashFlowType] = {
+      ytd: curr.ytd,
+      thisMonth: curr.thisMonth,
+      lastMonth: curr.lastMonth,
+      sixMonthAvg: curr.sixMonthAvg,
+    }
+    return acc
+  }, {} as OverviewSummary)
 }
 
 type GetCategoryReportFilters = {
@@ -249,4 +279,4 @@ async function getCashFlowReport({ userId, range }: GetCashFlowReportFilters) {
   } satisfies CashFlowReport
 }
 
-export { getCashFlowReport, getCategoryReport, getMonthlySummary }
+export { getCashFlowReport, getCategoryReport, getOverviewSummary }

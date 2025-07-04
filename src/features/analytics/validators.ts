@@ -14,6 +14,7 @@ const GetCategorySpendIncomeInputSchema = DateRangeSchema.extend({
 const CashFlowReportRangeSchema = z.enum([
   'this_month',
   'last_3_months',
+  'last_6_months',
   'ytd',
   '1_year',
   'all',
