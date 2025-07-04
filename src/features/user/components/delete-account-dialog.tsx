@@ -95,8 +95,7 @@ function DeleteAccountDialog({
             <form.AppField name="deleteAccountConfirmation">
               {(field) => (
                 <field.TextField
-                  label="To verify, type 'delete my account' below"
-                  placeholder="delete my account"
+                  label="To verify, type 'delete account' below"
                   autoComplete="off"
                 />
               )}
