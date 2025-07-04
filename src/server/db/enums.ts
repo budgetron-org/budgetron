@@ -1,6 +1,11 @@
 import { pgEnum } from 'drizzle-orm/pg-core'
 
-const BankAccountTypes = ['CHECKING', 'SAVINGS', 'CREDIT'] as const
+const BankAccountTypes = [
+  'CHECKING',
+  'CREDIT',
+  'INVESTMENT',
+  'SAVINGS',
+] as const
 type BankAccountType = (typeof BankAccountTypes)[number]
 const BankAccountTypeEnum = pgEnum('bank_account_type_enum', BankAccountTypes)
 
