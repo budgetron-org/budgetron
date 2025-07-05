@@ -27,14 +27,15 @@ type GetOverviewSummaryFilters = {
   userId: string
 }
 async function getOverviewSummary({ userId }: GetOverviewSummaryFilters) {
+  const ToBankAccountTable = alias(BankAccountTable, 'toBankAccount')
   // write an SQL query to get the OverviewSummary
   const result = await db
     .select({
       cashFlowType: sql<CashFlowType>`case
           when ${TransactionTable.type} = 'INCOME' then 'INCOME'
           when ${TransactionTable.type} = 'EXPENSE' then 'EXPENSE'
-          when ${TransactionTable.type} = 'TRANSFER' and ${BankAccountTable.type} = 'SAVINGS' then 'SAVINGS'
-          when ${TransactionTable.type} = 'TRANSFER' and ${BankAccountTable.type} = 'INVESTMENT' then 'INVESTMENT'
+          when ${TransactionTable.type} = 'TRANSFER' and ${ToBankAccountTable.type} = 'SAVINGS' then 'SAVINGS'
+          when ${TransactionTable.type} = 'TRANSFER' and ${ToBankAccountTable.type} = 'INVESTMENT' then 'INVESTMENT'
           else null
         end`.as('cash_flow_type'),
 
@@ -63,8 +64,8 @@ async function getOverviewSummary({ userId }: GetOverviewSummaryFilters) {
     })
     .from(TransactionTable)
     .leftJoin(
-      BankAccountTable,
-      eq(TransactionTable.toBankAccountId, BankAccountTable.id),
+      ToBankAccountTable,
+      eq(TransactionTable.toBankAccountId, ToBankAccountTable.id),
     )
     .where(
       and(
