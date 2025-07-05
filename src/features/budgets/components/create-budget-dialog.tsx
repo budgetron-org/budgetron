@@ -2,32 +2,17 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import {
-  useCallback,
-  useId,
-  useRef,
-  useState,
-  type ComponentProps,
-  type ReactNode,
-} from 'react'
+import { useId, useRef, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '~/components/ui/dialog'
+import { DialogDrawer, DialogDrawerClose } from '~/components/ui/dialog-drawer'
 import { ProgressButton } from '~/components/ui/progress-button'
 import { api } from '~/rpc/client'
 import { BudgetForm, type BudgetFormHandle } from './budget-form'
 
-interface CreateBudgetDialogProps extends ComponentProps<typeof Dialog> {
+interface CreateBudgetDialogProps {
   trigger: ReactNode
   refreshOnSuccess?: boolean
 }
@@ -35,7 +20,6 @@ interface CreateBudgetDialogProps extends ComponentProps<typeof Dialog> {
 export function CreateBudgetDialog({
   trigger,
   refreshOnSuccess,
-  ...props
 }: CreateBudgetDialogProps) {
   const formRef = useRef<BudgetFormHandle>(null)
   const formId = useId()
@@ -66,23 +50,15 @@ export function CreateBudgetDialog({
     }),
   )
 
-  const closeDialog = useCallback(() => setOpen(false), [])
-  const onOpenChange = useCallback((open: boolean) => {
-    setOpen(open)
-  }, [])
-
   return (
-    <Dialog {...props} open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create budget</DialogTitle>
-          <DialogDescription>Enter the details of the budget</DialogDescription>
-        </DialogHeader>
-
-        <BudgetForm id={formId} ref={formRef} onSubmit={createBudget.mutate} />
-
-        <DialogFooter>
+    <DialogDrawer
+      open={open}
+      onOpenChange={setOpen}
+      title="Create budget"
+      description="Enter the details of the budget"
+      trigger={trigger}
+      footer={
+        <>
           <div className="mr-auto flex items-center gap-2">
             <Checkbox
               id={checkboxId}
@@ -94,17 +70,18 @@ export function CreateBudgetDialog({
             <label htmlFor={checkboxId}>Create another</label>
           </div>
 
-          <Button variant="outline" onClick={closeDialog}>
-            Cancel
-          </Button>
+          <DialogDrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogDrawerClose>
           <ProgressButton
             form={formId}
             type="submit"
             isLoading={createBudget.isPending}>
             Create
           </ProgressButton>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }>
+      <BudgetForm id={formId} ref={formRef} onSubmit={createBudget.mutate} />
+    </DialogDrawer>
   )
 }

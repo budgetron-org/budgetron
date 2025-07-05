@@ -3,19 +3,9 @@
 import { Slot as SlotPrimitive } from 'radix-ui'
 import type { ComponentProps, ReactNode } from 'react'
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '~/components/ui/alert-dialog'
 import { Button } from '~/components/ui/button'
 import { ProgressButton } from '~/components/ui/progress-button'
+import { DialogDrawer, DialogDrawerClose } from './dialog-drawer'
 
 interface AlertActionButtonProps extends ComponentProps<typeof ProgressButton> {
   alertTitle?: string
@@ -39,27 +29,24 @@ function AlertActionButton({
   ...props
 }: AlertActionButtonProps) {
   const Comp = asChild ? SlotPrimitive.Slot : ProgressButton
+
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Comp {...props} />
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{alertTitle}</AlertDialogTitle>
-          <AlertDialogDescription>{alertDescription}</AlertDialogDescription>
-        </AlertDialogHeader>
-        {alertContent}
-        <AlertDialogFooter>
-          <AlertDialogCancel asChild>
+    <DialogDrawer
+      trigger={<Comp {...props} />}
+      title={alertTitle}
+      description={alertDescription}
+      footer={
+        <>
+          <DialogDrawerClose asChild>
             <Button variant="secondary">{alertCancelText}</Button>
-          </AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} asChild>
+          </DialogDrawerClose>
+          <DialogDrawerClose onClick={onConfirm} asChild>
             <Button variant={alertConfirmVariant}>{alertConfirmText}</Button>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </DialogDrawerClose>
+        </>
+      }>
+      {alertContent}
+    </DialogDrawer>
   )
 }
 

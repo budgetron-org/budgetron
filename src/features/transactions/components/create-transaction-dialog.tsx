@@ -1,27 +1,12 @@
 'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  useCallback,
-  useId,
-  useRef,
-  useState,
-  type ComponentProps,
-  type ReactNode,
-} from 'react'
+import { useId, useRef, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '~/components/ui/dialog'
+import { DialogDrawer, DialogDrawerClose } from '~/components/ui/dialog-drawer'
 import { ProgressButton } from '~/components/ui/progress-button'
 import {
   TransactionForm,
@@ -29,13 +14,12 @@ import {
 } from '~/features/transactions/components/transaction-form'
 import { api } from '~/rpc/client'
 
-interface CreateTransactionDialogProps extends ComponentProps<typeof Dialog> {
+interface CreateTransactionDialogProps {
   trigger: ReactNode
 }
 
 export function CreateTransactionDialog({
   trigger,
-  ...props
 }: CreateTransactionDialogProps) {
   const formRef = useRef<TransactionFormHandle>(null)
   const formId = useId()
@@ -68,29 +52,15 @@ export function CreateTransactionDialog({
     }),
   )
 
-  const closeDialog = useCallback(() => setOpen(false), [])
-  const onOpenChange = useCallback((open: boolean) => {
-    setOpen(open)
-  }, [])
-
   return (
-    <Dialog {...props} open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create transaction</DialogTitle>
-          <DialogDescription>
-            Enter the details of the transaction
-          </DialogDescription>
-        </DialogHeader>
-
-        <TransactionForm
-          id={formId}
-          ref={formRef}
-          onSubmit={createTransaction.mutate}
-        />
-
-        <DialogFooter>
+    <DialogDrawer
+      open={open}
+      onOpenChange={setOpen}
+      title="Create transaction"
+      description="Enter the details of the transaction"
+      trigger={trigger}
+      footer={
+        <>
           <div className="mr-auto flex items-center gap-2">
             <Checkbox
               id={checkboxId}
@@ -102,17 +72,24 @@ export function CreateTransactionDialog({
             <label htmlFor={checkboxId}>Create another</label>
           </div>
 
-          <Button variant="outline" onClick={closeDialog}>
-            Cancel
-          </Button>
+          <DialogDrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogDrawerClose>
           <ProgressButton
             form={formId}
             type="submit"
             isLoading={createTransaction.isPending}>
             Create
           </ProgressButton>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }>
+      <div className="overflow-y-auto">
+        <TransactionForm
+          id={formId}
+          ref={formRef}
+          onSubmit={createTransaction.mutate}
+        />
+      </div>
+    </DialogDrawer>
   )
 }

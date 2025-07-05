@@ -30,6 +30,8 @@ const DEFAULT_VALUES = {
   bankAccountId: null,
   categoryId: null,
   type: 'EXPENSE',
+  fromBankAccountId: null,
+  toBankAccountId: null,
 } as const satisfies z.infer<typeof TransactionFormSchema>
 
 function TransactionForm({

@@ -2,26 +2,11 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import {
-  useCallback,
-  useId,
-  useRef,
-  useState,
-  type ComponentProps,
-  type ReactNode,
-} from 'react'
+import { useId, useRef, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '~/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '~/components/ui/dialog'
+import { DialogDrawer, DialogDrawerClose } from '~/components/ui/dialog-drawer'
 import { ProgressButton } from '~/components/ui/progress-button'
 import { api } from '~/rpc/client'
 import type { BankAccount } from '../types'
@@ -30,7 +15,7 @@ import {
   type BankAccountFormHandle,
 } from './bank-account-form'
 
-interface UpdateBankAccountDialogProps extends ComponentProps<typeof Dialog> {
+interface UpdateBankAccountDialogProps {
   bankAccount: BankAccount
   refreshOnSuccess?: boolean
   trigger: ReactNode
@@ -40,7 +25,6 @@ export function UpdateBankAccountDialog({
   bankAccount,
   refreshOnSuccess,
   trigger,
-  ...props
 }: UpdateBankAccountDialogProps) {
   const formRef = useRef<BankAccountFormHandle>(null)
   const formId = useId()
@@ -71,43 +55,34 @@ export function UpdateBankAccountDialog({
     }),
   )
 
-  const closeDialog = useCallback(() => setOpen(false), [])
-  const onOpenChange = useCallback((open: boolean) => {
-    setOpen(open)
-  }, [])
-
   return (
-    <Dialog {...props} open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Update Bank account - {bankAccount.name}</DialogTitle>
-          <DialogDescription>
-            Enter the new details of the bank account
-          </DialogDescription>
-        </DialogHeader>
-
-        <BankAccountForm
-          id={formId}
-          ref={formRef}
-          defaultValues={bankAccount}
-          onSubmit={(data) =>
-            updateBankAccount.mutate({ ...data, id: bankAccount.id })
-          }
-        />
-
-        <DialogFooter>
-          <Button variant="outline" onClick={closeDialog}>
-            Cancel
-          </Button>
+    <DialogDrawer
+      open={open}
+      onOpenChange={setOpen}
+      title={`Update Bank account - ${bankAccount.name}`}
+      description="Enter the new details of the bank account"
+      trigger={trigger}
+      footer={
+        <>
+          <DialogDrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogDrawerClose>
           <ProgressButton
             form={formId}
             type="submit"
             isLoading={updateBankAccount.isPending}>
             Update
           </ProgressButton>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }>
+      <BankAccountForm
+        id={formId}
+        ref={formRef}
+        defaultValues={bankAccount}
+        onSubmit={(data) =>
+          updateBankAccount.mutate({ ...data, id: bankAccount.id })
+        }
+      />
+    </DialogDrawer>
   )
 }

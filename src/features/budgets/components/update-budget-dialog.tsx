@@ -2,32 +2,17 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import {
-  useCallback,
-  useId,
-  useRef,
-  useState,
-  type ComponentProps,
-  type ReactNode,
-} from 'react'
+import { useId, useRef, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '~/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '~/components/ui/dialog'
+import { DialogDrawer, DialogDrawerClose } from '~/components/ui/dialog-drawer'
 import { ProgressButton } from '~/components/ui/progress-button'
 import { api } from '~/rpc/client'
 import type { Budget } from '../types'
 import { BudgetForm, type BudgetFormHandle } from './budget-form'
 
-interface UpdateBudgetDialogProps extends ComponentProps<typeof Dialog> {
+interface UpdateBudgetDialogProps {
   budget: Pick<Budget, 'id' | 'categoryId' | 'amount'>
   refreshOnSuccess?: boolean
   trigger: ReactNode
@@ -37,7 +22,6 @@ export function UpdateBudgetDialog({
   budget,
   refreshOnSuccess,
   trigger,
-  ...props
 }: UpdateBudgetDialogProps) {
   const formRef = useRef<BudgetFormHandle>(null)
   const formId = useId()
@@ -66,41 +50,32 @@ export function UpdateBudgetDialog({
     }),
   )
 
-  const closeDialog = useCallback(() => setOpen(false), [])
-  const onOpenChange = useCallback((open: boolean) => {
-    setOpen(open)
-  }, [])
-
   return (
-    <Dialog {...props} open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Update Budget</DialogTitle>
-          <DialogDescription>
-            Enter the new details of the budget
-          </DialogDescription>
-        </DialogHeader>
-
-        <BudgetForm
-          id={formId}
-          ref={formRef}
-          defaultValues={budget}
-          onSubmit={(data) => updateBudget.mutate({ ...data, id: budget.id })}
-        />
-
-        <DialogFooter>
-          <Button variant="outline" onClick={closeDialog}>
-            Cancel
-          </Button>
+    <DialogDrawer
+      open={open}
+      onOpenChange={setOpen}
+      title="Update budget"
+      description="Enter the new details of the budget"
+      trigger={trigger}
+      footer={
+        <>
+          <DialogDrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogDrawerClose>
           <ProgressButton
             form={formId}
             type="submit"
             isLoading={updateBudget.isPending}>
             Update
           </ProgressButton>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }>
+      <BudgetForm
+        id={formId}
+        ref={formRef}
+        defaultValues={budget}
+        onSubmit={(data) => updateBudget.mutate({ ...data, id: budget.id })}
+      />
+    </DialogDrawer>
   )
 }

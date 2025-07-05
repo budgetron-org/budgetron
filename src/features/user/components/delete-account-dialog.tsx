@@ -1,21 +1,12 @@
 'use client'
 
-import { IconAlertCircle } from '@tabler/icons-react'
 import { useMutation } from '@tanstack/react-query'
 import { useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import type { z } from 'zod/v4'
 
 import { Button } from '~/components/ui/button'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '~/components/ui/dialog'
+import { DialogDrawer, DialogDrawerClose } from '~/components/ui/dialog-drawer'
 import { ProgressButton } from '~/components/ui/progress-button'
 import { useAppForm } from '~/hooks/use-app-form'
 import { api } from '~/rpc/client'
@@ -60,23 +51,41 @@ function DeleteAccountDialog({
   )
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="px-0">
-        <DialogHeader className="px-6">
-          <DialogTitle className="flex items-center gap-2">
-            <IconAlertCircle />
-            Delete Personal Account
-          </DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col gap-2 px-6">
+    <DialogDrawer
+      open={open}
+      onOpenChange={setOpen}
+      title="Delete Account"
+      trigger={trigger}
+      footer={
+        <>
+          <DialogDrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogDrawerClose>
+          <ProgressButton
+            isLoading={deleteAccount.isPending}
+            onClick={() => {
+              // If this account has email-password, perform API call through form
+              if (hasEmailPasswordAccount) {
+                form.handleSubmit()
+                return
+              }
+              // otherwise, simply invoke deletion API directly.
+              deleteAccount.mutate({})
+            }}
+            variant="destructive">
+            Request Deletion
+          </ProgressButton>
+        </>
+      }>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           We will delete all your personal data, along with all the
           transactions, budgets, and accounts associated with your account.
           <div className="bg-destructive/20 rounded-md p-2 text-red-600">
             This action is irreversible. Please proceed with caution.
           </div>
         </div>
-        <div className="flex flex-col gap-2 border-y p-6">
+        <div className="flex flex-col gap-2 border-y py-6">
           {hasEmailPasswordAccount && (
             <form.AppForm>
               <form.AppField name="password">
@@ -102,27 +111,8 @@ function DeleteAccountDialog({
             </form.AppField>
           </form.AppForm>
         </div>
-        <DialogFooter className="px-6">
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
-          <ProgressButton
-            isLoading={deleteAccount.isPending}
-            onClick={() => {
-              // If this account has email-password, perform API call through form
-              if (hasEmailPasswordAccount) {
-                form.handleSubmit()
-                return
-              }
-              // otherwise, simply invoke deletion API directly.
-              deleteAccount.mutate({})
-            }}
-            variant="destructive">
-            Request Deletion
-          </ProgressButton>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </DialogDrawer>
   )
 }
 

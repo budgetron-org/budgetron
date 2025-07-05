@@ -2,26 +2,11 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import {
-  useCallback,
-  useId,
-  useRef,
-  useState,
-  type ComponentProps,
-  type ReactNode,
-} from 'react'
+import { useId, useRef, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '~/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '~/components/ui/dialog'
+import { DialogDrawer, DialogDrawerClose } from '~/components/ui/dialog-drawer'
 import { ProgressButton } from '~/components/ui/progress-button'
 import {
   TransactionForm,
@@ -30,7 +15,7 @@ import {
 import { api } from '~/rpc/client'
 import type { Transaction } from '../types'
 
-interface UpdateTransactionDialogProps extends ComponentProps<typeof Dialog> {
+interface UpdateTransactionDialogProps {
   transaction: Transaction
   refreshOnSuccess?: boolean
   trigger: ReactNode
@@ -40,7 +25,6 @@ export function UpdateTransactionDialog({
   refreshOnSuccess,
   transaction,
   trigger,
-  ...props
 }: UpdateTransactionDialogProps) {
   const formRef = useRef<TransactionFormHandle>(null)
   const formId = useId()
@@ -76,22 +60,27 @@ export function UpdateTransactionDialog({
     }),
   )
 
-  const closeDialog = useCallback(() => setOpen(false), [])
-  const onOpenChange = useCallback((open: boolean) => {
-    setOpen(open)
-  }, [])
-
   return (
-    <Dialog {...props} open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Update transaction</DialogTitle>
-          <DialogDescription>
-            Enter the new details of the transaction
-          </DialogDescription>
-        </DialogHeader>
-
+    <DialogDrawer
+      open={open}
+      onOpenChange={setOpen}
+      title="Update transaction"
+      description="Enter the new details of the transaction"
+      trigger={trigger}
+      footer={
+        <>
+          <DialogDrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogDrawerClose>
+          <ProgressButton
+            form={formId}
+            type="submit"
+            isLoading={updateTransaction.isPending}>
+            Update
+          </ProgressButton>
+        </>
+      }>
+      <div className="overflow-y-auto">
         <TransactionForm
           id={formId}
           ref={formRef}
@@ -100,19 +89,7 @@ export function UpdateTransactionDialog({
             updateTransaction.mutate({ ...data, id: transaction.id })
           }
         />
-
-        <DialogFooter>
-          <Button variant="outline" onClick={closeDialog}>
-            Cancel
-          </Button>
-          <ProgressButton
-            form={formId}
-            type="submit"
-            isLoading={updateTransaction.isPending}>
-            Update
-          </ProgressButton>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </DialogDrawer>
   )
 }

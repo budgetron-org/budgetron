@@ -47,6 +47,8 @@ const TransactionFormSchema = CreateTransactionSchema.pick({
   date: true,
   description: true,
   type: true,
+  fromBankAccountId: true,
+  toBankAccountId: true,
 })
   .extend({
     amount: CreateTransactionSchema.shape.amount.nonempty(),
