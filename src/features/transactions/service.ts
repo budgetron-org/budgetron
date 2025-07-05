@@ -241,17 +241,7 @@ async function updateTransaction(
 ) {
   const [transaction] = await db
     .update(TransactionTable)
-    .set({
-      amount: data.amount,
-      bankAccountId: data.bankAccountId,
-      categoryId: data.categoryId,
-      currency: data.currency,
-      date: data.date,
-      description: data.description,
-      notes: data.notes,
-      tags: data.tags,
-      type: data.type,
-    })
+    .set(data)
     .where(
       and(
         eq(TransactionTable.id, data.id),
