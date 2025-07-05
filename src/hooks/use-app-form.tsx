@@ -9,7 +9,9 @@ import { CheckboxField } from '~/components/form/checkbox-field'
 import { DateField } from '~/components/form/date-field'
 import { FileField } from '~/components/form/file-field'
 import { SelectField } from '~/components/form/select-field'
+import { TagsInputField } from '~/components/form/tags-input-field'
 import { TextField } from '~/components/form/text-field'
+import { TextareaField } from '~/components/form/textarea-field'
 import { ProgressButton } from '~/components/ui/progress-button'
 import { cn } from '~/lib/utils'
 import { api } from '~/rpc/client'
@@ -113,9 +115,21 @@ const { useAppForm } = createFormHook({
       const field = useFieldContext<string | undefined>()
       return <SelectField {...props} field={field} />
     },
+    TagsInputField: (
+      props: Omit<ComponentProps<typeof TagsInputField>, 'field'>,
+    ) => {
+      const field = useFieldContext<string[]>()
+      return <TagsInputField {...props} field={field} />
+    },
     TextField: (props: Omit<ComponentProps<typeof TextField>, 'field'>) => {
       const field = useFieldContext<string>()
       return <TextField {...props} field={field} />
+    },
+    TextareaField: (
+      props: Omit<ComponentProps<typeof TextareaField>, 'field'>,
+    ) => {
+      const field = useFieldContext<string>()
+      return <TextareaField {...props} field={field} />
     },
     TransactionTypeField: (
       props: Omit<ComponentProps<typeof SelectField>, 'data' | 'field'>,

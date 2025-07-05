@@ -32,6 +32,8 @@ const DEFAULT_VALUES = {
   type: 'EXPENSE',
   fromBankAccountId: null,
   toBankAccountId: null,
+  notes: '',
+  tags: [],
 } as const satisfies z.infer<typeof TransactionFormSchema>
 
 function TransactionForm({
@@ -64,23 +66,29 @@ function TransactionForm({
   return (
     <form
       {...props}
-      className={cn('grid grid-cols-1 gap-4 md:grid-cols-2', className)}
+      className={cn('grid grid-cols-1 gap-4 md:grid-cols-6', className)}
       onSubmit={(e) => {
         e.preventDefault()
         form.handleSubmit()
       }}>
       <form.AppField name="description">
         {(field) => (
-          <field.TextField label="Description" className="md:col-span-2" />
+          <field.TextField label="Description" className="md:col-span-6" />
         )}
       </form.AppField>
 
       <form.AppField name="amount">
-        {(field) => <field.TextField label="Amount" type="number" />}
+        {(field) => (
+          <field.TextField
+            label="Amount"
+            type="number"
+            className="md:col-span-2"
+          />
+        )}
       </form.AppField>
 
       <form.AppField name="date">
-        {(field) => <field.DateField label="Date" />}
+        {(field) => <field.DateField label="Date" className="md:col-span-2" />}
       </form.AppField>
 
       <form.AppField
@@ -91,20 +99,47 @@ function TransactionForm({
             fieldApi.form.setFieldValue('categoryId', null)
           },
         }}>
-        {(field) => <field.TransactionTypeField label="Type" />}
+        {(field) => (
+          <field.TransactionTypeField label="Type" className="md:col-span-2" />
+        )}
       </form.AppField>
 
       <form.Subscribe selector={(state) => state.values.type}>
         {(type) => (
-          <form.AppField name="categoryId">
-            {(field) => (
-              <field.CategoryField
-                label="Category"
-                placeholder="Select a category"
-                type={type}
-              />
+          <>
+            {type === 'TRANSFER' && (
+              <>
+                <form.AppField name="fromBankAccountId">
+                  {(field) => (
+                    <field.BankAccountField
+                      label="From Account"
+                      className="md:col-span-3"
+                      placeholder="Select an account"
+                    />
+                  )}
+                </form.AppField>
+                <form.AppField name="toBankAccountId">
+                  {(field) => (
+                    <field.BankAccountField
+                      label="To Account"
+                      className="md:col-span-3"
+                      placeholder="Select an account"
+                    />
+                  )}
+                </form.AppField>
+              </>
             )}
-          </form.AppField>
+            <form.AppField name="categoryId">
+              {(field) => (
+                <field.CategoryField
+                  label="Category"
+                  className="md:col-span-3"
+                  placeholder="Select a category"
+                  type={type}
+                />
+              )}
+            </form.AppField>
+          </>
         )}
       </form.Subscribe>
 
@@ -112,8 +147,21 @@ function TransactionForm({
         {(field) => (
           <field.BankAccountField
             label="Account"
+            className="md:col-span-3"
             placeholder="Select an account"
           />
+        )}
+      </form.AppField>
+
+      <form.AppField name="notes">
+        {(field) => (
+          <field.TextareaField label="Notes" className="md:col-span-6" />
+        )}
+      </form.AppField>
+
+      <form.AppField name="tags">
+        {(field) => (
+          <field.TagsInputField label="Tags" className="md:col-span-6" />
         )}
       </form.AppField>
     </form>

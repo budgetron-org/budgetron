@@ -63,7 +63,7 @@ async function parseTransactions({
       category: null,
       categoryId: null,
       notes: null,
-      tags: null,
+      tags: [],
       id: randomUUID(),
       userId: bankAccount.userId,
       createdAt: new Date(),

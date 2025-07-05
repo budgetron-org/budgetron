@@ -87,7 +87,7 @@ export function CreateTransactionDialog({
         <TransactionForm
           id={formId}
           ref={formRef}
-          onSubmit={createTransaction.mutate}
+          onSubmit={(value) => createTransaction.mutate(value)}
         />
       </div>
     </DialogDrawer>

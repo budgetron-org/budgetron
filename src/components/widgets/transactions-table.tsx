@@ -24,6 +24,7 @@ import type { TransactionWithRelations } from '~/features/transactions/types'
 import { getCurrencyFormatter } from '~/lib/format'
 import { cn } from '~/lib/utils'
 import { getColumns, type ColumnId } from './transactions-table-columns'
+import { DeleteSelectedTransactionsDialog } from '~/features/transactions/components/delete-selected-transactions-dialog'
 
 interface TransactionsTableProps {
   className?: string
@@ -32,6 +33,7 @@ interface TransactionsTableProps {
   defaultEditable?: TableMeta<TransactionWithRelations>['editable']
   hasEditAction?: boolean
   hasDeleteAction?: boolean
+  hasBulkDeleteAction?: boolean
   isLoading?: boolean
   onDataUpdate?: (data: TransactionWithRelations[]) => void
   showFilters?: boolean
@@ -43,6 +45,7 @@ function TransactionsTable({
   defaultColumnVisibility,
   hasEditAction = true,
   hasDeleteAction = true,
+  hasBulkDeleteAction = true,
   defaultEditable,
   isLoading,
   onDataUpdate,
@@ -274,8 +277,25 @@ function TransactionsTable({
             onClick={() => table.resetColumnFilters()}>
             Reset Filters
           </Button>
+          {hasBulkDeleteAction && (
+            <DeleteSelectedTransactionsDialog
+              transactions={table
+                .getSelectedRowModel()
+                .rows.map((row) => row.original)}
+              refreshOnSuccess
+              trigger={
+                <Button
+                  className="self-end"
+                  variant="destructive"
+                  disabled={table.getSelectedRowModel().rows.length === 0}>
+                  Delete Selected
+                </Button>
+              }
+            />
+          )}
         </div>
       )}
+
       <DataTable
         className={cn(className, 'min-h-0 flex-1')}
         isLoading={isLoading}

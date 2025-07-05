@@ -56,6 +56,7 @@ async function BudgetPageImpl({ budgetId }: { budgetId: string }) {
                 actions: false,
                 select: false,
               }}
+              hasBulkDeleteAction={false}
             />
           </div>
         </div>

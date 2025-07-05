@@ -1,4 +1,15 @@
-import { and, desc, eq, gte, isNull, lte, not, or, sql } from 'drizzle-orm'
+import {
+  and,
+  desc,
+  eq,
+  gte,
+  inArray,
+  isNull,
+  lte,
+  not,
+  or,
+  sql,
+} from 'drizzle-orm'
 import { toSnakeCase } from 'drizzle-orm/casing'
 
 import { db } from '~/server/db'
@@ -200,6 +211,30 @@ async function deleteTransaction(
   return deleted
 }
 
+type DeleteManyTransactionsParams = {
+  ids: (typeof TransactionTable.$inferSelect)['id'][]
+  userId: (typeof TransactionTable.$inferSelect)['userId']
+}
+async function deleteManyTransactions({
+  ids,
+  userId,
+}: DeleteManyTransactionsParams) {
+  const deleted = await db
+    .delete(TransactionTable)
+    .where(
+      and(
+        inArray(TransactionTable.id, ids),
+        eq(TransactionTable.userId, userId),
+      ),
+    )
+    .returning()
+  if (deleted.length === 0 && ids.length > 0)
+    throw new Error('Error deleting transactions')
+  if (deleted.length !== ids.length)
+    throw new Error('Error deleting some transactions')
+  return deleted
+}
+
 async function updateTransaction(
   data: Partial<Omit<typeof TransactionTable.$inferInsert, 'id' | 'userId'>> &
     Pick<typeof TransactionTable.$inferSelect, 'id' | 'userId'>,
@@ -229,6 +264,7 @@ async function updateTransaction(
 }
 
 export {
+  deleteManyTransactions,
   deleteTransaction,
   insertManyTransactions,
   insertTransaction,

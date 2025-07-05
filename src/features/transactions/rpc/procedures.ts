@@ -1,6 +1,7 @@
 import { createRPCErrorFromUnknownError } from '~/rpc/utils'
 import { protectedProcedure } from '~/server/api/rpc'
 import {
+  deleteManyTransactions,
   deleteTransaction,
   insertManyTransactions,
   insertTransaction,
@@ -10,7 +11,8 @@ import {
 } from '../service'
 import {
   CreateManyTransactionsInputSchema,
-  CreateTransactionSchema,
+  CreateTransactionInputSchema,
+  DeleteManyTransactionsInputSchema,
   DeleteTransactionInputSchema,
   GetByCategoryInputSchema,
   GetByDateRangeInputSchema,
@@ -19,7 +21,7 @@ import {
 } from '../validators'
 
 const create = protectedProcedure
-  .input(CreateTransactionSchema)
+  .input(CreateTransactionInputSchema)
   .handler(async ({ context, input }) => {
     const session = context.session
 
@@ -37,6 +39,8 @@ const create = protectedProcedure
         groupId: input.groupId,
         type: input.type,
         userId: session.user.id,
+        notes: input.notes,
+        tags: input.tags,
       })
       return transaction
     } catch (error) {
@@ -67,6 +71,22 @@ const _delete = protectedProcedure
     try {
       const bankAccount = await deleteTransaction({
         id: input.id,
+        userId: session.user.id,
+      })
+      return bankAccount
+    } catch (error) {
+      throw createRPCErrorFromUnknownError(error)
+    }
+  })
+
+const deleteMany = protectedProcedure
+  .input(DeleteManyTransactionsInputSchema)
+  .handler(async ({ context, input }) => {
+    const session = context.session
+
+    try {
+      const bankAccount = await deleteManyTransactions({
+        ids: input.map((t) => t.id),
         userId: session.user.id,
       })
       return bankAccount
@@ -151,6 +171,7 @@ export {
   _delete,
   create,
   createMany,
+  deleteMany,
   getByCategory,
   getByDateRange,
   parseOFX,

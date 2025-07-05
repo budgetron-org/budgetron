@@ -3,7 +3,7 @@ import { z } from 'zod/v4'
 
 import { TransactionTable } from '~/server/db/schema'
 
-const CreateTransactionSchema = createInsertSchema(TransactionTable)
+const CreateTransactionInputSchema = createInsertSchema(TransactionTable)
   .omit({
     id: true,
     createdAt: true,
@@ -11,20 +11,6 @@ const CreateTransactionSchema = createInsertSchema(TransactionTable)
     userId: true,
   })
   .check((ctx) => {
-    console.log('VALIDATING')
-    if (
-      ctx.value.type === 'TRANSFER' &&
-      (ctx.value.fromBankAccountId == null || ctx.value.toBankAccountId == null)
-    ) {
-      ctx.issues.push({
-        code: 'custom',
-        input: ctx.value,
-        message:
-          'From and to bank accounts are required for transfer transactions',
-        path: ['fromBankAccountId', 'toBankAccountId'],
-      })
-    }
-
     if (
       ctx.value.type !== 'TRANSFER' &&
       (ctx.value.fromBankAccountId != null || ctx.value.toBankAccountId != null)
@@ -33,13 +19,13 @@ const CreateTransactionSchema = createInsertSchema(TransactionTable)
         code: 'custom',
         input: ctx.value,
         message:
-          'From and to bank accounts are not allowed for non expense/income transactions',
+          'From and to bank accounts are allowed only for transfer transactions',
         path: ['fromBankAccountId', 'toBankAccountId'],
       })
     }
   })
 
-const TransactionFormSchema = CreateTransactionSchema.pick({
+const TransactionFormSchema = CreateTransactionInputSchema.pick({
   amount: true,
   bankAccountId: true,
   categoryId: true,
@@ -49,9 +35,11 @@ const TransactionFormSchema = CreateTransactionSchema.pick({
   type: true,
   fromBankAccountId: true,
   toBankAccountId: true,
+  notes: true,
+  tags: true,
 })
   .extend({
-    amount: CreateTransactionSchema.shape.amount.nonempty(),
+    amount: CreateTransactionInputSchema.shape.amount.nonempty(),
   })
   .required()
 
@@ -77,7 +65,7 @@ const UploadOFXFormSchema = ParseOFXInputSchema.pick({
 })
 
 const CreateManyTransactionsInputSchema = z
-  .array(CreateTransactionSchema)
+  .array(CreateTransactionInputSchema)
   .nonempty()
 
 const GetByDateRangeInputSchema = z.object({
@@ -103,9 +91,17 @@ const DeleteTransactionInputSchema = UpdateTransactionSchema.pick({
   id: true,
 }).required()
 
+const DeleteManyTransactionsInputSchema = UpdateTransactionSchema.pick({
+  id: true,
+})
+  .required()
+  .array()
+  .min(1)
+
 export {
   CreateManyTransactionsInputSchema,
-  CreateTransactionSchema,
+  CreateTransactionInputSchema,
+  DeleteManyTransactionsInputSchema,
   DeleteTransactionInputSchema,
   GetByCategoryInputSchema,
   GetByDateRangeInputSchema,

@@ -143,6 +143,7 @@ function UploadTransactionsWizard({
                   }}
                   onDataUpdate={setTransactionsToUpload}
                   hasEditAction={false}
+                  hasBulkDeleteAction={false}
                   showFilters={false}
                 />
               ),

@@ -2,6 +2,7 @@ import {
   _delete,
   create,
   createMany,
+  deleteMany,
   getByCategory,
   getByDateRange,
   parseOFX,
@@ -11,6 +12,7 @@ import {
 const transactionsRouter = {
   create,
   createMany,
+  deleteMany,
   getByCategory,
   getByDateRange,
   parseOFX,

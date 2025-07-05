@@ -9,23 +9,23 @@ import { AlertActionButton } from '~/components/ui/alert-action-button'
 import { api } from '~/rpc/client'
 import type { Transaction } from '../types'
 
-interface DeleteTransactionDialogProps
+interface DeleteSelectedTransactionsDialogProps
   extends ComponentProps<typeof AlertActionButton> {
-  transaction: Transaction
+  transactions: Transaction[]
   refreshOnSuccess?: boolean
   trigger: ReactNode
 }
 
-function DeleteTransactionDialog({
-  transaction,
+function DeleteSelectedTransactionsDialog({
+  transactions,
   refreshOnSuccess,
   trigger,
   ...props
-}: DeleteTransactionDialogProps) {
+}: DeleteSelectedTransactionsDialogProps) {
   const queryClient = useQueryClient()
   const router = useRouter()
-  const deleteTransaction = useMutation(
-    api.transactions.delete.mutationOptions({
+  const deleteTransactions = useMutation(
+    api.transactions.deleteMany.mutationOptions({
       async onSuccess() {
         // invalidate transaction and analytics queries
         await Promise.all([
@@ -36,12 +36,14 @@ function DeleteTransactionDialog({
             queryKey: api.analytics.key(),
           }),
         ])
-        toast.success(`Deleted Transaction - ${transaction.description}`)
+        toast.success(
+          `Deleted ${transactions.length} Transaction${transactions.length === 1 ? ` - ${transactions[0]!.description}` : 's'}`,
+        )
         // refresh page if needed
         if (refreshOnSuccess) router.refresh()
       },
       onError(error) {
-        toast.error(`Error deleting Transaction - ${transaction.description}`, {
+        toast.error(`Error deleting Transactions`, {
           description: error.message,
         })
       },
@@ -49,9 +51,11 @@ function DeleteTransactionDialog({
   )
   return (
     <AlertActionButton
-      alertTitle="Delete Transaction"
-      alertDescription={`This will permanently delete the transaction "${transaction.description}". This cannot be undone!`}
-      onConfirm={() => deleteTransaction.mutate({ id: transaction.id })}
+      alertTitle="Delete Transactions"
+      alertDescription={`This will permanently delete the ${transactions.length} selected transaction${transactions.length === 1 ? '' : 's'}. This cannot be undone!`}
+      onConfirm={() =>
+        deleteTransactions.mutate(transactions.map((t) => ({ id: t.id })))
+      }
       {...props}
       asChild>
       {trigger}
@@ -59,4 +63,4 @@ function DeleteTransactionDialog({
   )
 }
 
-export { DeleteTransactionDialog }
+export { DeleteSelectedTransactionsDialog }
