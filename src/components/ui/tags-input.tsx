@@ -31,6 +31,7 @@ const SPLITTER_REGEX = /[\n#?=&\t,./-]+/
 const FORMATTING_REGEX = /^[^a-zA-Z0-9]*|[^a-zA-Z0-9]*$/g
 
 interface TagsInputProps extends HTMLAttributes<HTMLDivElement> {
+  name?: string
   value: string[]
   onValueChange: (value: string[]) => void
   placeholder?: string
@@ -53,6 +54,7 @@ const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(
   (
     {
       children,
+      name,
       value,
       onValueChange,
       placeholder,
@@ -253,9 +255,10 @@ const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(
           ref={ref}
           dir={dir}
           className={cn(
-            'bg-background ring-muted flex flex-wrap items-center gap-1 overflow-hidden rounded-lg p-1 ring-1',
+            'border-input flex flex-wrap items-center gap-1 overflow-hidden rounded-md border bg-transparent p-1 shadow-xs transition-[color,box-shadow]',
             {
-              'focus-within:ring-ring': activeIndex === -1,
+              'focus-within:ring-ring focus-within:ring-1 focus-within:outline-none':
+                activeIndex === -1,
             },
             className,
           )}>
@@ -286,6 +289,7 @@ const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(
           <Input
             tabIndex={0}
             aria-label="input tag"
+            name={name}
             disabled={isInputDisabled}
             onKeyDown={handleKeyDown}
             onPaste={handlePaste}
@@ -295,7 +299,7 @@ const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(
             placeholder={placeholder}
             onClick={() => setActiveIndex(-1)}
             className={cn(
-              'placeholder:text-muted-foreground h-7 min-w-fit flex-1 border-none px-1 outline-0 focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-0',
+              'placeholder:text-muted-foreground h-7 min-w-fit flex-1 border-none px-1 shadow-none outline-0 focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-0',
               activeIndex !== -1 && 'caret-transparent',
             )}
           />
