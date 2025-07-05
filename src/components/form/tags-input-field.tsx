@@ -11,7 +11,7 @@ interface TagsInputFieldProps
     'id' | 'name' | 'value' | 'onBlur' | 'onValueChange'
   > {
   badge?: ReactNode
-  field: FieldApi<string[]>
+  field: FieldApi<string[] | null>
   label: string
 }
 
@@ -43,7 +43,7 @@ function TagsInputField({
         aria-invalid={hasError}
         aria-describedby={badge ? `badge-${id}` : undefined}
         className={hasError ? 'border-destructive' : ''}
-        value={field.state.value}
+        value={field.state.value ?? []}
         onBlur={() => field.handleBlur()}
         onValueChange={(value) => field.handleChange(value)}
       />

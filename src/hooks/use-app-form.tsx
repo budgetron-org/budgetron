@@ -118,7 +118,7 @@ const { useAppForm } = createFormHook({
     TagsInputField: (
       props: Omit<ComponentProps<typeof TagsInputField>, 'field'>,
     ) => {
-      const field = useFieldContext<string[]>()
+      const field = useFieldContext<string[] | null>()
       return <TagsInputField {...props} field={field} />
     },
     TextField: (props: Omit<ComponentProps<typeof TextField>, 'field'>) => {
