@@ -15,7 +15,9 @@ const chartConfig = {
 } satisfies ChartConfig
 
 // TODO: get currency from user settings
-const currencyFormatter = getCurrencyFormatter('USD')
+const currencyFormatter = getCurrencyFormatter('USD', {
+  maximumFractionDigits: 0,
+})
 
 interface BudgetSpendChartProps {
   budget: BudgetDetails['budgetSummary']

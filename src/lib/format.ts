@@ -9,9 +9,16 @@ function getLocaleFromCurrency(currency: Currency) {
   return CURRENCIES.find((item) => item.code === currency)?.locale
 }
 
-function getCurrencyFormatter(currency: Currency) {
+function getCurrencyFormatter(
+  currency: Currency,
+  options?: Omit<Intl.NumberFormatOptions, 'style' | 'currency'>,
+) {
   const locale = getLocaleFromCurrency(currency)
-  return new Intl.NumberFormat(locale, { style: 'currency', currency })
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    ...options,
+  })
 }
 
 export { getCurrencyFormatter }
