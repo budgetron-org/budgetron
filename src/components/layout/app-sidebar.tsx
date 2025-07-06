@@ -14,7 +14,7 @@ import {
 } from '~/components/ui/sidebar'
 import { BrandLogo } from '~/components/widgets/brand-logo'
 import { PATHS } from '~/data/routes'
-import { redirectToSignIn } from '~/features/auth/server'
+import { redirectToSignIn } from '~/features/auth/utils'
 import { api } from '~/rpc/server'
 
 async function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {

@@ -6,13 +6,13 @@ import { Button } from '~/components/ui/button'
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { TransactionsTable } from '~/components/widgets/transactions-table'
 import { PATHS } from '~/data/routes'
-import { redirectUnauthenticated } from '~/features/auth/server'
+import { requireAuthentication } from '~/features/auth/utils'
 import { BudgetItemSummary } from '~/features/budgets/components/budget-item-summary'
 import { BudgetSpendChart } from '~/features/budgets/components/budget-spend-chart'
 import { api } from '~/rpc/server'
 
 async function BudgetPageImpl({ budgetId }: { budgetId: string }) {
-  await redirectUnauthenticated()
+  await requireAuthentication()
   const budgetDetails = await api.budgets.details({ id: budgetId })
   const title = budgetDetails.budgetSummary.parentCategoryName
     ? `${budgetDetails.budgetSummary.parentCategoryName} / ${budgetDetails.budgetSummary.categoryName}`

@@ -1,9 +1,9 @@
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
-import { redirectUnauthenticated } from '~/features/auth/server'
+import { requireAuthentication } from '~/features/auth/utils'
 import { TransactionsExplorer } from '~/features/transactions/components/transactions-explorer'
 
 async function TransactionsPageImpl() {
-  await redirectUnauthenticated()
+  await requireAuthentication()
 
   return <TransactionsExplorer />
 }

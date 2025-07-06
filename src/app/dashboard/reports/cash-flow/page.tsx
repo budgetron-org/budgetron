@@ -5,10 +5,10 @@ import { Button } from '~/components/ui/button'
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { PATHS } from '~/data/routes'
 import { CashFlowReport } from '~/features/analytics/components/cash-flow-report'
-import { redirectUnauthenticated } from '~/features/auth/server'
+import { requireAuthentication } from '~/features/auth/utils'
 
 async function CashFlowReportsPageImpl() {
-  await redirectUnauthenticated()
+  await requireAuthentication()
 
   return (
     <div className="flex h-full w-full flex-col gap-2">

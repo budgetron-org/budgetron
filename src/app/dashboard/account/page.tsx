@@ -1,7 +1,7 @@
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
 import { env } from '~/env/server'
-import { redirectToSignIn } from '~/features/auth/server'
+import { requireAuthentication } from '~/features/auth/utils'
 import { ProfilePage } from '~/features/user/components/profile-page'
 import { SecurityPage } from '~/features/user/components/security-page'
 import { getSupportedProviders } from '~/lib/utils'
@@ -11,8 +11,7 @@ import type { NextServerPageProps } from '~/types/shared'
 async function AccountPageImpl({
   searchParams,
 }: Pick<NextServerPageProps, 'searchParams'>) {
-  const session = await api.auth.session()
-  if (!session?.user) redirectToSignIn()
+  const session = await requireAuthentication()
   const accounts = await api.user.listAccounts()
   const searchParamsValue = await searchParams
   const view =

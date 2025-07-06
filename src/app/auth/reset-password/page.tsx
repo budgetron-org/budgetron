@@ -1,7 +1,7 @@
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { ResetPasswordExpiredPage } from '~/features/auth/components/reset-password-expired-page'
 import { ResetPasswordForm } from '~/features/auth/components/reset-password-form'
-import { redirectAuthenticated } from '~/features/auth/server'
+import { redirectAuthenticated } from '~/features/auth/utils'
 import type { NextServerPageProps } from '~/types/shared'
 
 async function ResetPasswordPageImpl({

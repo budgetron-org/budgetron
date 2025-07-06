@@ -6,10 +6,10 @@ import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
 import { PATHS } from '~/data/routes'
 import { CategoriesReport } from '~/features/analytics/components/categories-report'
-import { redirectUnauthenticated } from '~/features/auth/server'
+import { requireAuthentication } from '~/features/auth/utils'
 
 async function CategoriesReportsPageImpl() {
-  await redirectUnauthenticated()
+  await requireAuthentication()
 
   return (
     <Tabs defaultValue="spending" className="flex h-full w-full flex-col">

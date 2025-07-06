@@ -5,7 +5,7 @@ import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { PATHS } from '~/data/routes'
 import { AuthHeader } from '~/features/auth/components/auth-header'
 import { ForgotPasswordForm } from '~/features/auth/components/forgot-password-form'
-import { redirectAuthenticated } from '~/features/auth/server'
+import { redirectAuthenticated } from '~/features/auth/utils'
 import { forgotPasswordFeatureFlag } from '~/server/flags'
 
 async function ForgotPasswordPageImpl() {

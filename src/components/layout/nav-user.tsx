@@ -107,7 +107,7 @@ function NavUser({ user }: { user: User }) {
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => router.push(PATHS.ACCOUNT)}>
                 <IconUserCircle />
-                Account
+                Account Settings
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

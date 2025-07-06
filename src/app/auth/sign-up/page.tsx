@@ -5,7 +5,7 @@ import { SignInWithGoogle } from '~/features/auth/components/sign-in-with-google
 import { SignInWithOAuth } from '~/features/auth/components/sign-in-with-oauth'
 import { SignUpForm } from '~/features/auth/components/sign-up-form'
 import { SignUpRestrictedPage } from '~/features/auth/components/sign-up-restricted-page'
-import { redirectAuthenticated } from '~/features/auth/server'
+import { redirectAuthenticated } from '~/features/auth/utils'
 import { isGoogleAuthEnabled, isOAuthAuthEnabled } from '~/lib/utils'
 import { signupFeatureFlag } from '~/server/flags'
 

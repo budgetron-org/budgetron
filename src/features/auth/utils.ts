@@ -6,16 +6,15 @@ function redirectToSignIn(): never {
   redirect(PATHS.SIGN_IN)
 }
 
-async function redirectUnauthenticated() {
+async function requireAuthentication() {
   const session = await api.auth.session()
-
   if (!session?.user) redirectToSignIn()
+  return session
 }
 
 async function redirectAuthenticated() {
   const session = await api.auth.session()
-
   if (session?.user) redirect(PATHS.DASHBOARD)
 }
 
-export { redirectAuthenticated, redirectToSignIn, redirectUnauthenticated }
+export { redirectAuthenticated, redirectToSignIn, requireAuthentication }

@@ -9,11 +9,11 @@ import { connection } from 'next/server'
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
 import { DashboardCashFlowChart } from '~/features/analytics/components/dashboard-cash-flow-chart'
 import { DashboardSummaryCard } from '~/features/analytics/components/dashboard-summary-card'
-import { redirectUnauthenticated } from '~/features/auth/server'
+import { requireAuthentication } from '~/features/auth/utils'
 import { api } from '~/rpc/server'
 
 async function DashboardPageImplNew() {
-  await redirectUnauthenticated()
+  await requireAuthentication()
   await connection()
 
   const { cashFlowSummary, overviewSummary } =

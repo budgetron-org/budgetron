@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from '~/components/ui/card'
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
-import { redirectUnauthenticated } from '~/features/auth/server'
+import { requireAuthentication } from '~/features/auth/utils'
 import { BankAccountItem } from '~/features/bank-accounts/components/bank-account-item'
 import { CreateBankAccountDialog } from '~/features/bank-accounts/components/create-bank-account-dialog'
 import { getCurrencyFormatter } from '~/lib/format'
@@ -19,7 +19,7 @@ import { api } from '~/rpc/server'
 const currencyFormatter = getCurrencyFormatter('USD')
 
 async function BankAccountsPageImpl() {
-  await redirectUnauthenticated()
+  await requireAuthentication()
   const bankAccounts = await api.bankAccounts.getAll()
 
   if (bankAccounts.length === 0) {

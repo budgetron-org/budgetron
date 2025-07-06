@@ -9,13 +9,13 @@ import {
   CardTitle,
 } from '~/components/ui/card'
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
-import { redirectUnauthenticated } from '~/features/auth/server'
+import { requireAuthentication } from '~/features/auth/utils'
 import { BudgetItem } from '~/features/budgets/components/budget-item'
 import { CreateBudgetDialog } from '~/features/budgets/components/create-budget-dialog'
 import { api } from '~/rpc/server'
 
 async function BudgetsPageImpl() {
-  await redirectUnauthenticated()
+  await requireAuthentication()
   const budgets = await api.budgets.summary()
 
   if (budgets.length === 0) {
