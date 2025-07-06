@@ -43,6 +43,13 @@
       "when": 1751773946721,
       "tag": "0005_migrate-currency-to-text",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1751812031947,
+      "tag": "0006_fix-user-settings-table",
+      "breakpoints": true
     }
   ]
 }
