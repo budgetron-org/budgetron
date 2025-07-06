@@ -13,6 +13,7 @@ const BankAccountTable = pgTable(
     name: text().notNull(),
     type: BankAccountTypeEnum().notNull(),
     balance: decimal().notNull().default('0'),
+    currency: text().notNull().default('USD'),
     userId: uuid()
       .references(() => UserTable.id, { onDelete: 'cascade' })
       .notNull(),

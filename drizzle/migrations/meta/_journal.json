@@ -50,6 +50,13 @@
       "when": 1751812031947,
       "tag": "0006_fix-user-settings-table",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1751826633810,
+      "tag": "0007_add-currency-bank-account",
+      "breakpoints": true
     }
   ]
 }
