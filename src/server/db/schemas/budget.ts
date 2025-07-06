@@ -5,7 +5,7 @@ import { createdAt, id, updatedAt } from '../utils'
 import { CategoryTable } from './category'
 import { UserTable } from './user'
 
-export const BudgetTable = pgTable(
+const BudgetTable = pgTable(
   'budgets',
   {
     id,
@@ -24,7 +24,7 @@ export const BudgetTable = pgTable(
   (t) => [unique().on(t.categoryId, t.userId)],
 )
 
-export const BudgetRelations = relations(BudgetTable, ({ one }) => ({
+const BudgetRelations = relations(BudgetTable, ({ one }) => ({
   category: one(CategoryTable, {
     fields: [BudgetTable.categoryId],
     references: [CategoryTable.id],
@@ -34,3 +34,5 @@ export const BudgetRelations = relations(BudgetTable, ({ one }) => ({
     references: [UserTable.id],
   }),
 }))
+
+export { BudgetRelations, BudgetTable }

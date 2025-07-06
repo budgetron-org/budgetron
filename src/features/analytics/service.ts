@@ -7,7 +7,7 @@ import {
   BankAccountTable,
   CategoryTable,
   TransactionTable,
-  type TransactionType,
+  type TransactionTypeEnum,
 } from '~/server/db/schema'
 import type {
   CashFlowReport,
@@ -93,7 +93,7 @@ type GetCategoryReportFilters = {
   from: Date
   to: Date
   limit: number
-  type: TransactionType
+  type: (typeof TransactionTypeEnum.enumValues)[number]
 }
 async function getCategoryReport({
   from,

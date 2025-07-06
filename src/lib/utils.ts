@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from 'clsx'
 import { format, parse } from 'date-fns'
 import { twMerge } from 'tailwind-merge'
 
-import { Currencies, type Currency } from '~/server/db/enums'
+import { CURRENCIES } from '~/data/currencies'
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -16,9 +16,12 @@ function safeParseNumber(mayBeNumber: unknown, fallback: number = 0) {
   return Number.isNaN(numberOrNaN) ? fallback : numberOrNaN
 }
 
-function safeParseCurrency(mayBeCurrency: unknown, fallback: Currency = 'USD') {
-  if (Currencies.includes(mayBeCurrency as Currency))
-    return mayBeCurrency as Currency
+function safeParseCurrency(
+  mayBeCurrency: unknown,
+  fallback: (typeof CURRENCIES)[number]['code'] = 'USD',
+) {
+  if (CURRENCIES.some((item) => item.code === mayBeCurrency))
+    return mayBeCurrency as (typeof CURRENCIES)[number]['code']
   return fallback
 }
 

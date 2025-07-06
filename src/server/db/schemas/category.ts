@@ -7,13 +7,13 @@ import {
   type AnyPgColumn,
 } from 'drizzle-orm/pg-core'
 
-import { TransactionTypeEnum } from '../enums'
 import { createdAt, id, updatedAt } from '../utils'
+import { TransactionTypeEnum } from './enums'
 import { GroupTable } from './group'
 import { TransactionTable } from './transaction'
 import { UserTable } from './user'
 
-export const CategoryTable = pgTable(
+const CategoryTable = pgTable(
   'categories',
   {
     id,
@@ -33,7 +33,7 @@ export const CategoryTable = pgTable(
   (t) => [unique().on(t.groupId, t.name, t.type, t.userId)],
 )
 
-export const CategoryRelations = relations(CategoryTable, ({ one, many }) => ({
+const CategoryRelations = relations(CategoryTable, ({ one, many }) => ({
   parent: one(CategoryTable, {
     fields: [CategoryTable.parentId],
     references: [CategoryTable.id],
@@ -48,3 +48,5 @@ export const CategoryRelations = relations(CategoryTable, ({ one, many }) => ({
     references: [UserTable.id],
   }),
 }))
+
+export { CategoryRelations, CategoryTable }

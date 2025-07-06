@@ -36,6 +36,13 @@
       "when": 1751647133844,
       "tag": "0004_add-investment-account-type",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1751773946721,
+      "tag": "0005_migrate-currency-to-text",
+      "breakpoints": true
     }
   ]
 }

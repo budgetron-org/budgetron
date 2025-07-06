@@ -1,9 +1,9 @@
 import { z } from 'zod/v4'
-import { TransactionTypes } from '~/server/db/enums'
+import { TransactionTypeEnum } from '~/server/db/schema'
 
 const GetAllCategoriesInputSchema = z.object({
   groupId: z.string().optional(),
-  type: z.enum(TransactionTypes).optional(),
+  type: z.enum(TransactionTypeEnum.enumValues).optional(),
 })
 
 const GetAllSubCategoriesInputSchema = GetAllCategoriesInputSchema.extend({})

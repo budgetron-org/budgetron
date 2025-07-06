@@ -1,17 +1,17 @@
 import { relations } from 'drizzle-orm'
 import { boolean, pgTable, text } from 'drizzle-orm/pg-core'
 
-import { UserRoleEnum } from '../enums'
 import { createdAt, id, updatedAt } from '../utils'
 import { BankAccountTable } from './bank-account'
 import { BudgetTable } from './budget'
 import { CategoryTable } from './category'
+import { UserRoleEnum } from './enums'
 import { GroupTable } from './group'
 import { GroupUserTable } from './group-user'
 import { TransactionTable } from './transaction'
 import { UserSettingsTable } from './user-settings'
 
-export const UserTable = pgTable('users', {
+const UserTable = pgTable('users', {
   id,
   name: text().notNull(),
   email: text().notNull().unique(),
@@ -22,7 +22,7 @@ export const UserTable = pgTable('users', {
   updatedAt,
 })
 
-export const UserRelations = relations(UserTable, ({ one, many }) => ({
+const UserRelations = relations(UserTable, ({ one, many }) => ({
   bankAccounts: many(BankAccountTable),
   categories: many(CategoryTable),
   groups: many(GroupTable),
@@ -31,3 +31,5 @@ export const UserRelations = relations(UserTable, ({ one, many }) => ({
   transactions: many(TransactionTable),
   budgets: many(BudgetTable),
 }))
+
+export { UserRelations, UserTable }

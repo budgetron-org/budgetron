@@ -14,7 +14,7 @@ import {
 } from '~/components/ui/select'
 import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
 import { api } from '~/rpc/client'
-import type { TransactionType } from '~/server/db/enums'
+import type { TransactionTypeEnum } from '~/server/db/schema'
 
 type Data = {
   value: string
@@ -50,7 +50,7 @@ interface CategoryPickerProps
   extends Pick<ComponentProps<typeof Select>, 'defaultValue' | 'onValueChange'>,
     Pick<ComponentProps<typeof SelectValue>, 'placeholder'>,
     Pick<ComponentProps<typeof SelectTrigger>, 'aria-label'> {
-  type?: TransactionType | 'ALL'
+  type?: (typeof TransactionTypeEnum.enumValues)[number] | 'ALL'
 }
 
 function CategoryPicker({

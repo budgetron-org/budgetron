@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select'
-import { TransactionTypes } from '~/server/db/enums'
+import { TransactionTypeEnum } from '~/server/db/schema'
 
 interface TransactionTypePickerProps
   extends Pick<
@@ -16,7 +16,7 @@ interface TransactionTypePickerProps
     >,
     Pick<ComponentProps<typeof SelectValue>, 'placeholder'>,
     Pick<ComponentProps<typeof SelectTrigger>, 'aria-label'> {
-  disabledOptions?: (typeof TransactionTypes)[number][]
+  disabledOptions?: (typeof TransactionTypeEnum.enumValues)[number][]
 }
 
 function TransactionTypePicker({
@@ -36,7 +36,7 @@ function TransactionTypePicker({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {TransactionTypes?.map((item) => (
+        {TransactionTypeEnum.enumValues.map((item) => (
           <SelectItem
             key={item}
             value={item}

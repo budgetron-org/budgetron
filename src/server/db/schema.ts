@@ -1,4 +1,5 @@
-export * from './enums'
+export * from './schemas/enums'
+
 export * from './schemas/account'
 export * from './schemas/bank-account'
 export * from './schemas/budget'

@@ -1,7 +1,7 @@
 import { boolean, pgTable, text } from 'drizzle-orm/pg-core'
 import { createdAt, id, updatedAt } from '../utils'
 
-export const FeatureFlagsTable = pgTable('feature_flags', {
+const FeatureFlagsTable = pgTable('feature_flags', {
   id,
   name: text().notNull(),
   description: text().notNull(),
@@ -10,3 +10,5 @@ export const FeatureFlagsTable = pgTable('feature_flags', {
   createdAt,
   updatedAt,
 })
+
+export { FeatureFlagsTable }

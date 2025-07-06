@@ -1,16 +1,11 @@
-import type { Currency } from '~/server/db/enums'
+import { CURRENCIES } from '~/data/currencies'
 
-const CURRENCIES = [
-  { code: 'USD', symbol: '$', name: 'Dollar', locale: 'en-US' },
-  { code: 'INR', symbol: '₹', name: 'Rupee', locale: 'en-IN' },
-] as const
-
-function getLocaleFromCurrency(currency: Currency) {
+function getLocaleFromCurrency(currency: (typeof CURRENCIES)[number]['code']) {
   return CURRENCIES.find((item) => item.code === currency)?.locale
 }
 
 function getCurrencyFormatter(
-  currency: Currency,
+  currency: (typeof CURRENCIES)[number]['code'],
   options?: Omit<Intl.NumberFormatOptions, 'style' | 'currency'>,
 ) {
   const locale = getLocaleFromCurrency(currency)

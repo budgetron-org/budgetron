@@ -15,11 +15,7 @@ import { TextareaField } from '~/components/form/textarea-field'
 import { ProgressButton } from '~/components/ui/progress-button'
 import { cn } from '~/lib/utils'
 import { api } from '~/rpc/client'
-import {
-  BankAccountTypeEnum,
-  TransactionTypeEnum,
-  type TransactionType,
-} from '~/server/db/enums'
+import { BankAccountTypeEnum, TransactionTypeEnum } from '~/server/db/schema'
 
 const { fieldContext, formContext, useFieldContext } = createFormHookContexts()
 const { useAppForm } = createFormHook({
@@ -62,7 +58,7 @@ const { useAppForm } = createFormHook({
     },
     CategoryField: (
       props: Omit<ComponentProps<typeof SelectField>, 'data' | 'field'> & {
-        type?: TransactionType
+        type?: (typeof TransactionTypeEnum.enumValues)[number]
       },
     ) => {
       const field = useFieldContext<string | undefined>()

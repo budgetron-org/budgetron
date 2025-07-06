@@ -1,14 +1,14 @@
 import { relations } from 'drizzle-orm'
 import { date, decimal, index, pgTable, text, uuid } from 'drizzle-orm/pg-core'
 
-import { CurrencyEnum, TransactionTypeEnum } from '../enums'
 import { createdAt, id, updatedAt } from '../utils'
 import { BankAccountTable } from './bank-account'
 import { CategoryTable } from './category'
+import { TransactionTypeEnum } from './enums'
 import { GroupTable } from './group'
 import { UserTable } from './user'
 
-export const TransactionTable = pgTable(
+const TransactionTable = pgTable(
   'transactions',
   {
     id,
@@ -18,7 +18,7 @@ export const TransactionTable = pgTable(
     type: TransactionTypeEnum().notNull().default('EXPENSE'),
     date: date({ mode: 'date' }).notNull(),
     amount: decimal().notNull(),
-    currency: CurrencyEnum().notNull(),
+    currency: text().notNull().default('USD'),
     description: text().notNull(),
     notes: text(),
     tags: text().array(),
@@ -46,7 +46,7 @@ export const TransactionTable = pgTable(
   (t) => [index().on(t.categoryId, t.date, t.groupId, t.userId)],
 )
 
-export const TransactionRelations = relations(TransactionTable, ({ one }) => ({
+const TransactionRelations = relations(TransactionTable, ({ one }) => ({
   bankAccount: one(BankAccountTable, {
     fields: [TransactionTable.bankAccountId],
     references: [BankAccountTable.id],
@@ -75,3 +75,5 @@ export const TransactionRelations = relations(TransactionTable, ({ one }) => ({
     references: [UserTable.id],
   }),
 }))
+
+export { TransactionRelations, TransactionTable }

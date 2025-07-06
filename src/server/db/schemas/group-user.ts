@@ -5,7 +5,7 @@ import { createdAt, updatedAt } from '../utils'
 import { GroupTable } from './group'
 import { UserTable } from './user'
 
-export const GroupUserTable = pgTable(
+const GroupUserTable = pgTable(
   'groups_users',
   {
     groupId: uuid()
@@ -22,7 +22,7 @@ export const GroupUserTable = pgTable(
   (t) => [primaryKey({ columns: [t.groupId, t.userId] })],
 )
 
-export const GroupUserRelations = relations(GroupUserTable, ({ one }) => ({
+const GroupUserRelations = relations(GroupUserTable, ({ one }) => ({
   group: one(GroupTable, {
     fields: [GroupUserTable.groupId],
     references: [GroupTable.id],
@@ -32,3 +32,5 @@ export const GroupUserRelations = relations(GroupUserTable, ({ one }) => ({
     references: [UserTable.id],
   }),
 }))
+
+export { GroupUserRelations, GroupUserTable }

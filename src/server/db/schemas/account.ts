@@ -4,7 +4,7 @@ import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { createdAt, id, updatedAt } from '../utils'
 import { UserTable } from './user'
 
-export const AccountTable = pgTable('accounts', {
+const AccountTable = pgTable('accounts', {
   id,
   accountId: text().notNull(),
   providerId: text().notNull(),
@@ -22,9 +22,11 @@ export const AccountTable = pgTable('accounts', {
   updatedAt,
 })
 
-export const AccountRelations = relations(AccountTable, ({ one }) => ({
+const AccountRelations = relations(AccountTable, ({ one }) => ({
   user: one(UserTable, {
     fields: [AccountTable.userId],
     references: [UserTable.id],
   }),
 }))
+
+export { AccountRelations, AccountTable }

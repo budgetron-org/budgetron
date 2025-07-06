@@ -1,13 +1,13 @@
 import { and, eq, isNull, not, or } from 'drizzle-orm'
 
 import { db } from '~/server/db'
-import type { TransactionType } from '~/server/db/enums'
+import type { TransactionTypeEnum } from '~/server/db/schema'
 import { CategoryTable } from '~/server/db/schema'
 
 type FindAllCategoriesOptions = {
   userId: string
   groupId?: string
-  type?: TransactionType
+  type?: (typeof TransactionTypeEnum.enumValues)[number]
 }
 async function findAllCategories({
   userId,
@@ -50,7 +50,7 @@ type FindAllSubCategoriesOptions = {
   userId: string
   groupId?: string
   includeParent?: boolean
-  type?: TransactionType
+  type?: (typeof TransactionTypeEnum.enumValues)[number]
 }
 async function findAllSubCategories({
   userId,

@@ -1,26 +1,24 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, uuid } from 'drizzle-orm/pg-core'
+import { pgTable, text, uuid } from 'drizzle-orm/pg-core'
 
-import { CurrencyEnum } from '../enums'
 import { createdAt, id, updatedAt } from '../utils'
 import { UserTable } from './user'
 
-export const UserSettingsTable = pgTable('user_settings', {
+const UserSettingsTable = pgTable('user_settings', {
   id,
   userId: uuid()
     .references(() => UserTable.id, { onDelete: 'cascade' })
     .notNull(),
-  currency: CurrencyEnum().notNull(),
+  currency: text().notNull().default('USD'),
   createdAt,
   updatedAt,
 })
 
-export const UserSettingsRelations = relations(
-  UserSettingsTable,
-  ({ one }) => ({
-    user: one(UserTable, {
-      fields: [UserSettingsTable.userId],
-      references: [UserTable.id],
-    }),
+const UserSettingsRelations = relations(UserSettingsTable, ({ one }) => ({
+  user: one(UserTable, {
+    fields: [UserSettingsTable.userId],
+    references: [UserTable.id],
   }),
-)
+}))
+
+export { UserSettingsRelations, UserSettingsTable }

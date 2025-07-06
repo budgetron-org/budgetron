@@ -1,13 +1,13 @@
 import type z from 'zod/v4'
 
-import type { TransactionType } from '~/server/db/enums'
+import type { TransactionTypeEnum } from '~/server/db/schema'
 import type { CashFlowReportRangeSchema } from './validators'
 
 type CategoryReport = {
   categoryId: string
   categoryName: string
   categoryIcon: string
-  categoryType: TransactionType
+  categoryType: (typeof TransactionTypeEnum.enumValues)[number]
   parentCategoryId: string | null
   parentCategoryName: string | null
   parentCategoryIcon: string | null
