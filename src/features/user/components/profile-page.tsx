@@ -1,35 +1,36 @@
 'use client'
 
 import { useMutation } from '@tanstack/react-query'
+import { capitalize } from 'lodash'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import type { z } from 'zod/v4'
 
-import { capitalize } from 'lodash'
+import { AvatarPicker } from '~/components/pickers/avatar-picker'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { ProgressButton } from '~/components/ui/progress-button'
-import { AvatarPicker } from '~/components/pickers/avatar-picker'
 import { useAppForm } from '~/hooks/use-app-form'
 import { APP_NAME } from '~/lib/app-metadata'
 import { api } from '~/rpc/client'
 import type { User } from '~/server/auth'
 import { ProfileFormSchema } from '../validators'
+import { AccountPageContainer } from './account-page-container'
 import { AccountPageSection } from './account-page-section'
 import { DeleteAccountDialog } from './delete-account-dialog'
 
 function AvatarNameSection({ user }: { user: User }) {
+  const router = useRouter()
   const updateInfo = useMutation(
     api.user.updateInfo.mutationOptions({
       onSuccess() {
         toast.success('Profile updated successfully')
+        router.refresh()
       },
       onError(error) {
         toast.error('Failed to update profile', {
           description: error.message,
         })
-      },
-      onSettled() {
-        form.reset()
       },
     }),
   )
@@ -52,20 +53,21 @@ function AvatarNameSection({ user }: { user: User }) {
       title="Profile"
       description="Add an avatar and update your display name."
       footer={
-        <form.Subscribe
-          selector={(formState) => [formState.canSubmit, formState.isDirty]}>
-          {([canSubmit, isDirty]) => (
-            <form.SubmitButton
-              className="w-max"
-              disabled={!canSubmit || !isDirty}
-              isLoading={updateInfo.isPending}
-              onClick={() => form.handleSubmit()}>
-              Save
-            </form.SubmitButton>
-          )}
-        </form.Subscribe>
+        <form.AppForm>
+          <form.SubmitButton
+            className="w-max"
+            isLoading={updateInfo.isPending}
+            submitOnClick>
+            Save
+          </form.SubmitButton>
+        </form.AppForm>
       }>
-      <form className="grid max-w-lg grid-cols-1 gap-4">
+      <form
+        className="grid max-w-lg grid-cols-1 gap-4"
+        onSubmit={(e) => {
+          e.preventDefault()
+          form.handleSubmit()
+        }}>
         <form.AppField name="image">
           {(field) => (
             <AvatarPicker
@@ -153,11 +155,11 @@ interface ProfilePageProps {
 
 function ProfilePage({ user }: ProfilePageProps) {
   return (
-    <div className="flex flex-col gap-6 p-2">
+    <AccountPageContainer>
       <AvatarNameSection user={user} />
       <EmailSection user={user} />
       <DeleteAccountSection />
-    </div>
+    </AccountPageContainer>
   )
 }
 

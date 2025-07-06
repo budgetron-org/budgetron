@@ -17,7 +17,8 @@ import { cn } from '~/lib/utils'
 import { api } from '~/rpc/client'
 import { BankAccountTypeEnum, TransactionTypeEnum } from '~/server/db/schema'
 
-const { fieldContext, formContext, useFieldContext } = createFormHookContexts()
+const { fieldContext, formContext, useFieldContext, useFormContext } =
+  createFormHookContexts()
 const { useAppForm } = createFormHook({
   fieldComponents: {
     BankAccountField: (
@@ -146,15 +147,32 @@ const { useAppForm } = createFormHook({
   formComponents: {
     SubmitButton: ({
       className,
+      submitOnClick,
+      onClick,
       ...props
-    }: Omit<ComponentProps<typeof ProgressButton>, 'type'>) => {
+    }: Omit<ComponentProps<typeof ProgressButton>, 'type'> & {
+      submitOnClick?: boolean
+    }) => {
+      const form = useFormContext()
       return (
-        <ProgressButton
-          type="submit"
-          className={cn('w-full', className)}
-          {...props}>
-          {props.children}
-        </ProgressButton>
+        <form.Subscribe
+          selector={(formState) => [formState.canSubmit, formState.isDirty]}>
+          {([canSubmit, isDirty]) => (
+            <ProgressButton
+              type="submit"
+              className={cn('w-full', className)}
+              disabled={!canSubmit || !isDirty}
+              onClick={(event) => {
+                if (submitOnClick) {
+                  form.handleSubmit()
+                }
+                onClick?.(event)
+              }}
+              {...props}>
+              {props.children}
+            </ProgressButton>
+          )}
+        </form.Subscribe>
       )
     },
   },

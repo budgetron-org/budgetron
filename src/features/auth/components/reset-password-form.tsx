@@ -65,20 +65,13 @@ function ResetPasswordForm({ token }: ResetPasswordFormProps) {
               )}
             </form.AppField>
 
-            <form.Subscribe
-              selector={(formState) => [
-                formState.canSubmit,
-                formState.isDirty,
-              ]}>
-              {([canSubmit, isDirty]) => (
-                <form.SubmitButton
-                  disabled={!canSubmit || !isDirty}
-                  isLoading={resetPassword.isPending}
-                  className="w-full">
-                  Reset password
-                </form.SubmitButton>
-              )}
-            </form.Subscribe>
+            <form.AppForm>
+              <form.SubmitButton
+                isLoading={resetPassword.isPending}
+                className="w-full">
+                Reset password
+              </form.SubmitButton>
+            </form.AppForm>
           </form>
         )}
 

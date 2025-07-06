@@ -99,15 +99,11 @@ function SignUpForm({ redirectAfterSignUp, providers = [] }: SignUpFormProps) {
             )}
           </form.AppField>
 
-          <form.Subscribe selector={(formState) => [formState.canSubmit]}>
-            {([canSubmit]) => (
-              <form.SubmitButton
-                disabled={!canSubmit}
-                isLoading={signUp.isPending}>
-                Sign Up
-              </form.SubmitButton>
-            )}
-          </form.Subscribe>
+          <form.AppForm>
+            <form.SubmitButton isLoading={signUp.isPending}>
+              Sign Up
+            </form.SubmitButton>
+          </form.AppForm>
         </form>
 
         {providers.length > 0 && (

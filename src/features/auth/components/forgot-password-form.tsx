@@ -71,15 +71,11 @@ function ForgotPasswordForm() {
                 )}
               </form.AppField>
 
-              <form.Subscribe selector={(formState) => [formState.canSubmit]}>
-                {([canSubmit]) => (
-                  <form.SubmitButton
-                    disabled={!canSubmit}
-                    isLoading={forgotPassword.isPending}>
-                    Send reset password link
-                  </form.SubmitButton>
-                )}
-              </form.Subscribe>
+              <form.AppForm>
+                <form.SubmitButton isLoading={forgotPassword.isPending}>
+                  Send reset password link
+                </form.SubmitButton>
+              </form.AppForm>
             </form>
 
             <div className="text-center text-sm">

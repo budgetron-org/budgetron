@@ -4,6 +4,7 @@ import { env } from '~/env/server'
 import { requireAuthentication } from '~/features/auth/utils'
 import { ProfilePage } from '~/features/user/components/profile-page'
 import { SecurityPage } from '~/features/user/components/security-page'
+import { SettingsPage } from '~/features/user/components/settings-page'
 import { getSupportedProviders } from '~/lib/utils'
 import { api } from '~/rpc/server'
 import type { NextServerPageProps } from '~/types/shared'
@@ -33,6 +34,7 @@ async function AccountPageImpl({
           <TabsList>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="profile" className="min-h-0 overflow-y-auto">
             <ProfilePage user={session.user} />
@@ -42,6 +44,9 @@ async function AccountPageImpl({
               userAccounts={accounts}
               availableOAuthProviders={getSupportedProviders(env)}
             />
+          </TabsContent>
+          <TabsContent value="settings" className="min-h-0 overflow-y-auto">
+            <SettingsPage />
           </TabsContent>
         </Tabs>
       </div>

@@ -16,6 +16,7 @@ import { api } from '~/rpc/client'
 import type { getAuth } from '~/server/auth'
 import type { AwaitedReturnType } from '~/types/shared'
 import { SecurityFormSchema } from '../validators'
+import { AccountPageContainer } from './account-page-container'
 import { AccountPageSection } from './account-page-section'
 
 type UserAccount = AwaitedReturnType<
@@ -83,20 +84,21 @@ function PasswordResetSection({ isEnabled }: PasswordResetSectionProps) {
       title="Reset Password"
       description="Update your password."
       footer={
-        <form.Subscribe
-          selector={(formState) => [formState.canSubmit, formState.isDirty]}>
-          {([canSubmit, isDirty]) => (
-            <form.SubmitButton
-              className="w-max"
-              disabled={!canSubmit || !isDirty}
-              isLoading={updatePassword.isPending}
-              onClick={() => form.handleSubmit()}>
-              Update Password
-            </form.SubmitButton>
-          )}
-        </form.Subscribe>
+        <form.AppForm>
+          <form.SubmitButton
+            className="w-max"
+            isLoading={updatePassword.isPending}
+            submitOnClick>
+            Update Password
+          </form.SubmitButton>
+        </form.AppForm>
       }>
-      <form className="grid max-w-xl grid-cols-1 gap-4">
+      <form
+        className="grid max-w-xl grid-cols-1 gap-4"
+        onSubmit={(e) => {
+          e.preventDefault()
+          form.handleSubmit()
+        }}>
         <form.AppField name="oldPassword">
           {(field) => <field.TextField label="Old Password" type="password" />}
         </form.AppField>
@@ -252,13 +254,13 @@ function SecurityPage({
   )
 
   return (
-    <div className="flex flex-col gap-6 p-2">
+    <AccountPageContainer>
       <PasswordResetSection isEnabled={hasEmailPasswordAccount} />
       <SignInMethodsSection
         accounts={userAccounts}
         providers={availableOAuthProviders}
       />
-    </div>
+    </AccountPageContainer>
   )
 }
 

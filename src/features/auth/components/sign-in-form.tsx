@@ -87,15 +87,11 @@ function SignInForm({ redirectAfterSignIn, providers = [] }: SignInFormProps) {
             </Link>
           </div>
 
-          <form.Subscribe selector={(formState) => [formState.canSubmit]}>
-            {([canSubmit]) => (
-              <form.SubmitButton
-                disabled={!canSubmit}
-                isLoading={signIn.isPending}>
-                Sign In
-              </form.SubmitButton>
-            )}
-          </form.Subscribe>
+          <form.AppForm>
+            <form.SubmitButton isLoading={signIn.isPending}>
+              Sign In
+            </form.SubmitButton>
+          </form.AppForm>
         </form>
 
         {providers.length > 0 && (
