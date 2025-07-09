@@ -64,6 +64,13 @@
       "when": 1752087078496,
       "tag": "0008_update-group-schema",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1752104836397,
+      "tag": "0009_add-currency-rates-table",
+      "breakpoints": true
     }
   ]
 }
