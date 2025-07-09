@@ -144,7 +144,6 @@ const CURRENCY_CODES = CURRENCIES.map((currency) => currency.code)
 
 // type helpers
 type CurrencyCode = (typeof CURRENCY_CODES)[number]
-type Currency = (typeof CURRENCIES)[number]
 
 export { CURRENCIES, CURRENCY_CODES }
-export type { Currency, CurrencyCode }
+export type { CurrencyCode }
