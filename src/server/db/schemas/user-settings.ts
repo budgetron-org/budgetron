@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, text, unique, uuid } from 'drizzle-orm/pg-core'
+import { pgTable, unique, uuid } from 'drizzle-orm/pg-core'
 
-import { createdAt, id, updatedAt } from '../utils'
+import { createdAt, currencyType, id, updatedAt } from '../utils'
 import { UserTable } from './user'
 
 const UserSettingsTable = pgTable(
@@ -11,7 +11,7 @@ const UserSettingsTable = pgTable(
     userId: uuid()
       .references(() => UserTable.id, { onDelete: 'cascade' })
       .notNull(),
-    currency: text().notNull().default('USD'),
+    currency: currencyType().notNull().default('USD'),
     createdAt,
     updatedAt,
   },

@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm'
 import { decimal, pgTable, text, unique, uuid } from 'drizzle-orm/pg-core'
 
-import { createdAt, id, updatedAt } from '../utils'
+import { createdAt, currencyType, id, updatedAt } from '../utils'
 import { BankAccountTypeEnum } from './enums'
 import { TransactionTable } from './transaction'
 import { UserTable } from './user'
@@ -13,7 +13,7 @@ const BankAccountTable = pgTable(
     name: text().notNull(),
     type: BankAccountTypeEnum().notNull(),
     balance: decimal().notNull().default('0'),
-    currency: text().notNull().default('USD'),
+    currency: currencyType().notNull().default('USD'),
     userId: uuid()
       .references(() => UserTable.id, { onDelete: 'cascade' })
       .notNull(),

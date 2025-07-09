@@ -1,4 +1,5 @@
-import { timestamp, uuid } from 'drizzle-orm/pg-core'
+import { customType, timestamp, uuid } from 'drizzle-orm/pg-core'
+import type { CurrencyCode } from '~/data/currencies'
 
 /**
  * Common schema columns
@@ -10,4 +11,10 @@ const updatedAt = timestamp()
   .defaultNow()
   .$onUpdate(() => new Date())
 
-export { id, createdAt, updatedAt }
+const currencyType = customType<{ data: CurrencyCode }>({
+  dataType() {
+    return 'text'
+  },
+})
+
+export { createdAt, currencyType, id, updatedAt }
