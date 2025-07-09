@@ -79,6 +79,7 @@ export function UpdateBankAccountDialog({
         id={formId}
         ref={formRef}
         defaultValues={bankAccount}
+        hiddenFields={['currency']}
         onSubmit={(data) =>
           updateBankAccount.mutate({ ...data, id: bankAccount.id })
         }

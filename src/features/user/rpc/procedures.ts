@@ -11,9 +11,14 @@ import { getAuth } from '~/server/auth'
 import { upload } from '~/server/blob/service'
 import { deleteAccountFeatureFlag } from '~/server/flags'
 import {
+  getUserSettings as getUserSettingsService,
+  setUserDefaultCurrency,
+} from '../service'
+import {
   DeleteAccountInputSchema,
   LinkAccountInputSchema,
   UnlinkAccountInputSchema,
+  UpdateCurrencyInputSchema,
   UpdateInfoInputSchema,
   UpdatePasswordInputSchema,
 } from '../validators'
@@ -176,11 +181,38 @@ const verifyEmail = protectedProcedure.handler(async ({ context }) => {
   }
 })
 
+const getUserSettings = protectedProcedure.handler(async ({ context }) => {
+  try {
+    const result = await getUserSettingsService({
+      userId: context.session.user.id,
+    })
+    return result
+  } catch (error) {
+    throwRPCError(error)
+  }
+})
+
+const updateCurrency = protectedProcedure
+  .input(UpdateCurrencyInputSchema)
+  .handler(async ({ context, input }) => {
+    try {
+      const result = await setUserDefaultCurrency({
+        currency: input.currency,
+        userId: context.session.user.id,
+      })
+      return result
+    } catch (error) {
+      throwRPCError(error)
+    }
+  })
+
 export {
   deleteAccount,
+  getUserSettings,
   linkAccount,
   listAccounts,
   unlinkAccount,
+  updateCurrency,
   updateInfo,
   updatePassword,
   verifyEmail,

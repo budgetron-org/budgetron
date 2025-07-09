@@ -18,6 +18,10 @@ type BankAccountFormHandle = {
 interface BankAccountFormProps
   extends Omit<ComponentPropsWithoutRef<'form'>, 'defaultValue' | 'onSubmit'> {
   defaultValues?: z.infer<typeof BankAccountFormSchema>
+  hiddenFields?: Extract<
+    keyof z.infer<typeof BankAccountFormSchema>,
+    'currency'
+  >[]
   ref?: Ref<BankAccountFormHandle>
   onSubmit?: (value: z.infer<typeof BankAccountFormSchema>) => void
 }
@@ -25,12 +29,14 @@ interface BankAccountFormProps
 const DEFAULT_VALUES = {
   name: '',
   type: 'CHECKING',
+  currency: 'USD',
   balance: '0.00',
 } as z.infer<typeof BankAccountFormSchema>
 
 function BankAccountForm({
   className,
   defaultValues = DEFAULT_VALUES,
+  hiddenFields,
   ref,
   onSubmit,
   ...props
@@ -70,6 +76,12 @@ function BankAccountForm({
       <form.AppField name="type">
         {(field) => <field.BankAccountTypeField label="Type" />}
       </form.AppField>
+
+      {!hiddenFields?.includes('currency') && (
+        <form.AppField name="currency">
+          {(field) => <field.CurrencyField label="Currency" />}
+        </form.AppField>
+      )}
 
       <form.AppField name="balance">
         {(field) => <field.TextField label="Balance" />}

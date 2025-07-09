@@ -13,7 +13,8 @@ import { TagsInputField } from '~/components/form/tags-input-field'
 import { TextField } from '~/components/form/text-field'
 import { TextareaField } from '~/components/form/textarea-field'
 import { ProgressButton } from '~/components/ui/progress-button'
-import { cn } from '~/lib/utils'
+import { CURRENCIES, type CurrencyCode } from '~/data/currencies'
+import { cn, getCurrencyMeta } from '~/lib/utils'
 import { api } from '~/rpc/client'
 import { BankAccountTypeEnum, TransactionTypeEnum } from '~/server/db/schema'
 
@@ -22,7 +23,7 @@ const { fieldContext, formContext, useFieldContext, useFormContext } =
 const { useAppForm } = createFormHook({
   fieldComponents: {
     BankAccountField: (
-      props: Omit<ComponentProps<typeof SelectField>, 'data' | 'field'>,
+      props: Omit<ComponentProps<typeof SelectField>, 'options' | 'field'>,
     ) => {
       const field = useFieldContext<string | undefined>()
       const { data, isPending } = useQuery(
@@ -30,21 +31,21 @@ const { useAppForm } = createFormHook({
           select: (data) =>
             data.map((acc) => ({
               value: acc.id,
-              label: acc.name + ' - ' + acc.type,
+              label: `${acc.name} (${getCurrencyMeta(acc.currency).symbol})`,
             })),
         }),
       )
       return (
         <SelectField
           {...props}
-          data={data ?? []}
+          options={data ?? []}
           isLoading={isPending}
           field={field}
         />
       )
     },
     BankAccountTypeField: (
-      props: Omit<ComponentProps<typeof SelectField>, 'data' | 'field'>,
+      props: Omit<ComponentProps<typeof SelectField>, 'options' | 'field'>,
     ) => {
       const data = useMemo(
         () =>
@@ -55,10 +56,10 @@ const { useAppForm } = createFormHook({
         [],
       )
       const field = useFieldContext<string | undefined>()
-      return <SelectField {...props} data={data} field={field} />
+      return <SelectField {...props} options={data} field={field} />
     },
     CategoryField: (
-      props: Omit<ComponentProps<typeof SelectField>, 'data' | 'field'> & {
+      props: Omit<ComponentProps<typeof SelectField>, 'options' | 'field'> & {
         type?: (typeof TransactionTypeEnum.enumValues)[number]
       },
     ) => {
@@ -88,7 +89,7 @@ const { useAppForm } = createFormHook({
       return (
         <SelectField
           {...props}
-          data={filteredData}
+          options={filteredData}
           isLoading={isPending}
           field={field}
         />
@@ -99,6 +100,20 @@ const { useAppForm } = createFormHook({
     ) => {
       const field = useFieldContext<boolean>()
       return <CheckboxField {...props} field={field} />
+    },
+    CurrencyField: (
+      props: Omit<ComponentProps<typeof SelectField>, 'options' | 'field'>,
+    ) => {
+      const field = useFieldContext<CurrencyCode | undefined>()
+      const data = useMemo(
+        () =>
+          CURRENCIES.map((c) => ({
+            value: c.code,
+            label: `${c.code} - ${c.name} (${c.symbol})`,
+          })),
+        [],
+      )
+      return <SelectField {...props} options={data} field={field} />
     },
     DateField: (props: Omit<ComponentProps<typeof DateField>, 'field'>) => {
       const field = useFieldContext<Date>()
@@ -129,7 +144,7 @@ const { useAppForm } = createFormHook({
       return <TextareaField {...props} field={field} />
     },
     TransactionTypeField: (
-      props: Omit<ComponentProps<typeof SelectField>, 'data' | 'field'>,
+      props: Omit<ComponentProps<typeof SelectField>, 'options' | 'field'>,
     ) => {
       const data = useMemo(
         () =>
@@ -140,7 +155,7 @@ const { useAppForm } = createFormHook({
         [],
       )
       const field = useFieldContext<string | undefined>()
-      return <SelectField {...props} data={data} field={field} />
+      return <SelectField {...props} options={data} field={field} />
     },
   },
   fieldContext,

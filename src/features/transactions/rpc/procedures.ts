@@ -27,20 +27,20 @@ const create = protectedProcedure
 
     try {
       const transaction = await insertTransaction({
-        bankAccountId: input.bankAccountId,
-        fromBankAccountId: input.fromBankAccountId,
-        toBankAccountId: input.toBankAccountId,
         amount: input.amount,
+        bankAccountId: input.bankAccountId,
         categoryId: input.categoryId,
-        currency: 'USD',
+        currency: input.currency,
         date: input.date,
         description: input.description,
         externalId: input.externalId,
+        fromBankAccountId: input.fromBankAccountId,
         groupId: input.groupId,
-        type: input.type,
-        userId: session.user.id,
         notes: input.notes,
         tags: input.tags,
+        toBankAccountId: input.toBankAccountId,
+        type: input.type,
+        userId: session.user.id,
       })
       return transaction
     } catch (error) {
@@ -55,7 +55,22 @@ const createMany = protectedProcedure
 
     try {
       const transactions = await insertManyTransactions(
-        input.map((t) => ({ ...t, userId: user.id })),
+        input.map((t) => ({
+          amount: t.amount,
+          bankAccountId: t.bankAccountId,
+          categoryId: t.categoryId,
+          currency: t.currency,
+          date: t.date,
+          description: t.description,
+          externalId: t.externalId,
+          fromBankAccountId: t.fromBankAccountId,
+          groupId: t.groupId,
+          notes: t.notes,
+          tags: t.tags,
+          toBankAccountId: t.toBankAccountId,
+          type: t.type,
+          userId: user.id,
+        })),
       )
       return transactions
     } catch (error) {
@@ -158,7 +173,20 @@ const update = protectedProcedure
 
     try {
       const bankAccount = await updateTransaction({
-        ...input,
+        amount: input.amount,
+        bankAccountId: input.bankAccountId,
+        categoryId: input.categoryId,
+        currency: 'USD',
+        date: input.date,
+        description: input.description,
+        externalId: input.externalId,
+        fromBankAccountId: input.fromBankAccountId,
+        groupId: input.groupId,
+        id: input.id,
+        notes: input.notes,
+        tags: input.tags,
+        toBankAccountId: input.toBankAccountId,
+        type: input.type,
         userId: session.user.id,
       })
       return bankAccount

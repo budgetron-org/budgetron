@@ -48,7 +48,8 @@ const create = protectedProcedure
 
     try {
       const budget = await insertBudget({
-        ...input,
+        amount: input.amount,
+        categoryId: input.categoryId,
         userId: user.id,
       })
       return budget
@@ -64,7 +65,9 @@ const update = protectedProcedure
 
     try {
       const budget = await updateBudget({
-        ...input,
+        amount: input.amount,
+        categoryId: input.categoryId,
+        id: input.id,
         userId: user.id,
       })
       return budget
@@ -80,7 +83,7 @@ const _delete = protectedProcedure
 
     try {
       const budget = await deleteBudget({
-        ...input,
+        id: input.id,
         userId: user.id,
       })
       return budget

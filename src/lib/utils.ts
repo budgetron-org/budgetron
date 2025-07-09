@@ -17,12 +17,21 @@ function safeParseNumber(mayBeNumber: unknown, fallback: number = 0) {
 }
 
 function safeParseCurrency(
-  mayBeCurrency: unknown,
+  mayBeCurrency: string,
   fallback: (typeof CURRENCIES)[number]['code'] = 'USD',
 ) {
   if (CURRENCIES.some((item) => item.code === mayBeCurrency))
     return mayBeCurrency as (typeof CURRENCIES)[number]['code']
   return fallback
+}
+
+function getCurrencyMeta(
+  currency: string,
+  fallback: (typeof CURRENCIES)[number]['code'] = 'USD',
+) {
+  return CURRENCIES.find(
+    (i) => i.code === safeParseCurrency(currency, fallback),
+  )!
 }
 
 /**
@@ -132,6 +141,7 @@ function getInitialsAvatarUrl(name: string) {
 export {
   cn,
   formatMonthLabel,
+  getCurrencyMeta,
   getGravatarUrl,
   getInitialsAvatarUrl,
   getPlaceHolderAvatarUrl,

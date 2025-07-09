@@ -41,6 +41,7 @@ async function AccountPageImpl({
           </TabsContent>
           <TabsContent value="security" className="min-h-0 overflow-y-auto">
             <SecurityPage
+              user={session.user}
               userAccounts={accounts}
               availableOAuthProviders={getSupportedProviders(env)}
             />

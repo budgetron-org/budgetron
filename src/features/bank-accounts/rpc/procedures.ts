@@ -22,6 +22,7 @@ const create = protectedProcedure
         name: input.name,
         type: input.type,
         balance: input.balance,
+        currency: input.currency,
         userId: session.user.id,
       })
       return bankAccount
@@ -66,7 +67,10 @@ const update = protectedProcedure
 
     try {
       const bankAccount = await updateBankAccount({
-        ...input,
+        name: input.name,
+        type: input.type,
+        balance: input.balance,
+        id: input.id,
         userId: session.user.id,
       })
       return bankAccount

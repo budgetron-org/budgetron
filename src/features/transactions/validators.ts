@@ -1,6 +1,7 @@
 import { createInsertSchema, createUpdateSchema } from 'drizzle-zod'
 import { z } from 'zod/v4'
 
+import { CURRENCY_CODES } from '~/data/currencies'
 import { TransactionTable } from '~/server/db/schema'
 
 const CreateTransactionInputSchema = createInsertSchema(TransactionTable)
@@ -9,6 +10,9 @@ const CreateTransactionInputSchema = createInsertSchema(TransactionTable)
     createdAt: true,
     updatedAt: true,
     userId: true,
+  })
+  .extend({
+    currency: z.enum(CURRENCY_CODES),
   })
   .check((ctx) => {
     if (

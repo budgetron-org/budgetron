@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from '~/components/ui/select'
 import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
+import { getCurrencyMeta } from '~/lib/utils'
 import { api } from '~/rpc/client'
 
 interface BankAccountPickerProps
@@ -33,7 +34,7 @@ function BankAccountPicker({
       select: (data) =>
         data.map((acc) => ({
           value: acc.id,
-          label: acc.name + ' - ' + acc.type,
+          label: `${acc.name} (${getCurrencyMeta(acc.currency).symbol})`,
         })),
     }),
   )

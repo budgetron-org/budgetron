@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth'
 import { authConfig } from './config'
+import type { AwaitedReturnType } from '~/types/shared'
 
 let _auth: ReturnType<typeof betterAuth<typeof authConfig>> | null = null
 
@@ -20,6 +21,7 @@ function getAuth() {
 type Auth = ReturnType<typeof getAuth>
 type Session = Auth['$Infer']['Session']
 type User = Session['user']
+type UserAccount = AwaitedReturnType<Auth['api']['listUserAccounts']>[number]
 
 export { getAuth }
-export type { User }
+export type { User, UserAccount }

@@ -1,4 +1,5 @@
 import { z } from 'zod/v4'
+import { CURRENCY_CODES } from '~/data/currencies'
 import { PasswordPolicy } from '~/server/auth/policies'
 
 const UpdateInfoInputSchema = z.object({
@@ -45,6 +46,13 @@ const UnlinkAccountInputSchema = z.object({
   providerId: z.enum(['google', 'custom-oauth-provider']),
 })
 
+const UpdateCurrencyInputSchema = z.object({
+  currency: z.enum(CURRENCY_CODES),
+})
+const UpdateCurrencyFormSchema = UpdateCurrencyInputSchema.pick({
+  currency: true,
+})
+
 export {
   DeleteAccountFormSchema,
   DeleteAccountInputSchema,
@@ -52,6 +60,8 @@ export {
   ProfileFormSchema,
   SecurityFormSchema,
   UnlinkAccountInputSchema,
+  UpdateCurrencyFormSchema,
+  UpdateCurrencyInputSchema,
   UpdateInfoInputSchema,
   UpdatePasswordInputSchema,
 }

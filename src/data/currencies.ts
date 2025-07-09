@@ -140,5 +140,11 @@ const CURRENCIES = [
     locale: 'en-ZA',
   },
 ] as const
+const CURRENCY_CODES = CURRENCIES.map((currency) => currency.code)
 
-export { CURRENCIES }
+// type helpers
+type CurrencyCode = (typeof CURRENCY_CODES)[number]
+type Currency = (typeof CURRENCIES)[number]
+
+export { CURRENCIES, CURRENCY_CODES }
+export type { Currency, CurrencyCode }

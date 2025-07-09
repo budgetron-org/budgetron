@@ -17,18 +17,23 @@ import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
 import { cn } from '~/lib/utils'
 import type { FieldApi } from './types'
 
-type Data<V> = { value: V; label: string; icon?: string; children?: Data<V>[] }
-
-function isHierarchicalData<D extends Data<unknown>>(data: Readonly<D[]>) {
-  return data.some((i) => i.children != null)
+type Option<V> = {
+  value: V
+  label: string
+  icon?: string
+  children?: Option<V>[]
 }
 
-function findLabel<V extends string, D extends Data<unknown>>(
-  data: Readonly<D[]>,
+function isHierarchicalData<D extends Option<unknown>>(options: Readonly<D[]>) {
+  return options.some((i) => i.children != null)
+}
+
+function findLabel<V extends string, D extends Option<unknown>>(
+  options: Readonly<D[]>,
   value: V,
   fallback = 'NO_NAME_ERROR',
 ) {
-  const parent = data.find(
+  const parent = options.find(
     (item) =>
       item.value === value ||
       item.children?.some((child) => child.value === value),
@@ -42,31 +47,33 @@ function findLabel<V extends string, D extends Data<unknown>>(
 }
 
 interface SelectImplProps<V extends string, D> {
-  data: Readonly<D[]> | Promise<Readonly<D[]>>
+  options: Readonly<D[]> | Promise<Readonly<D[]>>
   field: FieldApi<V | undefined>
   id?: ComponentProps<typeof SelectTrigger>['id']
   placeholder?: ComponentProps<typeof SelectValue>['placeholder']
 }
 
-function SelectImpl<V extends string, D extends Data<V>>({
-  data: dataMayBePromise,
+function SelectImpl<V extends string, D extends Option<V>>({
+  options: optionsMayBePromise,
   field,
   id,
   placeholder,
 }: SelectImplProps<V, D>) {
-  const data =
-    dataMayBePromise instanceof Promise
-      ? use(dataMayBePromise)
-      : dataMayBePromise
+  const options =
+    optionsMayBePromise instanceof Promise
+      ? use(optionsMayBePromise)
+      : optionsMayBePromise
   const hasError = field.state.meta.errors.length > 0
-  const hasGroups = useMemo(() => isHierarchicalData(data), [data])
+  const hasGroups = useMemo(() => isHierarchicalData(options), [options])
   const displayValue = useMemo(() => {
     if (!hasGroups || !field.state.value) return undefined
-    return findLabel(data, field.state.value)
-  }, [data, field.state.value, hasGroups])
+    return findLabel(options, field.state.value)
+  }, [options, field.state.value, hasGroups])
 
   return (
     <Select
+      // Workaround for https://github.com/radix-ui/primitives/issues/3135
+      key={field.state.value ? 'state-value' : 'state-initial'}
       value={field.state.value ?? ''} // value can be `null`, fix later in Types
       onValueChange={(value) => field.handleChange(value as V)}>
       <SelectTrigger
@@ -78,7 +85,7 @@ function SelectImpl<V extends string, D extends Data<V>>({
         <SelectValue placeholder={placeholder}>{displayValue}</SelectValue>
       </SelectTrigger>
       <SelectContent>
-        {data.map((item) =>
+        {options.map((item) =>
           Array.isArray(item.children) ? (
             <SelectGroup key={item.value}>
               <SelectLabel>{item.label}</SelectLabel>
@@ -99,10 +106,10 @@ function SelectImpl<V extends string, D extends Data<V>>({
   )
 }
 
-interface SelectFieldProps<V extends string, D extends Data<V>>
+interface SelectFieldProps<V extends string, D extends Option<V>>
   extends Pick<
     ComponentProps<typeof SelectImpl<V, D>>,
-    'data' | 'field' | 'placeholder'
+    'options' | 'field' | 'placeholder'
   > {
   className?: string
   // TODO: React.use and Suspense is not working with useQuery.promise
@@ -111,7 +118,7 @@ interface SelectFieldProps<V extends string, D extends Data<V>>
   label: string
 }
 
-function SelectField<V extends string, D extends Data<V>>({
+function SelectField<V extends string, D extends Option<V>>({
   className,
   field,
   isLoading,

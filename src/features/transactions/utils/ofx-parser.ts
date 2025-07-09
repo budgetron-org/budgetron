@@ -1,8 +1,8 @@
 import { unescape } from 'lodash'
 import { randomUUID } from 'node:crypto'
+import { Ofx } from 'ofx-data-extractor'
 
 import type { TransactionWithRelations } from '~/features/transactions/types'
-import { Ofx } from 'ofx-data-extractor'
 import { safeParseCurrency } from '~/lib/utils'
 import { categorizeTransactions } from '~/server/ai/service/categorize-transactions'
 import {
@@ -38,6 +38,7 @@ async function parseTransactions({
     type === 'BANK'
       ? content.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.CURDEF
       : content.OFX.CREDITCARDMSGSRSV1.CCSTMTTRNRS.CCSTMTRS.CURDEF,
+    bankAccount.currency,
   )
 
   const processedTransactions = transactions.map((t) => {

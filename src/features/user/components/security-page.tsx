@@ -13,15 +13,10 @@ import { ProgressButton } from '~/components/ui/progress-button'
 import { useAppForm } from '~/hooks/use-app-form'
 import type { getSupportedProviders } from '~/lib/utils'
 import { api } from '~/rpc/client'
-import type { getAuth } from '~/server/auth'
-import type { AwaitedReturnType } from '~/types/shared'
+import type { User, UserAccount } from '~/server/auth'
 import { SecurityFormSchema } from '../validators'
 import { AccountPageContainer } from './account-page-container'
 import { AccountPageSection } from './account-page-section'
-
-type UserAccount = AwaitedReturnType<
-  ReturnType<typeof getAuth>['api']['listUserAccounts']
->[number]
 
 type OAuthProvider = ReturnType<typeof getSupportedProviders>[number]
 
@@ -32,8 +27,9 @@ const PROVIDER_ICONS = {
 
 interface PasswordResetSectionProps {
   isEnabled: boolean
+  user: User
 }
-function PasswordResetSection({ isEnabled }: PasswordResetSectionProps) {
+function PasswordResetSection({ isEnabled, user }: PasswordResetSectionProps) {
   const updatePassword = useMutation(
     api.user.updatePassword.mutationOptions({
       onSuccess() {
@@ -100,16 +96,43 @@ function PasswordResetSection({ isEnabled }: PasswordResetSectionProps) {
           form.handleSubmit()
         }}>
         <form.AppField name="oldPassword">
-          {(field) => <field.TextField label="Old Password" type="password" />}
+          {(field) => (
+            <>
+              {/* Add a hidden email field to trigger the browser's password manager */}
+              <input
+                aria-hidden="true"
+                type="email"
+                autoComplete="username email"
+                value={user.email}
+                hidden
+                readOnly
+              />
+              <field.TextField
+                label="Old Password"
+                type="password"
+                autoComplete="current-password"
+              />
+            </>
+          )}
         </form.AppField>
 
         <form.AppField name="newPassword">
-          {(field) => <field.TextField label="New Password" type="password" />}
+          {(field) => (
+            <field.TextField
+              label="New Password"
+              type="password"
+              autoComplete="new-password"
+            />
+          )}
         </form.AppField>
 
         <form.AppField name="confirmPassword">
           {(field) => (
-            <field.TextField label="Confirm Password" type="password" />
+            <field.TextField
+              label="Confirm Password"
+              type="password"
+              autoComplete="new-password"
+            />
           )}
         </form.AppField>
       </form>
@@ -241,11 +264,13 @@ function SignInMethodsSection({
 }
 
 interface SecurityPageProps {
+  user: User
   userAccounts: UserAccount[]
   availableOAuthProviders: OAuthProvider[]
 }
 
 function SecurityPage({
+  user,
   userAccounts,
   availableOAuthProviders,
 }: SecurityPageProps) {
@@ -255,7 +280,7 @@ function SecurityPage({
 
   return (
     <AccountPageContainer>
-      <PasswordResetSection isEnabled={hasEmailPasswordAccount} />
+      <PasswordResetSection isEnabled={hasEmailPasswordAccount} user={user} />
       <SignInMethodsSection
         accounts={userAccounts}
         providers={availableOAuthProviders}
