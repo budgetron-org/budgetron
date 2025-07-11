@@ -1,3 +1,6 @@
+import { Decimal } from 'decimal.js'
+import { sql } from 'drizzle-orm'
+import { toSnakeCase } from 'drizzle-orm/casing'
 import { z } from 'zod/v4'
 
 import { CURRENCY_CODES } from '~/data/currencies'
@@ -8,15 +11,8 @@ type CurrencyRateRow = typeof CurrencyRateTable.$inferInsert
 
 // TODO: Should this be configurable?
 const CURRENCY_RATE_URL = 'https://open.er-api.com/v6/latest/'
-// Currently we store rates of all currencies with respect to the base currency.
-// Then we can use the base currency to convert to any other currency.
-// For example, if we have the base currency as USD
-// You want INR → EUR:
-// USD → EUR = 0.92
-// USD → INR = 83.2
-// So:
-// rate(INR → EUR) = 0.92 / 83.2 = ~0.01105
-// This means ₹1000 = €11.05
+// Currently we fetch the exchange rate for a base currency
+// and calculate all rates for all combinations of currencies
 const BASE_CURRENCY = 'USD'
 
 const CurrencyRateResponseSchema = z.object({
@@ -37,7 +33,6 @@ const CurrencyRateResponseSchema = z.object({
       {} as Record<(typeof CURRENCY_CODES)[number], z.ZodNumber>,
     ),
   ),
-  // rates: z.record(z.enum(CURRENCY_CODES), z.number()), // Make sure we have all the supported currencies
 })
 
 async function runCurrencyRateSync() {
@@ -51,22 +46,43 @@ async function runCurrencyRateSync() {
     throw new Error(z.prettifyError(error))
   }
 
+  // calculate all combination of exchange rates
+  const rates = Object.entries(data.rates) as [
+    (typeof CURRENCY_CODES)[number],
+    number,
+  ][]
+  const rateCombinations: CurrencyRateRow[] = []
+  // Some common values
+  const source = data.provider
+  const date = new Date(data.time_last_update_utc)
+  // Calculate all combinations of exchange rates
+  for (const [sourceCurrency, sourceRate] of rates) {
+    for (const [targetCurrency, targetRate] of rates) {
+      if (sourceCurrency === targetCurrency) {
+        rateCombinations.push({
+          source,
+          sourceCurrency,
+          targetCurrency,
+          rate: '1.0000000000',
+          date,
+        })
+        continue
+      }
+
+      const rate = new Decimal(targetRate).div(sourceRate).toString()
+      rateCombinations.push({
+        source,
+        sourceCurrency,
+        targetCurrency,
+        rate,
+        date,
+      })
+    }
+  }
+
   await db
     .insert(CurrencyRateTable)
-    .values(
-      CURRENCY_CODES
-        // Exclude the base currency
-        .filter((currency) => currency !== BASE_CURRENCY)
-        .map<CurrencyRateRow>((currency) => {
-          return {
-            source: data.provider,
-            sourceCurrency: data.base_code,
-            targetCurrency: currency,
-            rate: data.rates[currency].toString(),
-            date: new Date(data.time_last_update_utc),
-          }
-        }),
-    )
+    .values(rateCombinations)
     .onConflictDoUpdate({
       target: [
         CurrencyRateTable.sourceCurrency,
@@ -75,9 +91,8 @@ async function runCurrencyRateSync() {
         CurrencyRateTable.source,
       ],
       set: {
-        rate: CurrencyRateTable.rate,
-        date: CurrencyRateTable.date,
-        updatedAt: new Date(),
+        rate: sql.raw(`excluded.${toSnakeCase(CurrencyRateTable.rate.name)}`),
+        updatedAt: sql.raw(`now()`),
       },
     })
 }
