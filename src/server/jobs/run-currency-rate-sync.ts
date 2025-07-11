@@ -87,11 +87,11 @@ async function runCurrencyRateSync() {
       target: [
         CurrencyRateTable.sourceCurrency,
         CurrencyRateTable.targetCurrency,
-        CurrencyRateTable.date,
         CurrencyRateTable.source,
       ],
       set: {
         rate: sql.raw(`excluded.${toSnakeCase(CurrencyRateTable.rate.name)}`),
+        date: sql.raw(`excluded.${toSnakeCase(CurrencyRateTable.date.name)}`),
         updatedAt: sql.raw(`now()`),
       },
     })
