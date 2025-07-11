@@ -14,6 +14,7 @@ const CURRENCY_RATE_URL = 'https://open.er-api.com/v6/latest/'
 // Currently we fetch the exchange rate for a base currency
 // and calculate all rates for all combinations of currencies
 const BASE_CURRENCY = 'USD'
+const UNIT_RATE = '1.0000000000' as Intl.StringNumericLiteral
 
 const CurrencyRateResponseSchema = z.object({
   result: z.literal('success'), // failure will fail the parsing
@@ -63,13 +64,15 @@ async function runCurrencyRateSync() {
           source,
           sourceCurrency,
           targetCurrency,
-          rate: '1.0000000000',
+          rate: UNIT_RATE,
           date,
         })
         continue
       }
 
-      const rate = new Decimal(targetRate).div(sourceRate).toString()
+      const rate = new Decimal(targetRate)
+        .div(sourceRate)
+        .toString() as Intl.StringNumericLiteral
       rateCombinations.push({
         source,
         sourceCurrency,
