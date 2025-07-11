@@ -242,7 +242,7 @@ function CategoryReportCard({
                     <ChartTooltipContent
                       hideLabel
                       valueFormatter={(value) =>
-                        formatter.format(safeParseNumber(value))
+                        formatter.format(value as ChartItem['total'])
                       }
                     />
                   }

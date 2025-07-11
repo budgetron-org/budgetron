@@ -17,7 +17,6 @@ import {
 import { type ChartConfig } from '~/components/ui/chart'
 import type { CashFlowReportData } from '~/features/analytics/types'
 import { getCurrencyFormatter } from '~/lib/format'
-import { safeParseNumber } from '~/lib/utils'
 
 const chartConfig = {
   income: {
@@ -43,7 +42,13 @@ interface CashFlowChartProps extends ComponentPropsWithoutRef<typeof Card> {
 function CashFlowChart({ data, description, ...props }: CashFlowChartProps) {
   const yAxisFormatter = useCallback<
     NonNullable<ComponentProps<typeof BarChart<typeof data>>['yAxisFormatter']>
-  >((value) => currencyFormatter.format(safeParseNumber(value)), [])
+  >(
+    (value) =>
+      currencyFormatter.format(
+        value as CashFlowReportData['income'] | CashFlowReportData['expenses'],
+      ),
+    [],
+  )
 
   return (
     <Card {...props}>

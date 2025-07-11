@@ -11,7 +11,7 @@ type CategoryReport = {
   parentCategoryId: string | null
   parentCategoryName: string | null
   parentCategoryIcon: string | null
-  total: string
+  total: Intl.StringNumericLiteral
 }
 
 type CashFlowReportRange = z.infer<typeof CashFlowReportRangeSchema>
@@ -49,10 +49,10 @@ type CashFlowReport = {
 type CashFlowType = 'INCOME' | 'EXPENSE' | 'SAVINGS' | 'INVESTMENT'
 type OverviewSummary = {
   [key in CashFlowType]: {
-    ytd: number
-    thisMonth: number
-    lastMonth: number
-    sixMonthAvg: number
+    ytd: Intl.StringNumericLiteral
+    thisMonth: Intl.StringNumericLiteral
+    lastMonth: Intl.StringNumericLiteral
+    sixMonthAvg: Intl.StringNumericLiteral
   }
 }
 

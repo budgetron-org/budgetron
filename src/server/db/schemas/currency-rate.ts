@@ -1,6 +1,6 @@
-import { date, decimal, pgTable, text, unique } from 'drizzle-orm/pg-core'
+import { date, pgTable, text, unique } from 'drizzle-orm/pg-core'
 
-import { createdAt, currencyType, id, updatedAt } from '../utils'
+import { createdAt, currencyType, id, moneyType, updatedAt } from '../utils'
 
 const CurrencyRateTable = pgTable(
   'currency_rates',
@@ -9,7 +9,7 @@ const CurrencyRateTable = pgTable(
     sourceCurrency: currencyType().notNull(),
     targetCurrency: currencyType().notNull(),
     date: date({ mode: 'date' }).notNull(),
-    rate: decimal().notNull(),
+    rate: moneyType().notNull(),
     source: text().notNull(),
     createdAt,
     updatedAt,

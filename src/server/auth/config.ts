@@ -2,6 +2,7 @@ import { type BetterAuthOptions } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
 import { genericOAuth } from 'better-auth/plugins'
+import { getTableName } from 'drizzle-orm'
 import crypto from 'node:crypto'
 
 import { DeleteAccountEmail } from '~/emails/delete-account-email'
@@ -54,20 +55,18 @@ export const authConfig = {
 
   // Use our own schema
   account: {
-    modelName: 'accounts',
+    modelName: getTableName(schema.AccountTable),
     accountLinking: {
       allowDifferentEmails: true,
       enabled: true,
     },
   },
-  session: { modelName: 'sessions' },
+  session: { modelName: getTableName(schema.SessionTable) },
   user: {
-    modelName: 'users',
+    modelName: getTableName(schema.UserTable),
     additionalFields: {
       role: {
-        type: 'string',
-        required: false,
-        defaultValue: schema.UserRoleEnum.enumValues[0],
+        type: schema.UserRoleEnum.enumValues,
         input: false,
       },
     },
@@ -86,7 +85,7 @@ export const authConfig = {
       },
     },
   },
-  verification: { modelName: 'verifications' },
+  verification: { modelName: getTableName(schema.VerificationTable) },
 
   advanced: {
     database: {

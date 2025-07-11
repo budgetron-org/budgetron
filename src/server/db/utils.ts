@@ -17,4 +17,10 @@ const currencyType = customType<{ data: CurrencyCode }>({
   },
 })
 
-export { createdAt, currencyType, id, updatedAt }
+const moneyType = customType<{ data: Intl.StringNumericLiteral }>({
+  dataType() {
+    return 'numeric'
+  },
+})
+
+export { createdAt, currencyType, id, moneyType, updatedAt }

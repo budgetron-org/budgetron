@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm'
-import { decimal, pgTable, unique, uuid } from 'drizzle-orm/pg-core'
+import { pgTable, unique, uuid } from 'drizzle-orm/pg-core'
 
-import { createdAt, id, updatedAt } from '../utils'
+import { createdAt, id, moneyType, updatedAt } from '../utils'
 import { CategoryTable } from './category'
 import { UserTable } from './user'
 
@@ -19,7 +19,7 @@ const BudgetTable = pgTable(
     userId: uuid()
       .references(() => UserTable.id, { onDelete: 'cascade' })
       .notNull(),
-    amount: decimal().notNull(),
+    amount: moneyType().notNull(),
   },
   (t) => [unique().on(t.categoryId, t.userId)],
 )

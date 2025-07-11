@@ -4,7 +4,7 @@ import { useCallback, type ComponentProps } from 'react'
 import { BarChart } from '~/components/ui/bar-chart'
 import { type ChartConfig } from '~/components/ui/chart'
 import { getCurrencyFormatter } from '~/lib/format'
-import { formatMonthLabel, safeParseNumber } from '~/lib/utils'
+import { formatMonthLabel } from '~/lib/utils'
 import type { BudgetDetails } from '../types'
 
 const chartConfig = {
@@ -30,7 +30,13 @@ function BudgetSpendChart({ budget, data }: BudgetSpendChartProps) {
   >((value) => formatMonthLabel(String(value)), [])
   const yAxisFormatter = useCallback<
     NonNullable<ComponentProps<typeof BarChart<typeof data>>['yAxisFormatter']>
-  >((value) => currencyFormatter.format(safeParseNumber(value)), [])
+  >(
+    (value) =>
+      currencyFormatter.format(
+        value as BudgetDetails['monthlyAverages'][number]['average'],
+      ),
+    [],
+  )
 
   return (
     <BarChart

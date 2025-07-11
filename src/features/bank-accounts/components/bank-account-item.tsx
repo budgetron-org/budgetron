@@ -12,14 +12,12 @@ import {
   TooltipTrigger,
 } from '~/components/ui/tooltip'
 import { getCurrencyFormatter } from '~/lib/format'
-import { getCurrencyMeta, safeParseNumber } from '~/lib/utils'
+import { getCurrencyMeta } from '~/lib/utils'
 import type { BankAccount } from '../types'
 import { BankAccountItemOptions } from './bank-account-item-options'
 
-// TODO: Get the currency from User Settings
-const currencyFormatter = getCurrencyFormatter('USD')
-
 function BankAccountItem({ bankAccount }: { bankAccount: BankAccount }) {
+  const currencyFormatter = getCurrencyFormatter(bankAccount.currency)
   return (
     <Card className="h-fit w-full md:w-[300px]">
       <CardHeader>
@@ -46,7 +44,7 @@ function BankAccountItem({ bankAccount }: { bankAccount: BankAccount }) {
           <div className="flex items-center gap-2">
             Account Balance
             <span className="text-muted-foreground text-sm">
-              {currencyFormatter.format(safeParseNumber(bankAccount.balance))}
+              {currencyFormatter.format(bankAccount.balance)}
             </span>
           </div>
         </div>

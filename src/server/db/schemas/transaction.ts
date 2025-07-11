@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm'
-import { date, decimal, index, pgTable, text, uuid } from 'drizzle-orm/pg-core'
+import { date, index, pgTable, text, uuid } from 'drizzle-orm/pg-core'
 
-import { createdAt, currencyType, id, updatedAt } from '../utils'
+import { createdAt, currencyType, id, moneyType, updatedAt } from '../utils'
 import { BankAccountTable } from './bank-account'
 import { CategoryTable } from './category'
 import { TransactionTypeEnum } from './enums'
@@ -17,7 +17,7 @@ const TransactionTable = pgTable(
     updatedAt,
     type: TransactionTypeEnum().notNull().default('EXPENSE'),
     date: date({ mode: 'date' }).notNull(),
-    amount: decimal().notNull(),
+    amount: moneyType().notNull(),
     currency: currencyType().notNull().default('USD'),
     description: text().notNull(),
     notes: text(),
