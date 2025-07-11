@@ -30,6 +30,9 @@ const env = createEnv({
     EMAIL_PROVIDER_FROM_EMAIL: z.string().nonempty().optional(),
 
     BLOB_READ_WRITE_TOKEN: z.string().nonempty().optional(),
+
+    CRON_SECRET_SLUG: z.string().nonempty(),
+    CRON_SECRET_TOKEN: z.string().nonempty(),
   },
   experimental__runtimeEnv: process.env,
   // Skip build time validation when running on CI or docker build as the env variables are not available

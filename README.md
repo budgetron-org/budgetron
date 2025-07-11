@@ -121,6 +121,13 @@ Then fill in your actual values.
 | ----------------------- | ----------------------------------------------- | -------- |
 | `BLOB_READ_WRITE_TOKEN` | Vercel Blob Read/Write Token (for file uploads) | ❌       |
 
+### 🕰️ Cron Jobs
+
+| Variable            | Description         | Required |
+| ------------------- | ------------------- | -------- |
+| `CRON_SECRET_SLUG`  | Slug for cron jobs  | ✅ Yes   |
+| `CRON_SECRET_TOKEN` | Token for cron jobs | ✅ Yes   |
+
 ## 🐳 Docker Usage
 
 ### Build the image
