@@ -77,6 +77,20 @@ function TransactionForm({
         )}
       </form.AppField>
 
+      <form.Subscribe selector={(state) => state.values.bankAccountId}>
+        {(bankAccountId) => (
+          <form.AppField name="currency">
+            {(field) => (
+              <field.CurrencyField
+                label="Currency"
+                className="md:col-span-2"
+                disabled={bankAccountId != null}
+              />
+            )}
+          </form.AppField>
+        )}
+      </form.Subscribe>
+
       <form.AppField name="amount">
         {(field) => (
           <field.TextField
@@ -92,6 +106,23 @@ function TransactionForm({
       </form.AppField>
 
       <form.AppField
+        name="bankAccountId"
+        listeners={{
+          onChange({ fieldApi, value }) {
+            if (!value) return
+            fieldApi.form.setFieldValue('currency', 'INR')
+          },
+        }}>
+        {(field) => (
+          <field.BankAccountField
+            label="Account"
+            className="md:col-span-3"
+            placeholder="Select an account"
+          />
+        )}
+      </form.AppField>
+
+      <form.AppField
         name="type"
         listeners={{
           onChange({ fieldApi }) {
@@ -100,7 +131,11 @@ function TransactionForm({
           },
         }}>
         {(field) => (
-          <field.TransactionTypeField label="Type" className="md:col-span-2" />
+          <field.TransactionTypeField
+            label="Type"
+            className="md:col-span-3"
+            placeholder="Select a type"
+          />
         )}
       </form.AppField>
 
@@ -133,7 +168,7 @@ function TransactionForm({
               {(field) => (
                 <field.CategoryField
                   label="Category"
-                  className="md:col-span-3"
+                  className="md:col-span-6"
                   placeholder="Select a category"
                   type={type}
                 />
@@ -142,16 +177,6 @@ function TransactionForm({
           </>
         )}
       </form.Subscribe>
-
-      <form.AppField name="bankAccountId">
-        {(field) => (
-          <field.BankAccountField
-            label="Account"
-            className="md:col-span-3"
-            placeholder="Select an account"
-          />
-        )}
-      </form.AppField>
 
       <form.AppField name="notes">
         {(field) => (

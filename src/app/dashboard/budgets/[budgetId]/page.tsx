@@ -1,9 +1,10 @@
 import { IconArrowLeft } from '@tabler/icons-react'
-import { format, subMonths } from 'date-fns'
+import { endOfToday, format, startOfToday, subMonths } from 'date-fns'
 import Link from 'next/link'
 
 import { Button } from '~/components/ui/button'
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
+import { MultiCurrencyNotice } from '~/components/widgets/multi-currency-notice'
 import { TransactionsTable } from '~/components/widgets/transactions-table'
 import { PATHS } from '~/data/routes'
 import { requireAuthentication } from '~/features/auth/utils'
@@ -13,7 +14,20 @@ import { api } from '~/rpc/server'
 
 async function BudgetPageImpl({ budgetId }: { budgetId: string }) {
   await requireAuthentication()
-  const budgetDetails = await api.budgets.details({ id: budgetId })
+  // get the 1 year rolling budget details
+  const fromDate = subMonths(startOfToday(), 12)
+  const toDate = endOfToday()
+  const budgetDetails = await api.budgets.details({
+    id: budgetId,
+    fromDate,
+    toDate,
+  })
+  // get all transactions for the budget
+  const transactionDetails = await api.transactions.getByCategory({
+    categoryId: budgetDetails.budgetSummary.categoryId,
+    from: fromDate,
+    to: toDate,
+  })
   const title = budgetDetails.budgetSummary.parentCategoryName
     ? `${budgetDetails.budgetSummary.parentCategoryName} / ${budgetDetails.budgetSummary.categoryName}`
     : budgetDetails.budgetSummary.categoryName
@@ -50,13 +64,26 @@ async function BudgetPageImpl({ budgetId }: { budgetId: string }) {
           <div className="flex flex-col gap-2 rounded-lg border p-4">
             <h2 className="text-xl font-semibold">Transactions</h2>
             <TransactionsTable
-              data={budgetDetails.transactions}
+              data={transactionDetails.transactions}
               showFilters
               defaultColumnVisibility={{
                 actions: false,
                 select: false,
               }}
               hasBulkDeleteAction={false}
+              message={
+                transactionDetails.convertedCurrencies.length > 0 && (
+                  <MultiCurrencyNotice
+                    baseCurrency={transactionDetails.baseCurrency}
+                    additionalCurrencies={
+                      transactionDetails.convertedCurrencies
+                    }
+                    currencyExchangeAttribution={
+                      transactionDetails.currencyExchangeAttribution
+                    }
+                  />
+                )
+              }
             />
           </div>
         </div>

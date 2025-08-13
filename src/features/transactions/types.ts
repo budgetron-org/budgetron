@@ -1,3 +1,4 @@
+import type { CurrencyCode } from '~/data/currencies'
 import type {
   BankAccountTable,
   CategoryTable,
@@ -19,9 +20,23 @@ type TransactionWithRelations = Transaction & {
       })
     | null
   group: typeof GroupTable.$inferSelect | null
-
-  // extras
-  cashFlow: TransactionCashFlow
 }
 
-export type { Transaction, TransactionCashFlow, TransactionWithRelations }
+type DetailedTransaction = TransactionWithRelations & {
+  cashFlow: TransactionCashFlow
+
+  currencyExchangeDetails: {
+    hasConversionRate: boolean
+    amountInBaseCurrency: Intl.StringNumericLiteral
+    baseCurrency: CurrencyCode
+    conversionRate: Intl.StringNumericLiteral
+    date: Date
+  }
+}
+
+export type {
+  DetailedTransaction,
+  Transaction,
+  TransactionCashFlow,
+  TransactionWithRelations,
+}

@@ -1,5 +1,6 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -13,29 +14,30 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table'
 import { capitalize } from 'lodash'
-import { useId, useMemo, useState } from 'react'
+import { useId, useMemo, useState, type ReactNode } from 'react'
 
 import { DataTable } from '~/components/table'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { MultiSelect } from '~/components/ui/multi-select'
-import type { TransactionWithRelations } from '~/features/transactions/types'
-import { getCurrencyFormatter } from '~/lib/format'
-import { cn } from '~/lib/utils'
-import { getColumns, type ColumnId } from './transactions-table-columns'
 import { DeleteSelectedTransactionsDialog } from '~/features/transactions/components/delete-selected-transactions-dialog'
+import type { DetailedTransaction } from '~/features/transactions/types'
+import { cn } from '~/lib/utils'
+import { api } from '~/rpc/client'
+import { getColumns, type ColumnId } from './transactions-table-columns'
 
 interface TransactionsTableProps {
   className?: string
-  data?: TransactionWithRelations[]
+  data?: DetailedTransaction[]
   defaultColumnVisibility?: Partial<Record<ColumnId, boolean>>
-  defaultEditable?: TableMeta<TransactionWithRelations>['editable']
+  defaultEditable?: TableMeta<DetailedTransaction>['editable']
   hasEditAction?: boolean
   hasDeleteAction?: boolean
   hasBulkDeleteAction?: boolean
   isLoading?: boolean
-  onDataUpdate?: (data: TransactionWithRelations[]) => void
+  message?: ReactNode
+  onDataUpdate?: (data: DetailedTransaction[]) => void
   showFilters?: boolean
 }
 
@@ -48,18 +50,22 @@ function TransactionsTable({
   hasBulkDeleteAction = true,
   defaultEditable,
   isLoading,
+  message,
   onDataUpdate,
   showFilters = true,
 }: TransactionsTableProps) {
-  const columns = useMemo(() => getColumns<TransactionWithRelations>(), [])
+  const columns = useMemo(() => getColumns<DetailedTransaction>(), [])
   const [editable] = useState(defaultEditable)
-  const meta = useMemo<TableMeta<TransactionWithRelations>>(
+  const { data: userSettings } = useQuery(
+    api.user.getUserSettings.queryOptions(),
+  )
+  const meta = useMemo<TableMeta<DetailedTransaction>>(
     () => ({
       actions: {
         edit: hasEditAction,
         delete: hasDeleteAction,
       },
-      currencyFormatter: getCurrencyFormatter('USD'),
+      baseCurrency: userSettings?.currency ?? 'USD',
       editable,
       deleteRow(_, rowIndex) {
         onDataUpdate?.(data.filter((_, index) => index !== rowIndex))
@@ -81,7 +87,14 @@ function TransactionsTable({
         )
       },
     }),
-    [hasEditAction, hasDeleteAction, editable, onDataUpdate, data],
+    [
+      data,
+      editable,
+      hasDeleteAction,
+      hasEditAction,
+      onDataUpdate,
+      userSettings,
+    ],
   )
 
   // Sorting
@@ -295,6 +308,8 @@ function TransactionsTable({
           )}
         </div>
       )}
+
+      {message}
 
       <DataTable
         className={cn(className, 'min-h-0 flex-1')}

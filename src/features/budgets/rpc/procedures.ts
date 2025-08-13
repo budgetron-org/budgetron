@@ -48,7 +48,7 @@ const create = protectedProcedure
 
     try {
       const budget = await insertBudget({
-        amount: input.amount,
+        amount: input.amount as Intl.StringNumericLiteral,
         categoryId: input.categoryId,
         userId: user.id,
       })
@@ -65,7 +65,7 @@ const update = protectedProcedure
 
     try {
       const budget = await updateBudget({
-        amount: input.amount,
+        amount: input.amount as Intl.StringNumericLiteral,
         categoryId: input.categoryId,
         id: input.id,
         userId: user.id,

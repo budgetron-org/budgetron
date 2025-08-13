@@ -1,10 +1,4 @@
-import type {
-  BankAccountTable,
-  BudgetTable,
-  CategoryTable,
-  GroupTable,
-  TransactionTable,
-} from '~/server/db/schema'
+import type { BudgetTable } from '~/server/db/schema'
 
 type Budget = typeof BudgetTable.$inferSelect
 
@@ -22,33 +16,20 @@ type BudgetWithRelations = Pick<
 }
 
 type BudgetSummary = BudgetWithRelations & {
-  amountFloat: number
-  oneYearAverage: number
-  last3MonthAverage: number
-  ytdSpend: number
-  lastMonthSpend: number
-  thisMonthSpend: number
-  projectedSpend: number
+  oneYearAverage: Intl.StringNumericLiteral
+  last3MonthAverage: Intl.StringNumericLiteral
+  ytdSpend: Intl.StringNumericLiteral
+  lastMonthSpend: Intl.StringNumericLiteral
+  thisMonthSpend: Intl.StringNumericLiteral
+  projectedSpend: Intl.StringNumericLiteral
 }
 
 type BudgetDetails = {
   budgetSummary: BudgetSummary
   monthlyAverages: {
     month: string
-    average: number
+    average: Intl.StringNumericLiteral
   }[]
-  transactions: (typeof TransactionTable.$inferSelect & {
-    bankAccount: typeof BankAccountTable.$inferSelect | null
-    fromBankAccount: typeof BankAccountTable.$inferSelect | null
-    toBankAccount: typeof BankAccountTable.$inferSelect | null
-    category:
-      | (typeof CategoryTable.$inferSelect & {
-          parent: typeof CategoryTable.$inferSelect | null
-        })
-      | null
-    group: typeof GroupTable.$inferSelect | null
-    cashFlow: 'IN' | 'OUT'
-  })[]
 }
 
 export type { Budget, BudgetDetails, BudgetSummary }

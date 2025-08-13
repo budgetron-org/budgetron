@@ -27,7 +27,7 @@ const create = protectedProcedure
 
     try {
       const transaction = await insertTransaction({
-        amount: input.amount,
+        amount: input.amount as Intl.StringNumericLiteral,
         bankAccountId: input.bankAccountId,
         categoryId: input.categoryId,
         currency: input.currency,
@@ -56,7 +56,7 @@ const createMany = protectedProcedure
     try {
       const transactions = await insertManyTransactions(
         input.map((t) => ({
-          amount: t.amount,
+          amount: t.amount as Intl.StringNumericLiteral,
           bankAccountId: t.bankAccountId,
           categoryId: t.categoryId,
           currency: t.currency,
@@ -116,12 +116,12 @@ const getByDateRange = protectedProcedure
     const { user } = context.session
 
     try {
-      const transactions = await selectTransactions({
+      const result = await selectTransactions({
         userId: user.id,
         fromDate: input.from,
         toDate: input.to,
       })
-      return transactions
+      return result
     } catch (error) {
       throw createRPCErrorFromUnknownError(error)
     }
@@ -133,13 +133,13 @@ const getByCategory = protectedProcedure
     const { user } = context.session
 
     try {
-      const transactions = await selectTransactions({
+      const result = await selectTransactions({
         userId: user.id,
         fromDate: input.from,
         toDate: input.to,
         categoryId: input.categoryId,
       })
-      return transactions
+      return result
     } catch (error) {
       throw createRPCErrorFromUnknownError(error)
     }
@@ -147,7 +147,8 @@ const getByCategory = protectedProcedure
 
 const parseOFX = protectedProcedure
   .input(ParseOFXInputSchema)
-  .handler(async ({ input }) => {
+  .handler(async ({ context, input }) => {
+    const { user } = context.session
     try {
       const promises = input.files.map((file) =>
         parseOFXFile({
@@ -155,12 +156,21 @@ const parseOFX = protectedProcedure
           file,
           shouldAutoCategorize: input.shouldAutoCategorize,
           groupId: input.groupId,
+          userId: user.id,
         }),
       )
-      const transactions = (await Promise.all(promises))
-        .flat()
-        .sort((a, b) => b.date.getTime() - a.date.getTime())
-      return transactions
+      const result = await Promise.all(promises)
+      return {
+        baseCurrency: result[0]!.baseCurrency,
+        convertedCurrencies: Array.from(
+          new Set(result.map((r) => r.convertedCurrencies).flat()),
+        ),
+        transactions: result
+          .map((r) => r.transactions)
+          .flat()
+          .sort((a, b) => b.date.getTime() - a.date.getTime()),
+        currencyExchangeAttribution: result[0]!.currencyExchangeAttribution,
+      }
     } catch (error) {
       throw createRPCErrorFromUnknownError(error)
     }
@@ -169,14 +179,14 @@ const parseOFX = protectedProcedure
 const update = protectedProcedure
   .input(UpdateTransactionInputSchema)
   .handler(async ({ context, input }) => {
-    const session = context.session
+    const { user } = context.session
 
     try {
       const bankAccount = await updateTransaction({
-        amount: input.amount,
+        amount: input.amount as Intl.StringNumericLiteral,
         bankAccountId: input.bankAccountId,
         categoryId: input.categoryId,
-        currency: 'USD',
+        currency: input.currency,
         date: input.date,
         description: input.description,
         externalId: input.externalId,
@@ -187,7 +197,7 @@ const update = protectedProcedure
         tags: input.tags,
         toBankAccountId: input.toBankAccountId,
         type: input.type,
-        userId: session.user.id,
+        userId: user.id,
       })
       return bankAccount
     } catch (error) {

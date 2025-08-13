@@ -21,7 +21,9 @@ interface BarChartProps<Data extends object> {
   xAxisKey: keyof Data
   barKeys: (keyof Data)[]
   xAxisFormatter?: (value: unknown) => string
+  xAxisValueFormatter?: (value: unknown) => string
   yAxisFormatter?: (value: unknown) => string
+  yAxisValueFormatter?: (value: unknown) => string
   xReferenceLineValue?: number | string
   yReferenceLineValue?: number | string
 }
@@ -32,7 +34,9 @@ function BarChart<Data extends object>({
   xAxisKey,
   barKeys,
   xAxisFormatter,
+  xAxisValueFormatter,
   yAxisFormatter,
+  yAxisValueFormatter,
   xReferenceLineValue,
   yReferenceLineValue,
 }: BarChartProps<Data>) {
@@ -65,8 +69,8 @@ function BarChart<Data extends object>({
           content={
             <ChartTooltipContent
               indicator="dashed"
-              labelFormatter={xAxisFormatter}
-              valueFormatter={yAxisFormatter}
+              labelFormatter={xAxisValueFormatter ?? xAxisFormatter}
+              valueFormatter={yAxisValueFormatter ?? yAxisFormatter}
             />
           }
         />
@@ -76,7 +80,7 @@ function BarChart<Data extends object>({
             stroke="red"
             label={{
               value: xReferenceLineValue,
-              formatter: xAxisFormatter,
+              formatter: xAxisValueFormatter ?? xAxisFormatter,
             }}
             ifOverflow="extendDomain"
             strokeDasharray="5 5"

@@ -1,7 +1,6 @@
 import { and, between, desc, eq, inArray, sql } from 'drizzle-orm'
 import { alias } from 'drizzle-orm/pg-core'
 
-import { startOfMonth, startOfToday, subMonths } from 'date-fns'
 import { db } from '~/server/db'
 import {
   BudgetTable,
@@ -36,82 +35,67 @@ async function getBudgetsSummary({
       parentCategoryName: ParentCategoryTable.name,
       parentCategoryIcon: ParentCategoryTable.icon,
 
-      // Parsed fields
-      amountFloat: sql<number>`COALESCE(${BudgetTable.amount}, 0)::float`,
-
-      // 1 Year Average
-      oneYearAverage: sql<number>`
-        COALESCE((
-          SELECT AVG(month_amount)::float
-          FROM (
-            SELECT SUM(t.amount) AS month_amount
-            FROM ${TransactionTable} t
-            WHERE t.category_id = ${CategoryTable.id}
-              AND t.type = 'EXPENSE'
-              AND t.date >= CURRENT_DATE - INTERVAL '1 year'
-            GROUP BY DATE_TRUNC('month', t.date)
-          ) sub
-        ), 0)
+      // 1 Year Monthly Average
+      oneYearAverage: sql<Intl.StringNumericLiteral>`
+        SELECT AVG(month_amount)
+        FROM (
+          SELECT SUM(t.amount) AS month_amount
+          FROM ${TransactionTable} t
+          WHERE t.category_id = ${CategoryTable.id}
+            AND t.type = 'EXPENSE'
+            AND t.date >= CURRENT_DATE - INTERVAL '1 year'
+          GROUP BY DATE_TRUNC('month', t.date)
+        ) sub
       `,
 
-      // Last 3-Month Average
-      last3MonthAverage: sql<number>`
-        COALESCE((
-          SELECT AVG(month_amount)::float
-          FROM (
-            SELECT SUM(t.amount) AS month_amount
+      // Last 3-Month Monthly Average
+      last3MonthAverage: sql<Intl.StringNumericLiteral>`
+        SELECT AVG(month_amount)
+        FROM (
+          SELECT SUM(t.amount) AS month_amount
             FROM ${TransactionTable} t
             WHERE t.category_id = ${CategoryTable.id}
               AND t.type = 'EXPENSE'
               AND t.date >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '3 months'
             GROUP BY DATE_TRUNC('month', t.date)
           ) sub
-        ), 0)
       `,
 
       // Year to Date Spend
-      ytdSpend: sql<number>`
-        COALESCE((
-          SELECT SUM(t.amount)::float
-          FROM ${TransactionTable} t
-          WHERE t.category_id = ${CategoryTable.id}
-            AND t.type = 'EXPENSE'
-            AND t.date >= DATE_TRUNC('year', CURRENT_DATE)
-        ), 0)
+      ytdSpend: sql<Intl.StringNumericLiteral>`
+        SELECT SUM(t.amount)
+        FROM ${TransactionTable} t
+        WHERE t.category_id = ${CategoryTable.id}
+          AND t.type = 'EXPENSE'
+          AND t.date >= DATE_TRUNC('year', CURRENT_DATE)
       `,
 
       // Last Month Spend
-      lastMonthSpend: sql<number>`
-        COALESCE((
-          SELECT SUM(t.amount)::float
-          FROM ${TransactionTable} t
-          WHERE t.category_id = ${CategoryTable.id}
-            AND t.type = 'EXPENSE'
-            AND DATE_TRUNC('month', t.date) = DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
-        ), 0)
+      lastMonthSpend: sql<Intl.StringNumericLiteral>`
+        SELECT SUM(t.amount)
+        FROM ${TransactionTable} t
+        WHERE t.category_id = ${CategoryTable.id}
+          AND t.type = 'EXPENSE'
+          AND DATE_TRUNC('month', t.date) = DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
       `,
 
       // This Month Spend
-      thisMonthSpend: sql<number>`
-        COALESCE((
-          SELECT SUM(t.amount)::float
-          FROM ${TransactionTable} t
-          WHERE t.category_id = ${CategoryTable.id}
-            AND t.type = 'EXPENSE'
-            AND DATE_TRUNC('month', t.date) = DATE_TRUNC('month', CURRENT_DATE)
-        ), 0)
+      thisMonthSpend: sql<Intl.StringNumericLiteral>`
+        SELECT SUM(t.amount)
+        FROM ${TransactionTable} t
+        WHERE t.category_id = ${CategoryTable.id}
+          AND t.type = 'EXPENSE'
+          AND DATE_TRUNC('month', t.date) = DATE_TRUNC('month', CURRENT_DATE)
       `,
 
-      projectedSpend: sql<number>`
-        COALESCE((
-          SELECT
-            (SUM(t.amount) / GREATEST(EXTRACT(DAY FROM CURRENT_DATE)::float, 1)) 
-            * EXTRACT(DAY FROM DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month - 1 day')
-          FROM ${TransactionTable} t
-          WHERE t.category_id = ${CategoryTable.id}
-            AND t.type = 'EXPENSE'
-            AND DATE_TRUNC('month', t.date) = DATE_TRUNC('month', CURRENT_DATE)
-        ), 0)
+      projectedSpend: sql<Intl.StringNumericLiteral>`
+        SELECT
+          (SUM(t.amount) / GREATEST(EXTRACT(DAY FROM CURRENT_DATE), 1)) 
+          * EXTRACT(DAY FROM DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month - 1 day')
+        FROM ${TransactionTable} t
+        WHERE t.category_id = ${CategoryTable.id}
+          AND t.type = 'EXPENSE'
+          AND DATE_TRUNC('month', t.date) = DATE_TRUNC('month', CURRENT_DATE)
       `,
     })
     .from(BudgetTable)
@@ -136,23 +120,22 @@ async function getBudgetsSummary({
 type GetBudgetDetailsFilters = {
   id: string
   userId: string
+  fromDate: Date
+  toDate: Date
 }
 async function getBudgetDetails({
   id,
   userId,
+  fromDate,
+  toDate,
 }: GetBudgetDetailsFilters): Promise<BudgetDetails> {
-  // first get the budget summary
   const [budgetSummary] = await getBudgetsSummary({ userId, budgetIds: [id] })
   if (budgetSummary == null) throw new Error('Budget not found')
 
-  const today = startOfToday()
-  const oneYearAgo = subMonths(startOfMonth(today), 12)
-
-  // get the 1 year rolling monthly averages for chart
   const rawMonthlyAverages = await db
     .select({
       month: sql<string>`TO_CHAR(DATE_TRUNC('month', ${TransactionTable.date}), 'YYYY-MM')`,
-      average: sql<number>`SUM(${TransactionTable.amount})::float`,
+      average: sql<Intl.StringNumericLiteral>`SUM(${TransactionTable.amount})`,
     })
     .from(TransactionTable)
     .where(
@@ -160,50 +143,20 @@ async function getBudgetDetails({
         eq(TransactionTable.userId, userId),
         eq(TransactionTable.categoryId, budgetSummary.categoryId),
         eq(TransactionTable.type, 'EXPENSE'),
-        between(TransactionTable.date, oneYearAgo, today),
+        between(TransactionTable.date, fromDate, toDate),
       ),
     )
     .groupBy(sql<string>`DATE_TRUNC('month', ${TransactionTable.date})`)
     .orderBy(desc(sql<string>`DATE_TRUNC('month', ${TransactionTable.date})`))
   const monthlyAverages = fillMissingMonthlyAverages(
     rawMonthlyAverages,
-    oneYearAgo,
-    today,
+    fromDate,
+    toDate,
   )
 
-  // get the 1 year rolling transactions (with all the relations)
-  const transactions = await db.query.TransactionTable.findMany({
-    where: and(
-      eq(TransactionTable.userId, userId),
-      eq(TransactionTable.categoryId, budgetSummary.categoryId),
-      eq(TransactionTable.type, 'EXPENSE'),
-      between(TransactionTable.date, oneYearAgo, today),
-    ),
-    with: {
-      bankAccount: true,
-      fromBankAccount: true,
-      toBankAccount: true,
-      category: { with: { parent: true } },
-      group: true,
-    },
-    extras: {
-      cashFlow: sql<'IN' | 'OUT'>`
-        CASE
-          WHEN ${TransactionTable.type} = 'INCOME' THEN 'IN'
-          WHEN ${TransactionTable.type} = 'EXPENSE' AND ${TransactionTable.amount} > 0 THEN 'OUT'
-          WHEN ${TransactionTable.type} = 'EXPENSE' AND ${TransactionTable.amount} < 0 THEN 'IN'
-          WHEN ${TransactionTable.type} = 'TRANSFER' AND ${TransactionTable.bankAccountId} = ${TransactionTable.toBankAccountId} THEN 'IN'
-          WHEN ${TransactionTable.type} = 'TRANSFER' AND ${TransactionTable.bankAccountId} = ${TransactionTable.fromBankAccountId} THEN 'OUT'
-          ELSE 'OUT'
-        END
-      `.as('cash_flow'),
-    },
-    orderBy: (t) => [desc(t.date)],
-  })
   return {
     budgetSummary,
     monthlyAverages,
-    transactions,
   } satisfies BudgetDetails
 }
 

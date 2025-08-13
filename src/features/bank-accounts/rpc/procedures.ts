@@ -21,7 +21,7 @@ const create = protectedProcedure
       const bankAccount = await insertBankAccount({
         name: input.name,
         type: input.type,
-        balance: input.balance,
+        balance: input.balance as Intl.StringNumericLiteral | undefined,
         currency: input.currency,
         userId: session.user.id,
       })
@@ -69,7 +69,7 @@ const update = protectedProcedure
       const bankAccount = await updateBankAccount({
         name: input.name,
         type: input.type,
-        balance: input.balance,
+        balance: input.balance as Intl.StringNumericLiteral | undefined,
         id: input.id,
         userId: session.user.id,
       })

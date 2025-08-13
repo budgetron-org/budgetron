@@ -1,4 +1,5 @@
 import { createInsertSchema, createUpdateSchema } from 'drizzle-zod'
+import { z } from 'zod/v4'
 import { BudgetTable } from '~/server/db/schema'
 
 const CreateBudgetInputSchema = createInsertSchema(BudgetTable).omit({
@@ -22,14 +23,18 @@ const DeleteBudgetInputSchema = createUpdateSchema(BudgetTable)
   .required()
 
 const BudgetFormSchema = CreateBudgetInputSchema.pick({
+  amount: true,
   categoryId: true,
-}).extend({
-  amount: CreateBudgetInputSchema.shape.amount.nonempty('Amount is required'),
 })
 
 const GetBudgetDetailsInputSchema = UpdateBudgetInputSchema.pick({
   id: true,
-}).required()
+})
+  .extend({
+    fromDate: z.date(),
+    toDate: z.date(),
+  })
+  .required()
 
 export {
   BudgetFormSchema,

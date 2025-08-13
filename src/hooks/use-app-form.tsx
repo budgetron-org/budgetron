@@ -41,6 +41,7 @@ const { useAppForm } = createFormHook({
           options={data ?? []}
           isLoading={isPending}
           field={field}
+          isClearable
         />
       )
     },
@@ -92,6 +93,7 @@ const { useAppForm } = createFormHook({
           options={filteredData}
           isLoading={isPending}
           field={field}
+          isClearable
         />
       )
     },
@@ -109,7 +111,7 @@ const { useAppForm } = createFormHook({
         () =>
           CURRENCIES.map((c) => ({
             value: c.code,
-            label: `${c.code} - ${c.name} (${c.symbol})`,
+            label: `${c.code} (${c.symbol})`,
           })),
         [],
       )

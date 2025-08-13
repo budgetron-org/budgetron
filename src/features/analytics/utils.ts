@@ -65,10 +65,11 @@ function fillMissingCashFlowReportData(
       resultMap.set(key, {
         period: key,
         rawPeriod: current,
-        income: 0,
-        expenses: 0,
-        transfers: 0,
-        surplus: 0,
+        income: '0',
+        expenses: '0',
+        transfers: '0',
+        surplus: '0',
+        convertedCurrencies: [],
       })
     }
 

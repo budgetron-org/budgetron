@@ -84,7 +84,7 @@ function BudgetItemSummary({ budget, extended }: BudgetItemSummaryProps) {
             </div>
 
             <div className="flex flex-col">
-              <span>{formatter.format(budget.amountFloat)}</span>
+              <span>{formatter.format(budget.amount)}</span>
               <span className="text-muted-foreground text-sm">
                 Budgeted Amount
               </span>

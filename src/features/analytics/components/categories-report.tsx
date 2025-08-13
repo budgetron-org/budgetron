@@ -1,15 +1,15 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { endOfToday, startOfYear } from 'date-fns'
+import { endOfToday, format, startOfYear } from 'date-fns'
 import { useState } from 'react'
 
 import { DateRangePicker } from '~/components/ui/date-range-picker'
 import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
+import { MultiCurrencyNotice } from '~/components/widgets/multi-currency-notice'
 import { api } from '~/rpc/client'
 import { CategoryReportCard } from './category-report-card'
 import { CategoryTransactionsTable } from './category-transactions-table'
-import { format } from 'date-fns'
 
 interface CategoriesReportProps {
   reportFor: 'income' | 'spending'
@@ -46,8 +46,16 @@ function CategoriesReport({ reportFor }: CategoriesReportProps) {
         </div>
       </div>
       <SkeletonWrapper isLoading={isPending}>
+        {data && data.convertedCurrencies.length > 0 && (
+          <MultiCurrencyNotice
+            baseCurrency={data.baseCurrency}
+            additionalCurrencies={data.convertedCurrencies}
+            currencyExchangeAttribution={data.currencyExchangeAttribution}
+          />
+        )}
         <CategoryReportCard
-          data={data ?? []}
+          baseCurrency={data?.baseCurrency ?? 'USD'}
+          data={data?.data ?? []}
           chartTitle={
             reportFor === 'income' ? 'Total Income' : 'Total Spending'
           }

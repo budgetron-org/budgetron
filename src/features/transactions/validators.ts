@@ -41,11 +41,7 @@ const TransactionFormSchema = CreateTransactionInputSchema.pick({
   toBankAccountId: true,
   notes: true,
   tags: true,
-})
-  .extend({
-    amount: CreateTransactionInputSchema.shape.amount.nonempty(),
-  })
-  .required()
+}).required()
 
 const ParseOFXInputSchema = z.object({
   bankAccountId: z.string(),
@@ -86,9 +82,11 @@ const GetByCategoryInputSchema = z.object({
 const UpdateTransactionSchema = createUpdateSchema(TransactionTable)
 const UpdateTransactionInputSchema = UpdateTransactionSchema.omit({
   id: true,
+  currency: true,
   userId: true,
 }).extend({
   id: UpdateTransactionSchema.required().shape.id,
+  currency: z.enum(CURRENCY_CODES),
 })
 
 const DeleteTransactionInputSchema = UpdateTransactionSchema.pick({

@@ -4,6 +4,7 @@ import {
   useCallback,
   type ComponentProps,
   type ComponentPropsWithoutRef,
+  type ReactNode,
 } from 'react'
 
 import { BarChart } from '~/components/ui/bar-chart'
@@ -28,29 +29,35 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+const yAxisKeys = Object.keys(chartConfig) as (keyof typeof chartConfig)[]
+
 // TODO: get currency from user settings
 const currencyFormatter = getCurrencyFormatter('USD', {
   maximumFractionDigits: 0,
 })
 
 interface DashboardCashFlowChartProps<
-  Data extends { income: number; expenses: number },
+  Data extends {
+    income: Intl.StringNumericLiteral
+    expenses: Intl.StringNumericLiteral
+  },
 > extends ComponentPropsWithoutRef<typeof Card> {
   data: Data[]
   title: string
-  description: string
+  description: ReactNode
   xAxisKey: keyof Data
-  yAxisKey: keyof Data
 }
 
 function DashboardCashFlowChart<
-  Data extends { income: number; expenses: number },
+  Data extends {
+    income: Intl.StringNumericLiteral
+    expenses: Intl.StringNumericLiteral
+  },
 >({
   data,
   title,
   description,
   xAxisKey,
-  yAxisKey,
   ...props
 }: DashboardCashFlowChartProps<Data>) {
   const yAxisFormatter = useCallback<
@@ -73,7 +80,7 @@ function DashboardCashFlowChart<
           config={chartConfig}
           data={data}
           xAxisKey={xAxisKey}
-          barKeys={[yAxisKey]}
+          barKeys={yAxisKeys}
           yAxisFormatter={yAxisFormatter}
         />
       </CardContent>

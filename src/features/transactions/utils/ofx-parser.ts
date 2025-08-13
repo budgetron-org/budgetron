@@ -1,8 +1,10 @@
+import { Decimal } from 'decimal.js'
 import { unescape } from 'lodash'
 import { randomUUID } from 'node:crypto'
 import { Ofx } from 'ofx-data-extractor'
 
-import type { TransactionWithRelations } from '~/features/transactions/types'
+import type { DetailedTransaction } from '~/features/transactions/types'
+import { getCurrencyExchangeRateForUser } from '~/lib/currency-exchange'
 import { safeParseCurrency } from '~/lib/utils'
 import { categorizeTransactions } from '~/server/ai/service/categorize-transactions'
 import {
@@ -11,6 +13,8 @@ import {
   type GroupTable,
 } from '~/server/db/schema'
 import type { InferResultType } from '~/server/db/types'
+import { currencyExchangeGenerator } from './exchange'
+import type { CurrencyCode } from '~/data/currencies'
 
 type ParseTransactionsOptions = {
   bankAccount: typeof BankAccountTable.$inferSelect
@@ -18,6 +22,7 @@ type ParseTransactionsOptions = {
   file: File
   group?: typeof GroupTable.$inferSelect
   shouldAutoCategorize: boolean
+  userId: string
 }
 async function parseTransactions({
   bankAccount,
@@ -25,7 +30,8 @@ async function parseTransactions({
   file,
   group,
   shouldAutoCategorize,
-}: ParseTransactionsOptions): Promise<TransactionWithRelations[]> {
+  userId,
+}: ParseTransactionsOptions) {
   const ofx = Ofx.fromBuffer(Buffer.from(await file.arrayBuffer()))
 
   const content = ofx.getContent()
@@ -41,9 +47,25 @@ async function parseTransactions({
     bankAccount.currency,
   )
 
+  // get Base Currency from user settings and conversion rate
+  const {
+    baseCurrency,
+    exchangeRates: baseCurrencyExchangeRates,
+    currencyExchangeAttribution,
+  } = await getCurrencyExchangeRateForUser(userId)
+  const convertCurrency = currencyExchangeGenerator({
+    baseCurrency,
+    baseCurrencyExchangeRates,
+  })
+  const convertedCurrencies = new Set<CurrencyCode>()
+
   const processedTransactions = transactions.map((t) => {
     const isExpense = t.TRNAMT < 0
-    return {
+    if (currency !== baseCurrency) {
+      convertedCurrencies.add(currency)
+    }
+    return convertCurrency({
+      id: randomUUID(),
       bankAccount,
       bankAccountId: bankAccount.id,
       fromBankAccount: null,
@@ -52,7 +74,9 @@ async function parseTransactions({
       toBankAccountId: null,
       group: group ?? null,
       groupId: group?.id ?? null,
-      amount: Math.abs(t.TRNAMT).toString(),
+      amount: new Decimal(`${t.TRNAMT}`)
+        .absoluteValue()
+        .toString() as Intl.StringNumericLiteral,
       cashFlow: isExpense ? 'OUT' : 'IN',
       currency,
       date: new Date(t.DTPOSTED),
@@ -65,11 +89,10 @@ async function parseTransactions({
       categoryId: null,
       notes: null,
       tags: [],
-      id: randomUUID(),
       userId: bankAccount.userId,
       createdAt: new Date(),
       updatedAt: new Date(),
-    } satisfies TransactionWithRelations
+    })
   })
 
   const categorizedTransactions = shouldAutoCategorize
@@ -77,13 +100,18 @@ async function parseTransactions({
     : {}
 
   // fill in the categories for the parsed transactions
-  const result = processedTransactions.map((t) => ({
+  const finalTransactions = processedTransactions.map((t) => ({
     ...t,
-    category: categorizedTransactions[t.externalId] ?? null,
-    categoryId: categorizedTransactions[t.externalId]?.id ?? null,
+    category: categorizedTransactions[t.externalId!] ?? null,
+    categoryId: categorizedTransactions[t.externalId!]?.id ?? null,
   }))
 
-  return result
+  return {
+    baseCurrency,
+    convertedCurrencies: Array.from(convertedCurrencies),
+    transactions: finalTransactions satisfies DetailedTransaction[],
+    currencyExchangeAttribution,
+  }
 }
 
 function getDescription(txn: Record<string, string>, isExpense: boolean) {

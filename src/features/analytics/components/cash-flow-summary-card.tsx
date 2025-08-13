@@ -5,6 +5,7 @@ import { useMemo, type ComponentPropsWithoutRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Separator } from '~/components/ui/separator'
 import type { CashFlowReport } from '~/features/analytics/types'
+import { gte } from '~/lib/currency-operations'
 import { getCurrencyFormatter } from '~/lib/format'
 
 interface CashFlowSummaryCardProps
@@ -56,7 +57,7 @@ function CashFlowSummaryCard({ data, ...props }: CashFlowSummaryCardProps) {
             </div>
             <div
               className={`text-lg font-bold ${
-                (data?.surplus ?? 0) >= 0 ? 'text-success' : 'text-destructive'
+                gte(data?.surplus ?? 0, 0) ? 'text-success' : 'text-destructive'
               }`}>
               {data?.surplus ? currencyFormatter.format(data.surplus) : '-'}
             </div>
@@ -95,7 +96,7 @@ function CashFlowSummaryCard({ data, ...props }: CashFlowSummaryCardProps) {
             </div>
             <div
               className={`text-lg font-bold ${
-                (data?.monthlyAverageSurplus ?? 0) >= 0
+                gte(data?.monthlyAverageSurplus ?? 0, 0)
                   ? 'text-success'
                   : 'text-destructive'
               }`}>

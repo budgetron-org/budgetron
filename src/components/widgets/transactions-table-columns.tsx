@@ -1,9 +1,17 @@
 'use client'
 
-import { IconNotes, IconPencil, IconTrash } from '@tabler/icons-react'
+import {
+  IconInfoCircle,
+  IconNotes,
+  IconPencil,
+  IconTrash,
+} from '@tabler/icons-react'
 import type { TableMeta } from '@tanstack/react-table'
 import { isEqual } from 'lodash'
 
+import { BankAccountPicker } from '~/components/pickers/bank-account-picker'
+import { CategoryPicker } from '~/components/pickers/category-picker'
+import { TransactionTypePicker } from '~/components/pickers/transaction-type-picker'
 import {
   DataTableColumnHeader,
   type ColumnDef,
@@ -15,13 +23,13 @@ import { Checkbox } from '~/components/ui/checkbox'
 import { Input } from '~/components/ui/input'
 import { TagsInput } from '~/components/ui/tags-input'
 import { Textarea } from '~/components/ui/textarea'
-import { BankAccountPicker } from '~/components/pickers/bank-account-picker'
-import { CategoryPicker } from '~/components/pickers/category-picker'
-import { TransactionTypePicker } from '~/components/pickers/transaction-type-picker'
 import { DeleteTransactionDialog } from '~/features/transactions/components/delete-transaction-dialog'
 import { UpdateTransactionDialog } from '~/features/transactions/components/update-transaction-dialog'
-import type { TransactionWithRelations } from '~/features/transactions/types'
+import type { DetailedTransaction } from '~/features/transactions/types'
+import { formatAmount } from '~/lib/format'
 import { cn, safeParseNumber } from '~/lib/utils'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
+import { format } from 'date-fns'
 
 function isEditableColumn<Data>(table: Table<Data>, accessor: keyof Data) {
   const editable = table.options.meta?.editable
@@ -38,14 +46,7 @@ function isActionEnabled<Data>(
   return !!actions?.[action]
 }
 
-function getFormattedAmount<Data>(table: Table<Data>, value: string) {
-  return (
-    table.options.meta?.currencyFormatter.format(safeParseNumber(value)) ??
-    String(value)
-  )
-}
-
-function isRefundTransaction(tx: TransactionWithRelations) {
+function isRefundTransaction(tx: DetailedTransaction) {
   return tx.type === 'EXPENSE' && tx.cashFlow === 'IN'
 }
 
@@ -59,7 +60,7 @@ function unNegateAmount(amount: string) {
   return result.toString()
 }
 
-function getColumns<Data extends TransactionWithRelations>() {
+function getColumns<Data extends DetailedTransaction = DetailedTransaction>() {
   return [
     {
       id: 'select' as const,
@@ -144,16 +145,45 @@ function getColumns<Data extends TransactionWithRelations>() {
         <DataTableColumnHeader column={column} title="Amount" />
       ),
       cell: ({ row, table }) => {
+        const { currencyExchangeDetails, type, amount, currency } = row.original
         return (
           <div
             className={cn(
-              row.original.type === 'INCOME' && 'text-success',
-              row.original.type === 'EXPENSE' &&
+              'flex items-center gap-2',
+              type === 'INCOME' && 'text-success',
+              type === 'EXPENSE' &&
                 (isRefundTransaction(row.original)
                   ? 'text-success'
                   : 'text-destructive'),
             )}>
-            {getFormattedAmount(table, row.original.amount)}
+            {formatAmount(amount, currency)}
+            {/* Add conversion details if the tx currency is not the base currency */}
+            {currency !== table.options.meta?.baseCurrency && (
+              <Tooltip>
+                <TooltipTrigger className="text-muted-foreground">
+                  <IconInfoCircle size={20} />
+                </TooltipTrigger>
+                <TooltipContent className="flex flex-col gap-2">
+                  {currencyExchangeDetails.hasConversionRate && (
+                    <>
+                      <span className="flex items-center gap-2 text-sm">
+                        In {table.options.meta?.baseCurrency ?? 'Base Currency'}
+                        :{' '}
+                        {formatAmount(
+                          currencyExchangeDetails.amountInBaseCurrency,
+                          currencyExchangeDetails.baseCurrency,
+                        )}
+                        <span className="text-muted-foreground text-xs">
+                          (as of{' '}
+                          {format(currencyExchangeDetails.date, 'MMM dd, yyyy')}
+                          )
+                        </span>
+                      </span>
+                    </>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            )}
           </div>
         )
       },
@@ -509,9 +539,7 @@ function getColumns<Data extends TransactionWithRelations>() {
   ] satisfies ColumnDef<Data>[]
 }
 
-type ColumnId = ReturnType<
-  typeof getColumns<TransactionWithRelations>
->[number]['id']
+type ColumnId = ReturnType<typeof getColumns>[number]['id']
 
 export { getColumns }
 export type { ColumnId }

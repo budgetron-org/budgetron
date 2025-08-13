@@ -2,6 +2,7 @@
 
 import { Suspense, use, useId, useMemo, type ComponentProps } from 'react'
 
+import { Button } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
 import {
   Select,
@@ -47,16 +48,20 @@ function findLabel<V extends string, D extends Option<unknown>>(
 }
 
 interface SelectImplProps<V extends string, D> {
+  disabled?: boolean
   options: Readonly<D[]> | Promise<Readonly<D[]>>
   field: FieldApi<V | undefined>
   id?: ComponentProps<typeof SelectTrigger>['id']
+  isClearable?: boolean
   placeholder?: ComponentProps<typeof SelectValue>['placeholder']
 }
 
 function SelectImpl<V extends string, D extends Option<V>>({
+  disabled,
   options: optionsMayBePromise,
   field,
   id,
+  isClearable,
   placeholder,
 }: SelectImplProps<V, D>) {
   const options =
@@ -74,6 +79,7 @@ function SelectImpl<V extends string, D extends Option<V>>({
     <Select
       // Workaround for https://github.com/radix-ui/primitives/issues/3135
       key={field.state.value ? 'state-value' : 'state-initial'}
+      disabled={disabled}
       value={field.state.value ?? ''} // value can be `null`, fix later in Types
       onValueChange={(value) => field.handleChange(value as V)}>
       <SelectTrigger
@@ -85,6 +91,15 @@ function SelectImpl<V extends string, D extends Option<V>>({
         <SelectValue placeholder={placeholder}>{displayValue}</SelectValue>
       </SelectTrigger>
       <SelectContent>
+        {isClearable && field.state.value && (
+          <Button
+            variant="ghost"
+            className="text-muted-foreground w-full cursor-default justify-start px-2"
+            size="sm"
+            onClick={() => field.setValue(null as unknown as V)}>
+            {placeholder ?? 'Clear selection'}
+          </Button>
+        )}
         {options.map((item) =>
           Array.isArray(item.children) ? (
             <SelectGroup key={item.value}>
@@ -109,7 +124,7 @@ function SelectImpl<V extends string, D extends Option<V>>({
 interface SelectFieldProps<V extends string, D extends Option<V>>
   extends Pick<
     ComponentProps<typeof SelectImpl<V, D>>,
-    'options' | 'field' | 'placeholder'
+    'disabled' | 'options' | 'field' | 'placeholder' | 'isClearable'
   > {
   className?: string
   // TODO: React.use and Suspense is not working with useQuery.promise

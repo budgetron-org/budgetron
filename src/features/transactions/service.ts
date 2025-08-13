@@ -12,6 +12,8 @@ import {
 } from 'drizzle-orm'
 import { toSnakeCase } from 'drizzle-orm/casing'
 
+import type { CurrencyCode } from '~/data/currencies'
+import { getCurrencyExchangeRateForUser } from '~/lib/currency-exchange'
 import { db } from '~/server/db'
 import {
   BankAccountTable,
@@ -19,8 +21,9 @@ import {
   GroupTable,
   TransactionTable,
 } from '~/server/db/schema'
-import type { TransactionCashFlow, TransactionWithRelations } from './types'
+import type { DetailedTransaction, TransactionCashFlow } from './types'
 import { parseTransactions } from './utils'
+import { currencyExchangeGenerator } from './utils/exchange'
 
 async function insertTransaction(data: typeof TransactionTable.$inferInsert) {
   const [transaction] = await db
@@ -91,9 +94,7 @@ type SelectTransactionFilters = {
   userId: string
   categoryId?: string
 }
-async function selectTransactions(
-  filters: SelectTransactionFilters,
-): Promise<TransactionWithRelations[]> {
+async function selectTransactions(filters: SelectTransactionFilters) {
   const conditions = [
     eq(TransactionTable.userId, filters.userId),
     filters.fromDate && gte(TransactionTable.date, filters.fromDate),
@@ -101,7 +102,8 @@ async function selectTransactions(
     filters.categoryId && eq(TransactionTable.categoryId, filters.categoryId),
   ].filter(Boolean)
 
-  const transactions = (await db.query.TransactionTable.findMany({
+  // fetch all the transactions
+  const transactions = await db.query.TransactionTable.findMany({
     with: {
       bankAccount: true,
       fromBankAccount: true,
@@ -127,8 +129,36 @@ async function selectTransactions(
     },
     where: and(...conditions),
     orderBy: [desc(TransactionTable.date)],
-  })) satisfies TransactionWithRelations[]
-  return transactions
+  })
+
+  // get Base Currency from user settings and conversion rate
+  const {
+    baseCurrency,
+    exchangeRates: baseCurrencyExchangeRates,
+    currencyExchangeAttribution,
+  } = await getCurrencyExchangeRateForUser(filters.userId)
+
+  // get the currency exchange generator
+  const convertCurrency = currencyExchangeGenerator({
+    baseCurrency,
+    baseCurrencyExchangeRates,
+  })
+  const convertedCurrencies = new Set<CurrencyCode>()
+
+  // add amount in base currency for all the transactions
+  const result = transactions.map<DetailedTransaction>((t) => {
+    if (t.currency !== baseCurrency) {
+      convertedCurrencies.add(t.currency)
+    }
+    return convertCurrency(t)
+  })
+
+  return {
+    transactions: result,
+    baseCurrency,
+    convertedCurrencies: Array.from(convertedCurrencies),
+    currencyExchangeAttribution,
+  }
 }
 
 type ParseOFXFileParams = {
@@ -136,12 +166,14 @@ type ParseOFXFileParams = {
   bankAccountId: string
   groupId?: string
   shouldAutoCategorize: boolean
+  userId: string
 }
 async function parseOFXFile({
   file,
   bankAccountId,
   groupId,
   shouldAutoCategorize,
+  userId,
 }: ParseOFXFileParams) {
   // fetch bank account
   const [bankAccount] = await db
@@ -176,7 +208,7 @@ async function parseOFXFile({
           ...[
             and(isNull(CategoryTable.userId), isNull(CategoryTable.groupId)),
             groupId && eq(CategoryTable.groupId, groupId),
-            !groupId && eq(CategoryTable.userId, bankAccount.userId),
+            !groupId && eq(CategoryTable.userId, userId),
           ].filter(Boolean),
         ),
         // only want sub-categories
@@ -192,6 +224,7 @@ async function parseOFXFile({
     file,
     group,
     shouldAutoCategorize,
+    userId,
   })
 }
 

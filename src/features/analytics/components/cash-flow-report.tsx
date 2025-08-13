@@ -5,6 +5,7 @@ import { useState } from 'react'
 
 import { SkeletonWrapper } from '~/components/ui/skeleton-wrapper'
 import { ToggleGroup, ToggleGroupItem } from '~/components/ui/toggle-group'
+import { MultiCurrencyNotice } from '~/components/widgets/multi-currency-notice'
 import { api } from '~/rpc/client'
 import type { CashFlowReportRange } from '../types'
 import { CashFlowChart } from './cash-flow-chart'
@@ -53,6 +54,13 @@ function CashFlowReport() {
         </ToggleGroup>
       </div>
       <div className="flex flex-col gap-4">
+        {data && data?.convertedCurrencies.length > 0 && (
+          <MultiCurrencyNotice
+            baseCurrency={data.baseCurrency}
+            additionalCurrencies={data.convertedCurrencies}
+            currencyExchangeAttribution={data.currencyExchangeAttribution}
+          />
+        )}
         <SkeletonWrapper isLoading={isPending}>
           <CashFlowSummaryCard className="w-full" data={data?.summary} />
         </SkeletonWrapper>

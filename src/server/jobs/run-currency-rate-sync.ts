@@ -83,21 +83,25 @@ async function runCurrencyRateSync() {
     }
   }
 
-  await db
-    .insert(CurrencyRateTable)
-    .values(rateCombinations)
-    .onConflictDoUpdate({
-      target: [
-        CurrencyRateTable.sourceCurrency,
-        CurrencyRateTable.targetCurrency,
-        CurrencyRateTable.source,
-      ],
-      set: {
-        rate: sql.raw(`excluded.${toSnakeCase(CurrencyRateTable.rate.name)}`),
-        date: sql.raw(`excluded.${toSnakeCase(CurrencyRateTable.date.name)}`),
-        updatedAt: sql.raw(`now()`),
-      },
-    })
+  try {
+    await db
+      .insert(CurrencyRateTable)
+      .values(rateCombinations)
+      .onConflictDoUpdate({
+        target: [
+          CurrencyRateTable.sourceCurrency,
+          CurrencyRateTable.targetCurrency,
+          CurrencyRateTable.source,
+        ],
+        set: {
+          rate: sql.raw(`excluded.${toSnakeCase(CurrencyRateTable.rate.name)}`),
+          date: sql.raw(`excluded.${toSnakeCase(CurrencyRateTable.date.name)}`),
+          updatedAt: sql.raw(`now()`),
+        },
+      })
+  } catch (error) {
+    console.error('Failed to sync currency rates', error)
+  }
 }
 
 export { runCurrencyRateSync }

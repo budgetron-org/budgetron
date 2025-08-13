@@ -4,17 +4,18 @@ import { IconDeviceFloppy, IconFileFilled } from '@tabler/icons-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useId, useState } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '~/components/ui/button'
 import { ProgressButton } from '~/components/ui/progress-button'
 import { defineStepper } from '~/components/ui/stepper'
+import { MultiCurrencyNotice } from '~/components/widgets/multi-currency-notice'
 import { TransactionsTable } from '~/components/widgets/transactions-table'
 import { PATHS } from '~/data/routes'
 import { cn } from '~/lib/utils'
 import { api } from '~/rpc/client'
-import type { TransactionWithRelations } from '../types'
+import type { DetailedTransaction } from '../types'
 import { UploadOFXForm } from './upload-ofx-form'
 
 const Stepper = defineStepper(
@@ -39,8 +40,9 @@ function UploadTransactionsWizard({
 }: UploadTransactionsWizardProps) {
   const uploadOFXFormId = useId()
   const [transactionsToUpload, setTransactionsToUpload] = useState<
-    TransactionWithRelations[]
+    DetailedTransaction[]
   >([])
+  const [multiCurrencyNotice, setMultiCurrencyNotice] = useState<ReactNode>()
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -50,7 +52,16 @@ function UploadTransactionsWizard({
         const description =
           files.length === 1 ? files[0]!.name : `${files.length} files`
         toast.success(`Parsed ${description}.`)
-        setTransactionsToUpload(data)
+        setTransactionsToUpload(data.transactions)
+        setMultiCurrencyNotice(
+          data.convertedCurrencies.length > 0 && (
+            <MultiCurrencyNotice
+              additionalCurrencies={data.convertedCurrencies}
+              baseCurrency={data.baseCurrency}
+              currencyExchangeAttribution={data.currencyExchangeAttribution}
+            />
+          ),
+        )
       },
       onError(error, { files }) {
         const description =
@@ -145,6 +156,7 @@ function UploadTransactionsWizard({
                   hasEditAction={false}
                   hasBulkDeleteAction={false}
                   showFilters={false}
+                  message={multiCurrencyNotice}
                 />
               ),
             })}

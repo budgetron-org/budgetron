@@ -45,7 +45,7 @@ function BudgetSpendChart({ budget, data }: BudgetSpendChartProps) {
       xAxisKey="month"
       xAxisFormatter={xAxisFormatter}
       yAxisFormatter={yAxisFormatter}
-      yReferenceLineValue={budget.amountFloat}
+      yReferenceLineValue={budget.amount}
       barKeys={['average']}
     />
   )

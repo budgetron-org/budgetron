@@ -7,12 +7,13 @@ import {
 import { connection } from 'next/server'
 
 import { SuspenseBoundary } from '~/components/ui/suspense-boundary'
+import { MultiCurrencyNotice } from '~/components/widgets/multi-currency-notice'
 import { DashboardCashFlowChart } from '~/features/analytics/components/dashboard-cash-flow-chart'
 import { DashboardSummaryCard } from '~/features/analytics/components/dashboard-summary-card'
 import { requireAuthentication } from '~/features/auth/utils'
 import { api } from '~/rpc/server'
 
-async function DashboardPageImplNew() {
+async function DashboardPageImpl() {
   await requireAuthentication()
   await connection()
 
@@ -29,51 +30,63 @@ async function DashboardPageImplNew() {
           </p>
         </h2>
 
+        {overviewSummary.convertedCurrencies.length > 0 && (
+          <MultiCurrencyNotice
+            baseCurrency={overviewSummary.baseCurrency}
+            additionalCurrencies={overviewSummary.convertedCurrencies}
+            currencyExchangeAttribution={
+              overviewSummary.currencyExchangeAttribution
+            }
+          />
+        )}
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <DashboardSummaryCard
             title="Income"
             icon={<IconBriefcase />}
-            data={overviewSummary.INCOME}
+            baseCurrency={overviewSummary.baseCurrency}
+            data={overviewSummary.data.INCOME}
           />
           <DashboardSummaryCard
             title="Expenses"
             icon={<IconCoin />}
-            data={overviewSummary.EXPENSE}
+            baseCurrency={overviewSummary.baseCurrency}
+            data={overviewSummary.data.EXPENSE}
           />
           <DashboardSummaryCard
             title="Savings"
             icon={<IconPigMoney />}
-            data={overviewSummary.SAVINGS}
+            baseCurrency={overviewSummary.baseCurrency}
+            data={overviewSummary.data.SAVINGS}
           />
           <DashboardSummaryCard
             title="Investments"
             icon={<IconTrendingUp />}
-            data={overviewSummary.INVESTMENT}
+            baseCurrency={overviewSummary.baseCurrency}
+            data={overviewSummary.data.INVESTMENT}
           />
         </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold">
-          Reports
-          <p className="text-muted-foreground text-sm">Cash flow at a glance</p>
-        </h2>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <DashboardCashFlowChart
-            title="Income"
-            description="Last 6 months"
-            xAxisKey="period"
-            yAxisKey="income"
-            data={cashFlowSummary.data}
-          />
-          <DashboardCashFlowChart
-            title="Expenses"
-            description="Last 6 months"
-            xAxisKey="period"
-            yAxisKey="expenses"
-            data={cashFlowSummary.data}
-          />
-        </div>
-      </div>
+
+      <DashboardCashFlowChart
+        title="Cash flow at a glance"
+        description={
+          <div className="flex flex-col gap-2">
+            <span className="flex flex-col">Showing last 6 months</span>
+            {cashFlowSummary.convertedCurrencies.length > 0 && (
+              <MultiCurrencyNotice
+                baseCurrency={cashFlowSummary.baseCurrency}
+                additionalCurrencies={cashFlowSummary.convertedCurrencies}
+                currencyExchangeAttribution={
+                  cashFlowSummary.currencyExchangeAttribution
+                }
+              />
+            )}
+          </div>
+        }
+        xAxisKey="period"
+        data={cashFlowSummary.data}
+      />
     </div>
   )
 }
@@ -81,7 +94,7 @@ async function DashboardPageImplNew() {
 export default function DashboardPage() {
   return (
     <SuspenseBoundary>
-      <DashboardPageImplNew />
+      <DashboardPageImpl />
     </SuspenseBoundary>
   )
 }

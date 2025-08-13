@@ -12,6 +12,7 @@ import { TransactionsTable } from '~/components/widgets/transactions-table'
 import { PATHS } from '~/data/routes'
 import { api } from '~/rpc/client'
 import { CreateTransactionDialog } from './create-transaction-dialog'
+import { MultiCurrencyNotice } from '~/components/widgets/multi-currency-notice'
 
 function TransactionsExplorer() {
   const [transactionRange, setTransactionRange] = useState({
@@ -47,11 +48,24 @@ function TransactionsExplorer() {
           }
         />
       </div>
+
       <div className="min-h-0 flex-1">
         <TransactionsTable
           className="max-h-full min-h-full"
           isLoading={transactions.isLoading}
-          data={transactions.data}
+          data={transactions.data?.transactions}
+          message={
+            transactions.data &&
+            transactions.data?.convertedCurrencies.length > 0 && (
+              <MultiCurrencyNotice
+                additionalCurrencies={transactions.data.convertedCurrencies}
+                baseCurrency={transactions.data.baseCurrency}
+                currencyExchangeAttribution={
+                  transactions.data.currencyExchangeAttribution
+                }
+              />
+            )
+          }
         />
       </div>
     </div>

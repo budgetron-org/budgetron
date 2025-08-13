@@ -34,6 +34,12 @@ function getCurrencyMeta(
   )!
 }
 
+function joinCurrencyArray(arr: string[]) {
+  return arr.reduce((a, b, index) =>
+    index === arr.length - 1 ? `${a}, and ${b}` : `${a}, ${b}`,
+  )
+}
+
 /**
  * Formats a month string to a human-readable label.
  *
@@ -148,6 +154,7 @@ export {
   getSupportedProviders,
   isGoogleAuthEnabled,
   isOAuthAuthEnabled,
+  joinCurrencyArray,
   safeParseCurrency,
   safeParseNumber,
 }
