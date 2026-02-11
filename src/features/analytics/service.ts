@@ -197,6 +197,34 @@ async function getOverviewSummary({ userId }: GetOverviewSummaryFilters) {
     return acc
   }, {} as OverviewSummaryData)
 
+  // fill in missing records
+  for (const type of [
+    'INCOME',
+    'EXPENSE',
+    'SAVINGS',
+    'INVESTMENT',
+  ] as CashFlowType[]) {
+    if (type in data) continue
+    data[type] = {
+      lastMonth: {
+        baseCurrency: '0',
+        byCurrency: [],
+      },
+      sixMonthAvg: {
+        baseCurrency: '0',
+        byCurrency: [],
+      },
+      thisMonth: {
+        baseCurrency: '0',
+        byCurrency: [],
+      },
+      ytd: {
+        baseCurrency: '0',
+        byCurrency: [],
+      },
+    }
+  }
+
   return {
     baseCurrency,
     convertedCurrencies: Array.from(convertedCurrencies),
