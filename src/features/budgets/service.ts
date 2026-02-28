@@ -36,7 +36,7 @@ async function getBudgetsSummary({
       parentCategoryIcon: ParentCategoryTable.icon,
 
       // 1 Year Monthly Average
-      oneYearAverage: sql<Intl.StringNumericLiteral>`
+      oneYearAverage: sql<Intl.StringNumericLiteral>`(
         SELECT AVG(month_amount)
         FROM (
           SELECT SUM(t.amount) AS month_amount
@@ -46,10 +46,10 @@ async function getBudgetsSummary({
             AND t.date >= CURRENT_DATE - INTERVAL '1 year'
           GROUP BY DATE_TRUNC('month', t.date)
         ) sub
-      `,
+      )`,
 
       // Last 3-Month Monthly Average
-      last3MonthAverage: sql<Intl.StringNumericLiteral>`
+      last3MonthAverage: sql<Intl.StringNumericLiteral>`(
         SELECT AVG(month_amount)
         FROM (
           SELECT SUM(t.amount) AS month_amount
@@ -59,36 +59,36 @@ async function getBudgetsSummary({
               AND t.date >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '3 months'
             GROUP BY DATE_TRUNC('month', t.date)
           ) sub
-      `,
+      )`,
 
       // Year to Date Spend
-      ytdSpend: sql<Intl.StringNumericLiteral>`
+      ytdSpend: sql<Intl.StringNumericLiteral>`(
         SELECT SUM(t.amount)
         FROM ${TransactionTable} t
         WHERE t.category_id = ${CategoryTable.id}
           AND t.type = 'EXPENSE'
           AND t.date >= DATE_TRUNC('year', CURRENT_DATE)
-      `,
+      )`,
 
       // Last Month Spend
-      lastMonthSpend: sql<Intl.StringNumericLiteral>`
+      lastMonthSpend: sql<Intl.StringNumericLiteral>`(
         SELECT SUM(t.amount)
         FROM ${TransactionTable} t
         WHERE t.category_id = ${CategoryTable.id}
           AND t.type = 'EXPENSE'
           AND DATE_TRUNC('month', t.date) = DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
-      `,
+      )`,
 
       // This Month Spend
-      thisMonthSpend: sql<Intl.StringNumericLiteral>`
+      thisMonthSpend: sql<Intl.StringNumericLiteral>`(
         SELECT SUM(t.amount)
         FROM ${TransactionTable} t
         WHERE t.category_id = ${CategoryTable.id}
           AND t.type = 'EXPENSE'
           AND DATE_TRUNC('month', t.date) = DATE_TRUNC('month', CURRENT_DATE)
-      `,
+      )`,
 
-      projectedSpend: sql<Intl.StringNumericLiteral>`
+      projectedSpend: sql<Intl.StringNumericLiteral>`(
         SELECT
           (SUM(t.amount) / GREATEST(EXTRACT(DAY FROM CURRENT_DATE), 1)) 
           * EXTRACT(DAY FROM DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month - 1 day')
@@ -96,7 +96,7 @@ async function getBudgetsSummary({
         WHERE t.category_id = ${CategoryTable.id}
           AND t.type = 'EXPENSE'
           AND DATE_TRUNC('month', t.date) = DATE_TRUNC('month', CURRENT_DATE)
-      `,
+      )`,
     })
     .from(BudgetTable)
     .innerJoin(CategoryTable, eq(BudgetTable.categoryId, CategoryTable.id))
