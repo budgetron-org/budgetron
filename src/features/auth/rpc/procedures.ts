@@ -162,7 +162,7 @@ const forgotPassword = publicProcedure
         })
       }
 
-      const { status } = await getAuth().api.forgetPassword({
+      const { status } = await getAuth().api.requestPasswordReset({
         body: { email: input.email, redirectTo: PATHS.RESET_PASSWORD },
         headers: context.headers,
       })

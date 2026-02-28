@@ -2,7 +2,7 @@ import { defineConfig } from 'drizzle-kit'
 
 // assert the required env variables
 console.assert(
-  process.env.DB_URL,
+  !!process.env.DB_URL,
   '❌ Incorrect environment variables: DB_URL is required',
 )
 

@@ -236,7 +236,7 @@ function SignInMethodsSection({
         {providers.map((provider) => {
           const { providerId } = provider
           const account = accounts.find(
-            (account) => account.provider === providerId,
+            (account) => account.providerId === providerId,
           )
           const icon = PROVIDER_ICONS[providerId]
 
@@ -275,7 +275,7 @@ function SecurityPage({
   availableOAuthProviders,
 }: SecurityPageProps) {
   const hasEmailPasswordAccount = userAccounts.some(
-    (account) => account.provider === 'credential',
+    (account) => account.providerId === 'credential',
   )
 
   return (

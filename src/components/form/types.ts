@@ -20,5 +20,9 @@ export type FieldApi<Value extends unknown | undefined> = TanstackFormFieldApi<
   any,
   any,
   any,
+  any,
+  any,
+  any,
+  any,
   any
 >

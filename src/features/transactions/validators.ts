@@ -29,19 +29,22 @@ const CreateTransactionInputSchema = createInsertSchema(TransactionTable)
     }
   })
 
-const TransactionFormSchema = CreateTransactionInputSchema.pick({
-  amount: true,
-  bankAccountId: true,
-  categoryId: true,
-  currency: true,
-  date: true,
-  description: true,
-  type: true,
-  fromBankAccountId: true,
-  toBankAccountId: true,
-  notes: true,
-  tags: true,
-}).required()
+const TransactionFormSchema = z
+  .object(CreateTransactionInputSchema.shape)
+  .pick({
+    amount: true,
+    bankAccountId: true,
+    categoryId: true,
+    currency: true,
+    date: true,
+    description: true,
+    type: true,
+    fromBankAccountId: true,
+    toBankAccountId: true,
+    notes: true,
+    tags: true,
+  })
+  .required()
 
 const ParseOFXInputSchema = z.object({
   bankAccountId: z.string(),

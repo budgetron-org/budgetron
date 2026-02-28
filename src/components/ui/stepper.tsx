@@ -26,8 +26,10 @@ type StepperConfig = {
   tracking?: boolean
 }
 
-interface DefineStepperProps<Steps extends Stepperize.Step[]>
-  extends Omit<Stepperize.StepperReturn<Steps>, 'Scoped'> {
+interface DefineStepperProps<Steps extends Stepperize.Step[]> extends Omit<
+  Stepperize.StepperReturn<Steps>,
+  'Scoped'
+> {
   StepperProvider: (
     props: Omit<Stepperize.ScopedProps<Steps>, 'children'> &
       Omit<ComponentProps<'div'>, 'children'> &
@@ -149,17 +151,17 @@ function defineStepper<const Steps extends Stepperize.Step[]>(
     },
     StepperStep: ({ children, className, icon, ...props }) => {
       const { variant, labelOrientation } = useStepperProvider()
-      const { current } = useStepper()
+      const { state, lookup } = useStepper()
 
-      const utils = rest.utils
-      const steps = rest.steps
+      const current = state.current
+      const steps = state.all
 
-      const stepIndex = utils.getIndex(props.of)
+      const stepIndex = lookup.getIndex(props.of)
       const step = steps[stepIndex]!
-      const currentIndex = utils.getIndex(current.id)
+      const currentIndex = lookup.getIndex(current.data.id)
 
-      const isLast = utils.getLast().id === props.of
-      const isActive = current.id === props.of
+      const isLast = lookup.getLast().id === props.of
+      const isActive = current.data.id === props.of
 
       const dataState = getStepState(currentIndex, stepIndex)
       const childMap = useStepChildren(children)
@@ -217,8 +219,8 @@ function defineStepper<const Steps extends Stepperize.Step[]>(
               onKeyDown={(e) =>
                 onStepKeyDown(
                   e,
-                  utils.getNext(props.of),
-                  utils.getPrev(props.of),
+                  lookup.getNext(props.of),
+                  lookup.getPrev(props.of),
                 )
               }
               {...props}>

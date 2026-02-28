@@ -101,10 +101,10 @@ function UploadTransactionsWizard({
       className={cn('flex flex-col gap-4', className)}
       variant="horizontal"
       labelOrientation="vertical">
-      {({ methods }) => (
+      {({ methods: { flow, navigation, state } }) => (
         <>
           <Stepper.StepperNavigation>
-            {methods.all.map((step) => (
+            {state.all.map((step) => (
               <Stepper.StepperStep
                 key={step.id}
                 of={step.id}
@@ -123,14 +123,14 @@ function UploadTransactionsWizard({
           </Stepper.StepperNavigation>
 
           <Stepper.StepperPanel className="min-h-0 flex-1">
-            {methods.switch({
+            {flow.switch({
               'step-1': () => (
                 <UploadOFXForm
                   id={uploadOFXFormId}
                   onSubmit={(data) =>
                     parseOFX.mutate(data, {
                       onSuccess() {
-                        methods.goTo('step-2')
+                        navigation.goTo('step-2')
                       },
                     })
                   }
@@ -163,7 +163,7 @@ function UploadTransactionsWizard({
           </Stepper.StepperPanel>
 
           <Stepper.StepperControls>
-            {methods.switch({
+            {flow.switch({
               'step-1': () => (
                 <>
                   <Link href={PATHS.TRANSACTIONS}>
@@ -178,7 +178,7 @@ function UploadTransactionsWizard({
               ),
               'step-2': () => (
                 <>
-                  <Button variant="secondary" onClick={methods.prev}>
+                  <Button variant="secondary" onClick={() => navigation.prev()}>
                     Back
                   </Button>
                   <ProgressButton

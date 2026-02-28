@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { generateObject } from 'ai'
+import { generateText, Output } from 'ai'
 import Fuse from 'fuse.js'
 // TODO: Use Zod 4. Currently cannot use zod 4 as it is not compatible with ai.
 import { z } from 'zod'
@@ -66,16 +66,15 @@ async function categorizeTransactions(
   for (const chunk of chunks) {
     try {
       const prompt = generateUserPrompt(chunk, categories)
-      const { object } = await generateObject({
+      const { output } = await generateText({
         model,
-        schema,
+        output: Output.object({ schema }),
         prompt,
         system: SYSTEM_PROMPT,
-        mode: 'json',
       })
 
       // run through the result and map the transactions to category
-      for (const aiResult of object.result) {
+      for (const aiResult of output.result) {
         const tx = chunk[aiResult.index]
         if (tx?.externalId != null) {
           result[tx.externalId] =

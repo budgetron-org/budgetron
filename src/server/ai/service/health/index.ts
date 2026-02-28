@@ -30,7 +30,7 @@ async function healthCheck() {
     const response = await generateText({
       model,
       prompt: 'ping',
-      maxTokens: 1,
+      maxOutputTokens: 1,
       abortSignal: abortController.signal,
     })
     lastCheckResult = Boolean(response.text)
