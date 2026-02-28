@@ -14,7 +14,7 @@ function fillMissingMonthlyAverages(
 
   return allMonths.map((month) => ({
     month,
-    average: dataMap.get(month) ?? 0,
+    average: dataMap.get(month) ?? '0',
   }))
 }
 
